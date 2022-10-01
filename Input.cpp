@@ -6,7 +6,7 @@
 void Input::Initialize(WindowsAPI& wAPI)
 {
 	HRESULT result;
-	result = DirectInput8Create(wAPI.w.hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&directInput, nullptr);
+	result = DirectInput8Create(wAPI.GetHInstance(), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&directInput, nullptr);
 	assert(SUCCEEDED(result));
 
 	result = directInput->CreateDevice(GUID_SysKeyboard, &keyboard, NULL);
@@ -14,7 +14,7 @@ void Input::Initialize(WindowsAPI& wAPI)
 
 	result = keyboard->SetDataFormat(&c_dfDIKeyboard);
 	assert(SUCCEEDED(result));
-	result = keyboard->SetCooperativeLevel(wAPI.hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+	result = keyboard->SetCooperativeLevel(wAPI.GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 	assert(SUCCEEDED(result));
 
 	key.resize(256);

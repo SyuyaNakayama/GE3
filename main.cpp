@@ -8,13 +8,11 @@ using namespace std;
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 #pragma region WindowsAPI初期化処理
-	// ウィンドウサイズ
-	const Int2 WIN_SIZE = { 1280,720 }; // 横幅
-	// ウィンドウクラスの設定
-	WindowsAPI wAPI = { WIN_SIZE };
 
-	// ウィンドウを表示状態にする
-	ShowWindow(wAPI.hwnd, SW_SHOW);
+	// ウィンドウクラスの設定
+	WindowsAPI* wAPI = nullptr;
+	wAPI = new WindowsAPI();
+	wAPI->Initialize();
 
 	MSG msg{}; // メッセージ
 #pragma endregion 
@@ -61,7 +59,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	// スワップチェーンの設定
 	SwapChain swapChain(device.Get());
-	swapChain.Create(directX.dxgiFactory.Get(), command.queue.Get(), wAPI.hwnd);
+	swapChain.Create(directX.dxgiFactory.Get(), command.queue.Get(), wAPI->GetHwnd());
 	swapChain.CreateDescriptorHeap();
 	swapChain.CreateRenderTargetView();
 	// フェンスの生成
@@ -69,9 +67,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	fence.CreateFence(device.Get());
 
 	// DirectInputの初期化&キーボードデバイスの生成
-	Input* input=nullptr;
+	Input* input = nullptr;
 	input = new Input();
-	input->Initialize(wAPI);
+	input->Initialize(*wAPI);
 #pragma endregion
 #pragma region 描画初期化処理
 #pragma region 定数バッファ
@@ -93,7 +91,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	ViewProjection viewProjection = { { 0,0,-100 } };
 	viewProjection.CreateViewMatrix();
-	viewProjection.CreateProjectionMatrix(WIN_SIZE);
+	viewProjection.CreateProjectionMatrix({WindowsAPI::WIN_WIDTH,WindowsAPI::WIN_HEIGHT});
 
 	for (size_t i = 0; i < OBJ_COUNT; i++)
 	{
@@ -247,8 +245,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// 深度バッファ
 	D3D12_RESOURCE_DESC depthResourceDesc{};
 	depthResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-	depthResourceDesc.Width = WIN_SIZE.width;
-	depthResourceDesc.Height = WIN_SIZE.height;
+	depthResourceDesc.Width = WindowsAPI::WIN_WIDTH;
+	depthResourceDesc.Height = WindowsAPI::WIN_HEIGHT;
 	depthResourceDesc.DepthOrArraySize = 1;
 	depthResourceDesc.Format = DXGI_FORMAT_D32_FLOAT;
 	depthResourceDesc.SampleDesc.Count = 1;
@@ -325,7 +323,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	FLOAT clearColor[] = { 0.1f,0.25f,0.5f,0.0f }; // 青っぽい色
 	D3D12_VIEWPORT viewport{};
 	D3D12_RECT scissorRect{};
-	
+
 	bool texHandle = 0;
 #pragma endregion
 	// ゲームループ
@@ -381,8 +379,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		command.list->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 #pragma region 描画コマンド
 		// ビューポート設定コマンド
-		viewport.Width = (float)WIN_SIZE.width;
-		viewport.Height = (float)WIN_SIZE.height;
+		viewport.Width = (float)WindowsAPI::WIN_WIDTH;
+		viewport.Height = (float)WindowsAPI::WIN_HEIGHT;
 		viewport.TopLeftX = 0;
 		viewport.TopLeftY = 0;
 		viewport.MinDepth = 0.0f;
@@ -390,9 +388,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		// シザー矩形
 		scissorRect.left = 0; // 切り抜き座標左
-		scissorRect.right = scissorRect.left + WIN_SIZE.width; // 切り抜き座標右
+		scissorRect.right = scissorRect.left + WindowsAPI::WIN_WIDTH; // 切り抜き座標右
 		scissorRect.top = 0; // 切り抜き座標上
-		scissorRect.bottom = scissorRect.top + WIN_SIZE.height; // 切り抜き座標下
+		scissorRect.bottom = scissorRect.top + WindowsAPI::WIN_HEIGHT; // 切り抜き座標下
 
 		// シザー矩形設定コマンドを、コマンドリストに積む
 		command.list->RSSetScissorRects(1, &scissorRect);
@@ -436,9 +434,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #pragma endregion
 	}
 
-	delete input;
 	// ウィンドウクラスを登録解除
-	wAPI.MyUnregisterClass();
+	wAPI->MyUnregisterClass();
+	delete input;
+	delete wAPI;
 
 	return 0;
 }

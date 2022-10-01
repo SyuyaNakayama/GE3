@@ -17,7 +17,7 @@ LRESULT WindowsAPI::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam
 	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
-WindowsAPI::WindowsAPI(Int2 WIN_SIZE)
+void WindowsAPI::Initialize()
 {
 	w.cbSize = sizeof(WNDCLASSEX);
 	w.lpfnWndProc = WindowProc; // ウィンドウプロシージャを設定
@@ -28,7 +28,7 @@ WindowsAPI::WindowsAPI(Int2 WIN_SIZE)
 	// ウィンドウクラスをOSに登録する
 	RegisterClassEx(&w);
 
-	wrc = { 0, 0, WIN_SIZE.width, WIN_SIZE.height };
+	wrc = { 0, 0, WIN_WIDTH, WIN_HEIGHT };
 	// 自動でサイズを補正する
 	AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW, false);
 
@@ -43,6 +43,9 @@ WindowsAPI::WindowsAPI(Int2 WIN_SIZE)
 		nullptr, // メニューハンドル
 		w.hInstance, // 呼び出しアプリケーションハンドル
 		nullptr); // オプション
+
+	// ウィンドウを表示状態にする
+	ShowWindow(hwnd, SW_SHOW);
 }
 
 void WindowsAPI::MyUnregisterClass()
