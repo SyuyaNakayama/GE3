@@ -10,6 +10,7 @@ class Input
 public:
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 private:
+	ComPtr<IDirectInput8> directInput;
 	std::string key, oldkey;
 	ComPtr<IDirectInputDevice8> keyboard;
 public:

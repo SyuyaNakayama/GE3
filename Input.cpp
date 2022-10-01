@@ -6,7 +6,6 @@
 void Input::Initialize(WindowsAPI& wAPI)
 {
 	HRESULT result;
-	ComPtr<IDirectInput8> directInput = nullptr;
 	result = DirectInput8Create(wAPI.w.hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&directInput, nullptr);
 	assert(SUCCEEDED(result));
 
@@ -24,21 +23,11 @@ void Input::Initialize(WindowsAPI& wAPI)
 
 void Input::Update()
 {
-	keyboard->Acquire();
 	oldkey = key;
+	keyboard->Acquire();
 	keyboard->GetDeviceState(key.size(), (LPVOID)key.c_str());
 }
 
-bool Input::IsInput(const int KEY)
-{
-	if (key[KEY]) { return true; }
-	return false;
-}
-bool Input::IsTrigger(const int KEY)
-{
-	return (!oldkey[KEY] && key[KEY]);
-}
-float Input::Move(const int KEY1, const int KEY2, const float spd)
-{
-	return (IsInput(KEY1) - IsInput(KEY2)) * spd;
-}
+bool Input::IsInput(const int KEY) { return key[KEY]; }
+bool Input::IsTrigger(const int KEY) { return (!oldkey[KEY] && key[KEY]); }
+float Input::Move(const int KEY1, const int KEY2, const float spd) { return (IsInput(KEY1) - IsInput(KEY2)) * spd; }
