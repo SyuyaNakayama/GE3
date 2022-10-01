@@ -1,21 +1,20 @@
 #pragma once
+#define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 #include <wrl.h>
+#include <string>
 #include "WindowsAPI.h"
-
-using namespace Microsoft::WRL;
 
 class Input
 {
-private:
-	BYTE key[256]{};
-	BYTE oldkey[256]{};
 public:
+	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+private:
+	std::string key, oldkey;
 	ComPtr<IDirectInputDevice8> keyboard;
-
+public:
 	void Initialize(WindowsAPI& wAPI);
-	void GetDeviceState();
-	void TransferOldkey();
+	void Update();
 	bool IsInput(const int KEY);
 	bool IsTrigger(const int KEY);
 	float Move(const int KEY1, const int KEY2, const float spd);

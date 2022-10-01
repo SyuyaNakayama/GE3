@@ -13,20 +13,22 @@ void Input::Initialize(WindowsAPI& wAPI)
 	result = directInput->CreateDevice(GUID_SysKeyboard, &keyboard, NULL);
 	assert(SUCCEEDED(result));
 
-	result=keyboard->SetDataFormat(&c_dfDIKeyboard);// •W€Œ`Ž®
+	result = keyboard->SetDataFormat(&c_dfDIKeyboard);
 	assert(SUCCEEDED(result));
-	result=keyboard->SetCooperativeLevel(wAPI.hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+	result = keyboard->SetCooperativeLevel(wAPI.hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 	assert(SUCCEEDED(result));
+
+	key.resize(256);
+	oldkey.resize(256);
 }
 
-void Input::GetDeviceState()
+void Input::Update()
 {
-	keyboard->GetDeviceState(sizeof(key), key);
+	keyboard->Acquire();
+	oldkey = key;
+	keyboard->GetDeviceState(key.size(), (LPVOID)key.c_str());
 }
-void Input::TransferOldkey()
-{
-	for (size_t i = 0; i < sizeof(oldkey); i++) { oldkey[i] = key[i]; }
-}
+
 bool Input::IsInput(const int KEY)
 {
 	if (key[KEY]) { return true; }
@@ -35,7 +37,6 @@ bool Input::IsInput(const int KEY)
 bool Input::IsTrigger(const int KEY)
 {
 	return (!oldkey[KEY] && key[KEY]);
-	return false;
 }
 float Input::Move(const int KEY1, const int KEY2, const float spd)
 {

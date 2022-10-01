@@ -344,10 +344,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #pragma endregion
 #pragma region DirectX毎フレーム処理
 #pragma region 更新処理
-		input->keyboard->Acquire(); // キーボード情報の取得開始
-		// 全キーの入力状態を取得する
-		input->TransferOldkey();
-		input->GetDeviceState();
+		input->Update();
 
 		object3ds[0].trans.y += input->Move(DIK_UP, DIK_DOWN, 1.0f);
 		object3ds[0].trans.x += input->Move(DIK_RIGHT, DIK_LEFT, 1.0f);
