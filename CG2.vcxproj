@@ -145,6 +145,7 @@
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyClass.cpp" />
+    <ClCompile Include="WindowsAPI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasicPS.hlsl">
@@ -164,6 +165,8 @@
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="MyClass.h" />
+    <ClInclude Include="struct.h" />
+    <ClInclude Include="WindowsAPI.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Basic.hlsli" />

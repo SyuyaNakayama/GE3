@@ -1,27 +1,19 @@
 #pragma once
 #include <dinput.h>
 #include <wrl.h>
+#include "WindowsAPI.h"
+
 using namespace Microsoft::WRL;
 
-class DirectInput
-{
-protected:
-	ComPtr<IDirectInput8> input;
-
-	void Initialize(WNDCLASSEX w);
-};
-
-class Keyboard :DirectInput
+class Input
 {
 private:
 	BYTE key[256]{};
 	BYTE oldkey[256]{};
-
 public:
-	ComPtr<IDirectInputDevice8> device;
+	ComPtr<IDirectInputDevice8> keyboard;
 
-	void GetInstance(WNDCLASSEX w);
-	void Set(HWND hwnd);
+	void Initialize(WindowsAPI& wAPI);
 	void GetDeviceState();
 	void TransferOldkey();
 	bool IsInput(const int KEY);

@@ -69,9 +69,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	fence.CreateFence(device.Get());
 
 	// DirectInputの初期化&キーボードデバイスの生成
-	Keyboard keyboard;
-	keyboard.GetInstance(wAPI.w);
-	keyboard.Set(wAPI.hwnd);
+	Input* input=nullptr;
+	input = new Input();
+	input->Initialize(wAPI);
 #pragma endregion
 #pragma region 描画初期化処理
 #pragma region 定数バッファ
@@ -344,17 +344,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #pragma endregion
 #pragma region DirectX毎フレーム処理
 #pragma region 更新処理
-		keyboard.device->Acquire(); // キーボード情報の取得開始
+		input->keyboard->Acquire(); // キーボード情報の取得開始
 		// 全キーの入力状態を取得する
-		keyboard.TransferOldkey();
-		keyboard.GetDeviceState();
+		input->TransferOldkey();
+		input->GetDeviceState();
 
-		object3ds[0].trans.y += keyboard.Move(DIK_UP, DIK_DOWN, 1.0f);
-		object3ds[0].trans.x += keyboard.Move(DIK_RIGHT, DIK_LEFT, 1.0f);
+		object3ds[0].trans.y += input->Move(DIK_UP, DIK_DOWN, 1.0f);
+		object3ds[0].trans.x += input->Move(DIK_RIGHT, DIK_LEFT, 1.0f);
 
-		if (keyboard.IsInput(DIK_D) || keyboard.IsInput(DIK_A))
+		if (input->IsInput(DIK_D) || input->IsInput(DIK_A))
 		{
-			angle += keyboard.Move(DIK_A, DIK_D, XMConvertToRadians(2.0f));
+			angle += input->Move(DIK_A, DIK_D, XMConvertToRadians(2.0f));
 
 			viewProjection.eye.x = -100 * sinf(angle);
 			viewProjection.eye.z = -100 * cosf(angle);
@@ -368,7 +368,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			object3ds[i].TransferMatrix(viewProjection);
 		}
 
-		if (keyboard.IsTrigger(DIK_SPACE)) { texHandle = !texHandle; }
+		if (input->IsTrigger(DIK_SPACE)) { texHandle = !texHandle; }
 #pragma endregion
 		// 1.リソースバリアで書き込み可能に変更
 		barrier.desc.Transition.pResource = swapChain.GetBackBuffersPtr(); // バックバッファを指定
@@ -439,6 +439,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #pragma endregion
 	}
 
+	delete input;
 	// ウィンドウクラスを登録解除
 	wAPI.MyUnregisterClass();
 

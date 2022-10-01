@@ -1,39 +1,43 @@
 #include "Input.h"
 #include <cassert>
+#pragma comment(lib, "dinput8.lib")
+#pragma comment(lib, "dxguid.lib")
 
-void DirectInput::Initialize(WNDCLASSEX w)
+void Input::Initialize(WindowsAPI& wAPI)
 {
-	DirectInput8Create(w.hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&input, nullptr);
+	HRESULT result;
+	ComPtr<IDirectInput8> directInput = nullptr;
+	result = DirectInput8Create(wAPI.w.hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&directInput, nullptr);
+	assert(SUCCEEDED(result));
+
+	result = directInput->CreateDevice(GUID_SysKeyboard, &keyboard, NULL);
+	assert(SUCCEEDED(result));
+
+	result=keyboard->SetDataFormat(&c_dfDIKeyboard);// 標準形式
+	assert(SUCCEEDED(result));
+	result=keyboard->SetCooperativeLevel(wAPI.hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+	assert(SUCCEEDED(result));
 }
-void Keyboard::GetInstance(WNDCLASSEX w)
+
+void Input::GetDeviceState()
 {
-	Initialize(w);
-	input->CreateDevice(GUID_SysKeyboard, &device, NULL);
+	keyboard->GetDeviceState(sizeof(key), key);
 }
-void Keyboard::Set(HWND hwnd)
-{
-	device->SetDataFormat(&c_dfDIKeyboard);// 標準形式
-	device->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
-}
-void Keyboard::GetDeviceState()
-{
-	device->GetDeviceState(sizeof(key), key);
-}
-void Keyboard::TransferOldkey()
+void Input::TransferOldkey()
 {
 	for (size_t i = 0; i < sizeof(oldkey); i++) { oldkey[i] = key[i]; }
 }
-bool Keyboard::IsInput(const int KEY)
+bool Input::IsInput(const int KEY)
 {
 	if (key[KEY]) { return true; }
 	return false;
 }
-bool Keyboard::IsTrigger(const int KEY)
+bool Input::IsTrigger(const int KEY)
 {
 	return (!oldkey[KEY] && key[KEY]);
 	return false;
 }
-float Keyboard::Move(const int KEY1, const int KEY2, const float spd)
+float Input::Move(const int KEY1, const int KEY2, const float spd)
 {
 	return (IsInput(KEY1) - IsInput(KEY2)) * spd;
 }

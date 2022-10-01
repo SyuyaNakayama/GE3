@@ -1,5 +1,4 @@
 #pragma once
-#include <Windows.h>
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include <cassert>
@@ -10,16 +9,14 @@
 #include <dinput.h>
 #include <DirectXTex.h>
 #include "Buffer.h"
+#include "struct.h"
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3dcompiler.lib")
-#pragma comment(lib, "dinput8.lib")
-#pragma comment(lib, "dxguid.lib")
 using namespace DirectX;
 
 LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
-struct Int2 { int width, height; };
 
 class ShaderBlob
 {
@@ -27,18 +24,6 @@ public:
 	ComPtr<ID3DBlob> blob = nullptr;
 
 	ShaderBlob(const LPCWSTR fileName, const LPCSTR target, ID3DBlob* errorBlob);
-};
-
-class WindowsAPI
-{
-private:
-	RECT wrc;
-public:
-	WNDCLASSEX w;
-	HWND hwnd;
-
-	WindowsAPI(WNDPROC lpfnWndProc, Int2 WIN_SIZE);
-	void MyUnregisterClass();
 };
 
 class Pipeline
@@ -77,7 +62,6 @@ private:
 	D3D_FEATURE_LEVEL featureLevel{};
 public:
 	ComPtr<IDXGIFactory7> dxgiFactory;
-
 	DirectXInit();
 	void AdapterChoice();
 	ID3D12Device* CreateDevice(D3D_FEATURE_LEVEL* levels, size_t levelsNum, ID3D12Device* device);
