@@ -11,7 +11,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// ウィンドウサイズ
 	const Int2 WIN_SIZE = { 1280,720 }; // 横幅
 	// ウィンドウクラスの設定
-	WindowsAPI wAPI = { (WNDPROC)WindowProc,WIN_SIZE };
+	WindowsAPI wAPI = { WIN_SIZE };
 
 	// ウィンドウを表示状態にする
 	ShowWindow(wAPI.hwnd, SW_SHOW);

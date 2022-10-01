@@ -1,7 +1,7 @@
 #include "WindowsAPI.h"
 
 // ウィンドウプロシージャ
-LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+LRESULT WindowsAPI::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	// メッセージに応じてゲーム固有の処理を行う
 	switch (msg)
@@ -17,10 +17,10 @@ LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
-WindowsAPI::WindowsAPI(WNDPROC lpfnWndProc, Int2 WIN_SIZE)
+WindowsAPI::WindowsAPI(Int2 WIN_SIZE)
 {
 	w.cbSize = sizeof(WNDCLASSEX);
-	w.lpfnWndProc = lpfnWndProc; // ウィンドウプロシージャを設定
+	w.lpfnWndProc = WindowProc; // ウィンドウプロシージャを設定
 	w.lpszClassName = L"DirectXGame"; // ウィンドウクラス名
 	w.hInstance = GetModuleHandle(nullptr); // ウィンドウハンドル
 	w.hCursor = LoadCursor(NULL, IDC_ARROW); // カーソル指定
@@ -33,7 +33,7 @@ WindowsAPI::WindowsAPI(WNDPROC lpfnWndProc, Int2 WIN_SIZE)
 	AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW, false);
 
 	hwnd = CreateWindow(w.lpszClassName, // クラス名
-		L"LE2A_16_ナカヤマ_シュウヤ_CG2", // タイトルバーの文字
+		L"LE2C_17_ナカヤマ_シュウヤ_GE3", // タイトルバーの文字
 		WS_OVERLAPPEDWINDOW, // 標準的なウィンドウスタイル
 		CW_USEDEFAULT, // 表示X座標(OSに任せる)
 		CW_USEDEFAULT, // 表示Y座標(OSに任せる)
