@@ -16,5 +16,5 @@ public:
 	void Initialize();
 	HWND GetHwnd() { return hwnd; }
 	HINSTANCE GetHInstance() const { return w.hInstance; }
-	void MyUnregisterClass();
+	void Finalize();
 };

@@ -435,7 +435,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	}
 
 	// ウィンドウクラスを登録解除
-	wAPI->MyUnregisterClass();
+	wAPI->Finalize();
 	delete input;
 	delete wAPI;
 
