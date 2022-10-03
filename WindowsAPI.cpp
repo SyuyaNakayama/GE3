@@ -33,6 +33,20 @@ LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
+bool WindowsAPI::ProcessMessage()
+{
+	MSG msg{}; // メッセージ
+
+	// メッセージがある?
+	if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+	{
+		TranslateMessage(&msg); // キー入力メッセージの処理
+		DispatchMessage(&msg); // プロシージャにメッセージを送る
+	}
+
+	return msg.message == WM_QUIT;
+}
+
 void WindowsAPI::Initialize()
 {
 	w.cbSize = sizeof(WNDCLASSEX);

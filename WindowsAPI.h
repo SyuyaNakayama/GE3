@@ -13,8 +13,9 @@ public:
 	static const int WIN_HEIGHT = 720;
 
 	static LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
-	void Initialize();
 	HWND GetHwnd() { return hwnd; }
 	HINSTANCE GetHInstance() const { return w.hInstance; }
+	bool ProcessMessage();
+	void Initialize();
 	void Finalize();
 };

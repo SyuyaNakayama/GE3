@@ -14,7 +14,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	wAPI = new WindowsAPI();
 	wAPI->Initialize();
 
-	MSG msg{}; // メッセージ
 #pragma endregion 
 #pragma region DirectX初期化処理
 #ifdef _DEBUG
@@ -330,15 +329,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	while (1)
 	{
 #pragma region ウィンドウメッセージ処理
-		// メッセージがある?
-		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
-		{
-			TranslateMessage(&msg); // キー入力メッセージの処理
-			DispatchMessage(&msg); // プロシージャにメッセージを送る
-		}
-
 		// ✖ボタンで終了メッセージが来たらゲームループを抜ける
-		if (msg.message == WM_QUIT) { break; }
+		if (wAPI->ProcessMessage()) { break; }
 #pragma endregion
 #pragma region DirectX毎フレーム処理
 #pragma region 更新処理
@@ -435,8 +427,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	}
 
 	// ウィンドウクラスを登録解除
-	wAPI->Finalize();
 	delete input;
+	wAPI->Finalize();
 	delete wAPI;
 
 	return 0;

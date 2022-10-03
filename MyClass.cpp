@@ -1,11 +1,13 @@
 #include "MyClass.h"
 
-ShaderBlob::ShaderBlob(const LPCWSTR fileName, const LPCSTR target, ID3DBlob* errorBlob)
+ShaderBlob::ShaderBlob(const std::wstring fileName, const LPCSTR target, ID3DBlob* errorBlob)
 {
 	HRESULT result;
 
+	std::wstring filePath = L"Resources/shaders/" + fileName;
+
 	result = D3DCompileFromFile(
-		fileName, // シェーダファイル名
+		filePath.c_str(), // シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", target, // エントリーポイント名、シェーダーモデル指定
@@ -14,6 +16,7 @@ ShaderBlob::ShaderBlob(const LPCWSTR fileName, const LPCSTR target, ID3DBlob* er
 		&blob, &errorBlob);
 
 	if (FAILED(result)) {
+		assert(0);
 		// errorBlobからエラー内容をstring型にコピー
 		std::string error;
 		error.resize(errorBlob->GetBufferSize());
@@ -23,7 +26,6 @@ ShaderBlob::ShaderBlob(const LPCWSTR fileName, const LPCSTR target, ID3DBlob* er
 		error += "\n";
 		// エラー内容を出力ウィンドウに表示
 		OutputDebugStringA(error.c_str());
-		assert(0);
 	}
 }
 

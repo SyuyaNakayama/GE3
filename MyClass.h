@@ -23,7 +23,7 @@ class ShaderBlob
 public:
 	ComPtr<ID3DBlob> blob = nullptr;
 
-	ShaderBlob(const LPCWSTR fileName, const LPCSTR target, ID3DBlob* errorBlob);
+	ShaderBlob(const std::wstring fileName, const LPCSTR target, ID3DBlob* errorBlob);
 };
 
 class Pipeline
