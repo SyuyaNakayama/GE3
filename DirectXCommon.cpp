@@ -136,7 +136,8 @@ void DirectXCommon::InitializeRenderTargetView()
 	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; // レンダーターゲットビュー
 	rtvHeapDesc.NumDescriptors = swapchainDesc.BufferCount; // 裏表の2つ
 	// デスクリプタヒープの生成
-	device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&rtvHeap));
+	result = device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&rtvHeap));
+	assert(SUCCEEDED(result));
 
 	for (size_t i = 0; i < backBuffers.size(); i++)
 	{
@@ -177,7 +178,8 @@ void DirectXCommon::InitializeDepthBuffer()
 	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc{};
 	dsvHeapDesc.NumDescriptors = 1;
 	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
-	device->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&dsvHeap));
+	result = device->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&dsvHeap));
+	assert(SUCCEEDED(result));
 
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
 	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;

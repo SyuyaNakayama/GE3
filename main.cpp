@@ -18,29 +18,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	DirectXCommon* dxCommon = nullptr;
 	dxCommon = new DirectXCommon();
 	dxCommon->Initialize(wAPI);
-	/*Command command(device.Get());
-	// コマンドアロケータを生成
-	command.CreateCommandAllocator();
-
-	// コマンドリストを生成
-	command.CreateCommandList();
-
-	//コマンドキューを生成
-	command.CreateCommandQueue();
-
-	// スワップチェーンの設定
-	SwapChain swapChain(device.Get());
-	swapChain.Create(directX.dxgiFactory.Get(), command.queue.Get(), wAPI->GetHwnd());
-	swapChain.CreateDescriptorHeap();
-	swapChain.CreateRenderTargetView();
-	// フェンスの生成
-	Fence fence{};
-	fence.CreateFence(device.Get());
-
-	// DirectInputの初期化&キーボードデバイスの生成
-	Input* input = nullptr;
-	input = new Input();
-	input->Initialize(*wAPI);*/
 #pragma endregion
 #pragma region 描画初期化処理
 #pragma region 定数バッファ
@@ -254,7 +231,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #pragma endregion
 #pragma region ゲームループで使う変数の定義
 	float angle = 0.0f;
-	ResourceBarrier barrier{};
 
 	bool texHandle = 0;*/
 #pragma endregion
@@ -313,15 +289,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			command.list->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0); // 全ての頂点を使って描画
 		}
 #pragma endregion
-#pragma endregion
-#pragma region 画面入れ替え
-		// 5.リソースバリアを戻す
-		barrier.SetState(command.list.Get());
-		swapChain.Flip();
-
-		// コマンドの実行完了を待つ
-
-		command.Reset();*/
+#pragma endregion*/
 		dxCommon->PostDraw();
 #pragma endregion
 	}
