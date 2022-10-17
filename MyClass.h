@@ -54,25 +54,6 @@ public:
 	void SerializeRootSignature(ID3D12Device* device, ID3DBlob* errorBlob);
 };
 
-class RenderTargetView
-{
-protected:
-
-	RenderTargetView();
-	void GetHandle();
-};
-
-class SwapChain :public RenderTargetView
-{
-private:
-
-public:
-	void CreateRenderTargetView();
-	//void Flip() { assert(SUCCEEDED(sc->Present(1, 0))); }
-	void CreateDescriptorHeap();
-	ID3D12Resource* GetBackBuffersPtr();
-};
-
 class Blend
 {
 private:
@@ -89,30 +70,6 @@ public:
 	Blend(D3D12_RENDER_TARGET_BLEND_DESC* blenddesc);
 	void UseBlendMode();
 	void SetBlend(BlendMode blendMode);
-};
-
-class ResourceBarrier
-{
-public:
-	D3D12_RESOURCE_BARRIER desc;
-
-	ResourceBarrier();
-	void SetState(ID3D12GraphicsCommandList* commandList);
-};
-
-class Command
-{
-private:
-	void Reset();
-	void ExecuteCommandLists();
-};
-
-class Fence
-{
-private:
-	HANDLE event;
-public:
-	void Wait();
 };
 
 class ShaderResourceView

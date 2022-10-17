@@ -130,11 +130,7 @@ void DirectXCommon::InitializeSwapchain()
 
 void DirectXCommon::InitializeRenderTargetView()
 {
-	ComPtr<ID3D12DescriptorHeap> rtvHeap;
-	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
-	UINT bbIndex;
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
 	// デスクリプタヒープの設定
 	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; // レンダーターゲットビュー
@@ -181,7 +177,6 @@ void DirectXCommon::InitializeDepthBuffer()
 	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc{};
 	dsvHeapDesc.NumDescriptors = 1;
 	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
-	ComPtr<ID3D12DescriptorHeap> dsvHeap = nullptr;
 	device->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&dsvHeap));
 
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
@@ -193,14 +188,79 @@ void DirectXCommon::InitializeDepthBuffer()
 
 void DirectXCommon::InitializeFence()
 {
-	result = device->CreateFence(val, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
+	result = device->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 	assert(SUCCEEDED(result));
 }
 
-void DirectXCommon::Update()
+void DirectXCommon::PreDraw()
 {
+	UINT bbIndex = swapchain->GetCurrentBackBufferIndex();
+	barrierDesc.Transition.pResource = backBuffers[bbIndex].Get();
+	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	commandList->ResourceBarrier(1, &barrierDesc);
+
+	rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
+	rtvHandle.ptr += bbIndex * device->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle{};
+	dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
+	commandList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
+
+	FLOAT clearColor[] = { 0.1f,0.25f,0.5f,0.0f }; // 青っぽい色
+	commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+
+	D3D12_VIEWPORT viewport{};
+	D3D12_RECT scissorRect{};
+	// ビューポート設定コマンド
+	viewport.Width = (float)WindowsAPI::WIN_WIDTH;
+	viewport.Height = (float)WindowsAPI::WIN_HEIGHT;
+	viewport.TopLeftX = 0;
+	viewport.TopLeftY = 0;
+	viewport.MinDepth = 0.0f;
+	viewport.MaxDepth = 1.0f;
+	// シザー矩形
+	scissorRect.left = 0; // 切り抜き座標左
+	scissorRect.right = scissorRect.left + WindowsAPI::WIN_WIDTH; // 切り抜き座標右
+	scissorRect.top = 0; // 切り抜き座標上
+	scissorRect.bottom = scissorRect.top + WindowsAPI::WIN_HEIGHT; // 切り抜き座標下
+	// シザー矩形設定コマンドを、コマンドリストに積む
+	commandList->RSSetScissorRects(1, &scissorRect);
+	commandList->RSSetViewports(1, &viewport); // ビューポート設定コマンドを、コマンドリストに積む
 }
 
-void DirectXCommon::Draw()
+void DirectXCommon::PostDraw()
 {
+	UINT bbIndex = swapchain->GetCurrentBackBufferIndex();
+
+	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	// 命令のクローズ
+	result = commandList->Close();
+	assert(SUCCEEDED(result));
+	// コマンドリストの実行
+	ID3D12CommandList* commandLists;
+	commandLists = commandList.Get();
+	commandQueue->ExecuteCommandLists(1, &commandLists);
+
+	commandQueue->Signal(fence.Get(), ++fenceVal);
+	if (fence->GetCompletedValue() != fenceVal)
+	{
+		HANDLE event = CreateEvent(nullptr, false, false, nullptr);
+		fence->SetEventOnCompletion(fenceVal, event);
+		if (event != 0)
+		{
+			WaitForSingleObject(event, INFINITE);
+			CloseHandle(event);
+		}
+	}
+	// キューをクリア
+	result = commandAllocator->Reset();
+	assert(SUCCEEDED(result));
+	// 再びコマンドリストを貯める準備
+	result = commandList->Reset(commandAllocator.Get(), nullptr);
+	assert(SUCCEEDED(result));
+	// 画面に表示するバッファをフリップ(裏表の入替え)
+	result = swapchain->Present(1, 0);
+	assert(SUCCEEDED(result));
 }

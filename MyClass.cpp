@@ -113,17 +113,6 @@ void RootSignature::SerializeRootSignature(ID3D12Device* device, ID3DBlob* error
 	blob->Release();
 }
 
-//void RenderTargetView::GetHandle()
-//{
-//	rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
-//	rtvHandle.ptr += bbIndex * devicePtr->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
-//}
-//ID3D12Resource* SwapChain::GetBackBuffersPtr()
-//{
-//	bbIndex = sc->GetCurrentBackBufferIndex();
-//	return backBuffers[bbIndex].Get();
-//}
-//
 Blend::Blend(D3D12_RENDER_TARGET_BLEND_DESC* blenddesc)
 {
 	desc = blenddesc;
@@ -162,53 +151,6 @@ void Blend::SetBlend(BlendMode blendMode)
 		break;
 	}
 }
-
-ResourceBarrier::ResourceBarrier()
-{
-	desc = {};
-	desc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-}
-void ResourceBarrier::SetState(ID3D12GraphicsCommandList* commandList)
-{
-	static int state = 0;
-	if (!(state++))
-	{
-		desc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-		desc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	}
-	else
-	{
-		desc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-		desc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	}
-	commandList->ResourceBarrier(1, &desc);
-	state %= 2;
-}
-
-//void Command::Reset()
-//{
-//	assert(SUCCEEDED(allocator->Reset())); // キューをクリア
-//	assert(SUCCEEDED(list->Reset(allocator.Get(), nullptr))); // 再びコマンドリストを貯める準備
-//}
-//void Command::ExecuteCommandLists()
-//{
-//	cLists = list.Get();
-//	queue->ExecuteCommandLists(1, &cLists);
-//}
-
-//void Fence::Wait()
-//{
-//	if (f->GetCompletedValue() != val)
-//	{
-//		HANDLE event = CreateEvent(nullptr, false, false, nullptr);
-//		f->SetEventOnCompletion(val, event);
-//		if (event != 0)
-//		{
-//			WaitForSingleObject(event, INFINITE);
-//			CloseHandle(event);
-//		}
-//	}
-//}
 
 void ShaderResourceView::SetHeapDesc()
 {

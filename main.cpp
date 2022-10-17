@@ -255,9 +255,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #pragma region ゲームループで使う変数の定義
 	float angle = 0.0f;
 	ResourceBarrier barrier{};
-	FLOAT clearColor[] = { 0.1f,0.25f,0.5f,0.0f }; // 青っぽい色
-	D3D12_VIEWPORT viewport{};
-	D3D12_RECT scissorRect{};
 
 	bool texHandle = 0;*/
 #pragma endregion
@@ -292,43 +289,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 
 		if (input->IsTrigger(DIK_SPACE)) { texHandle = !texHandle; }
-#pragma endregion
-		// 1.リソースバリアで書き込み可能に変更
-		barrier.desc.Transition.pResource = swapChain.GetBackBuffersPtr(); // バックバッファを指定
-		barrier.SetState(command.list.Get());
-
-		// 2.描画先の変更
-		swapChain.GetHandle();
-		D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
-		command.list->OMSetRenderTargets(1, &swapChain.rtvHandle, false, &dsvHandle);
-
-		// 3.画面クリアRGBA
-		command.list->ClearRenderTargetView(swapChain.rtvHandle, clearColor, 0, nullptr);
-		command.list->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+#pragma endregion*/
+		dxCommon->PreDraw();
 #pragma region 描画コマンド
-		// ビューポート設定コマンド
-		viewport.Width = (float)WindowsAPI::WIN_WIDTH;
-		viewport.Height = (float)WindowsAPI::WIN_HEIGHT;
-		viewport.TopLeftX = 0;
-		viewport.TopLeftY = 0;
-		viewport.MinDepth = 0.0f;
-		viewport.MaxDepth = 1.0f;
-
-		// シザー矩形
-		scissorRect.left = 0; // 切り抜き座標左
-		scissorRect.right = scissorRect.left + WindowsAPI::WIN_WIDTH; // 切り抜き座標右
-		scissorRect.top = 0; // 切り抜き座標上
-		scissorRect.bottom = scissorRect.top + WindowsAPI::WIN_HEIGHT; // 切り抜き座標下
-
-		// シザー矩形設定コマンドを、コマンドリストに積む
-		command.list->RSSetScissorRects(1, &scissorRect);
+		/*
 		// パイプラインステートとルートシグネチャの設定コマンド
 		command.list->SetPipelineState(pipeline.state.Get());
 		command.list->SetGraphicsRootSignature(rootSignature.rs.Get());
 		command.list->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // プリミティブ形状の設定コマンド
 		command.list->IASetVertexBuffers(0, 1, &vertex.view); // 頂点バッファビューの設定コマンド
 		command.list->IASetIndexBuffer(&index.view); // 頂点バッファビューの設定コマンド
-		command.list->RSSetViewports(1, &viewport); // ビューポート設定コマンドを、コマンドリストに積む
 		// 定数バッファビューの設定コマンド
 		command.list->SetGraphicsRootConstantBufferView(0, cb.buff->GetGPUVirtualAddress());
 		command.list->SetDescriptorHeaps(1, &srv.heap);
@@ -347,18 +317,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #pragma region 画面入れ替え
 		// 5.リソースバリアを戻す
 		barrier.SetState(command.list.Get());
-		// 命令のクローズ
-		assert(SUCCEEDED(command.list->Close()));
-		// コマンドリストの実行
-		command.ExecuteCommandLists();
-		// 画面に表示するバッファをフリップ(裏表の入替え)
 		swapChain.Flip();
 
 		// コマンドの実行完了を待つ
-		command.queue->Signal(fence.f.Get(), ++fence.val);
-		fence.Wait();
 
 		command.Reset();*/
+		dxCommon->PostDraw();
 #pragma endregion
 	}
 
