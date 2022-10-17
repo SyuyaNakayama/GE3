@@ -1,6 +1,7 @@
 ﻿#include "MyClass.h"
 #include "Buffer.h"
 #include "Input.h"
+#include "DirectXCommon.h"
 
 using namespace DirectX;
 using namespace std;
@@ -8,44 +9,15 @@ using namespace std;
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 #pragma region WindowsAPI初期化処理
-
 	// ウィンドウクラスの設定
 	WindowsAPI* wAPI = nullptr;
 	wAPI = new WindowsAPI();
 	wAPI->Initialize();
-
 #pragma endregion 
 #pragma region DirectX初期化処理
-#ifdef _DEBUG
-	//デバッグレイヤーをオンに
-	ComPtr<ID3D12Debug1> debugController;
-	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
-		debugController->EnableDebugLayer();
-		debugController->SetEnableGPUBasedValidation(TRUE);
-	}
-#endif
-	ComPtr<ID3D12Device> device = nullptr;
-
-	// 対応レベルの配列
-	D3D_FEATURE_LEVEL levels[] =
-	{
-		D3D_FEATURE_LEVEL_12_1,
-		D3D_FEATURE_LEVEL_12_0,
-		D3D_FEATURE_LEVEL_11_1,
-		D3D_FEATURE_LEVEL_11_0,
-	};
-
-	DirectXInit directX{};
-	directX.AdapterChoice();
-	device = directX.CreateDevice(levels, _countof(levels), device.Get());
-#ifdef _DEBUG
-	ComPtr<ID3D12InfoQueue> infoQueue;
-	if (SUCCEEDED(device->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
-		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
-		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
-		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
-	}
-#endif
+	/*DirectXCommon* dxCommon = nullptr;
+	dxCommon = new DirectXCommon();
+	dxCommon->Initialize();
 	Command command(device.Get());
 	// コマンドアロケータを生成
 	command.CreateCommandAllocator();
@@ -68,11 +40,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// DirectInputの初期化&キーボードデバイスの生成
 	Input* input = nullptr;
 	input = new Input();
-	input->Initialize(*wAPI);
+	input->Initialize(*wAPI);*/
 #pragma endregion
 #pragma region 描画初期化処理
 #pragma region 定数バッファ
-	ConstBuf cb = ConstBuf::Type::Material;
+	/*ConstBuf cb = ConstBuf::Type::Material;
 	cb.SetResource(cb.size, 1, D3D12_RESOURCE_DIMENSION_BUFFER);
 	cb.SetHeapProp(D3D12_HEAP_TYPE_UPLOAD); // ヒープ設定
 	cb.CreateBuffer(device.Get());
@@ -241,42 +213,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	};
 #pragma endregion
 #pragma region パイプライン
-	// 深度バッファ
-	D3D12_RESOURCE_DESC depthResourceDesc{};
-	depthResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-	depthResourceDesc.Width = WindowsAPI::WIN_WIDTH;
-	depthResourceDesc.Height = WindowsAPI::WIN_HEIGHT;
-	depthResourceDesc.DepthOrArraySize = 1;
-	depthResourceDesc.Format = DXGI_FORMAT_D32_FLOAT;
-	depthResourceDesc.SampleDesc.Count = 1;
-	depthResourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
-
-	D3D12_HEAP_PROPERTIES depthHeapProp{};
-	depthHeapProp.Type = D3D12_HEAP_TYPE_DEFAULT;
-
-	D3D12_CLEAR_VALUE depthClearValue{};
-	depthClearValue.DepthStencil.Depth = 1.0f;
-	depthClearValue.Format = DXGI_FORMAT_D32_FLOAT;
-
-	ComPtr<ID3D12Resource> depthBuff = nullptr;
-	device->CreateCommittedResource(
-		&depthHeapProp, D3D12_HEAP_FLAG_NONE,
-		&depthResourceDesc,
-		D3D12_RESOURCE_STATE_DEPTH_WRITE,
-		&depthClearValue, IID_PPV_ARGS(&depthBuff));
-
-	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc{};
-	dsvHeapDesc.NumDescriptors = 1;
-	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
-	ComPtr<ID3D12DescriptorHeap> dsvHeap = nullptr;
-	device->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&dsvHeap));
-
-	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
-	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
-	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
-	device->CreateDepthStencilView(
-		depthBuff.Get(), &dsvDesc, dsvHeap->GetCPUDescriptorHandleForHeapStart());
-
 	// グラフィックスパイプライン設定
 	Pipeline pipeline{};
 
@@ -323,7 +259,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	D3D12_VIEWPORT viewport{};
 	D3D12_RECT scissorRect{};
 
-	bool texHandle = 0;
+	bool texHandle = 0;*/
 #pragma endregion
 	// ゲームループ
 	while (1)
@@ -334,7 +270,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #pragma endregion
 #pragma region DirectX毎フレーム処理
 #pragma region 更新処理
-		input->Update();
+		/*input->Update();
 
 		object3ds[0].trans.y += input->Move(DIK_UP, DIK_DOWN, 1.0f);
 		object3ds[0].trans.x += input->Move(DIK_RIGHT, DIK_LEFT, 1.0f);
@@ -422,14 +358,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		command.queue->Signal(fence.f.Get(), ++fence.val);
 		fence.Wait();
 
-		command.Reset();
+		command.Reset();*/
 #pragma endregion
 	}
 
 	// ウィンドウクラスを登録解除
-	delete input;
+	//delete input;
 	wAPI->Finalize();
 	delete wAPI;
+	//delete dxCommon;
 
 	return 0;
 }

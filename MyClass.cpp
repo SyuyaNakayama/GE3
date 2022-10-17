@@ -113,120 +113,17 @@ void RootSignature::SerializeRootSignature(ID3D12Device* device, ID3DBlob* error
 	blob->Release();
 }
 
-DirectXInit::DirectXInit()
-{
-	assert(SUCCEEDED(CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory))));
-}
-void DirectXInit::AdapterChoice()
-{
-	// パフォーマンスが高いものから順に、全てのアダプターを列挙する
-	for (UINT i = 0;
-		dxgiFactory->EnumAdapterByGpuPreference(i,
-			DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE,
-			IID_PPV_ARGS(&tmpAdapter)) != DXGI_ERROR_NOT_FOUND;
-		i++)
-	{
-		// 動的配列に追加する
-		adapters.push_back(tmpAdapter);
-	}
-	// 妥当なアダプタを選別する
-	for (size_t i = 0; i < adapters.size(); i++)
-	{
-		DXGI_ADAPTER_DESC3 adapterDesc;
-		// アダプターの情報を取得する
-		adapters[i]->GetDesc3(&adapterDesc);
-		// ソフトウェアデバイスを回避
-		if (!(adapterDesc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE))
-		{
-			// デバイスを採用してループを抜ける
-			tmpAdapter = adapters[i];
-			break;
-		}
-	}
-}
-ID3D12Device* DirectXInit::CreateDevice(D3D_FEATURE_LEVEL* levels, size_t levelsNum, ID3D12Device* device)
-{
-	HRESULT result;
-
-	for (size_t i = 0; i < levelsNum; i++)
-	{
-		// 採用したアダプターでデバイスを生成
-		result = D3D12CreateDevice(tmpAdapter.Get(), levels[i], IID_PPV_ARGS(&device));
-		if (result == S_OK)
-		{
-			// デバイスを生成できた時点でループを抜ける
-			featureLevel = levels[i];
-			return device;
-		}
-	}
-	return nullptr;
-}
-
-RenderTargetView::RenderTargetView()
-{
-	rtvHeap = nullptr;
-	rtvHeapDesc = {};
-	rtvDesc = {};
-	rtvHandle = {};
-	devicePtr = nullptr;
-}
-void RenderTargetView::GetHandle()
-{
-	rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
-	rtvHandle.ptr += bbIndex * devicePtr->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
-}
-
-SwapChain::SwapChain(ID3D12Device* device)
-{
-	scDesc.Width = 1280;
-	scDesc.Height = 720;
-	scDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // 色情報の書式
-	scDesc.SampleDesc.Count = 1; // マルチサンプルしない
-	scDesc.BufferUsage = DXGI_USAGE_BACK_BUFFER; // バックバッファ用
-	scDesc.BufferCount = 2; // バッファ数を2つに設定
-	scDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // フリップ後は破棄
-	scDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-	backBuffers.resize(scDesc.BufferCount);
-	devicePtr = device;
-	sc = nullptr;
-}
-void SwapChain::Create(IDXGIFactory7* dxgiFactory, ID3D12CommandQueue* commandQueue, HWND hwnd)
-{
-	ComPtr<IDXGISwapChain1> swapchain1;
-
-	assert(SUCCEEDED(
-		dxgiFactory->CreateSwapChainForHwnd(
-			commandQueue, hwnd, &scDesc, nullptr, nullptr,
-			&swapchain1)));
-
-	swapchain1.As(&sc);
-}
-void SwapChain::CreateRenderTargetView()
-{
-	for (size_t i = 0; i < backBuffers.size(); i++)
-	{
-		sc->GetBuffer((UINT)i, IID_PPV_ARGS(&backBuffers[i]));
-		rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
-		rtvHandle.ptr += i * devicePtr->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
-		rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-		rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
-		devicePtr->CreateRenderTargetView(backBuffers[i].Get(), &rtvDesc, rtvHandle);
-	}
-}
-void SwapChain::CreateDescriptorHeap()
-{
-	// デスクリプタヒープの設定
-	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; // レンダーターゲットビュー
-	rtvHeapDesc.NumDescriptors = scDesc.BufferCount; // 裏表の2つ
-	// デスクリプタヒープの生成
-	devicePtr->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&rtvHeap));
-}
-ID3D12Resource* SwapChain::GetBackBuffersPtr()
-{
-	bbIndex = sc->GetCurrentBackBufferIndex();
-	return backBuffers[bbIndex].Get();
-}
-
+//void RenderTargetView::GetHandle()
+//{
+//	rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
+//	rtvHandle.ptr += bbIndex * devicePtr->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
+//}
+//ID3D12Resource* SwapChain::GetBackBuffersPtr()
+//{
+//	bbIndex = sc->GetCurrentBackBufferIndex();
+//	return backBuffers[bbIndex].Get();
+//}
+//
 Blend::Blend(D3D12_RENDER_TARGET_BLEND_DESC* blenddesc)
 {
 	desc = blenddesc;
@@ -288,67 +185,30 @@ void ResourceBarrier::SetState(ID3D12GraphicsCommandList* commandList)
 	state %= 2;
 }
 
-Command::Command(ID3D12Device* device)
-{
-	allocator = nullptr;
-	list = nullptr;
-	queue = nullptr;
-	queueDesc = {};
-	devicePtr = device;
-}
-void Command::CreateCommandAllocator()
-{
-	assert(SUCCEEDED(
-		devicePtr->CreateCommandAllocator(
-			D3D12_COMMAND_LIST_TYPE_DIRECT,
-			IID_PPV_ARGS(&allocator))));
-}
-void Command::CreateCommandList()
-{
-	assert(SUCCEEDED(
-		devicePtr->CreateCommandList(0,
-			D3D12_COMMAND_LIST_TYPE_DIRECT,
-			allocator.Get(), nullptr,
-			IID_PPV_ARGS(&list))));
-}
-void Command::CreateCommandQueue()
-{
-	assert(SUCCEEDED(
-		devicePtr->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&queue))));
-}
-void Command::Reset()
-{
-	assert(SUCCEEDED(allocator->Reset())); // キューをクリア
-	assert(SUCCEEDED(list->Reset(allocator.Get(), nullptr))); // 再びコマンドリストを貯める準備
-}
-void Command::ExecuteCommandLists()
-{
-	cLists = list.Get();
-	queue->ExecuteCommandLists(1, &cLists);
-}
+//void Command::Reset()
+//{
+//	assert(SUCCEEDED(allocator->Reset())); // キューをクリア
+//	assert(SUCCEEDED(list->Reset(allocator.Get(), nullptr))); // 再びコマンドリストを貯める準備
+//}
+//void Command::ExecuteCommandLists()
+//{
+//	cLists = list.Get();
+//	queue->ExecuteCommandLists(1, &cLists);
+//}
 
-Fence::Fence()
-{
-	f = nullptr;
-	val = 0;
-}
-void Fence::CreateFence(ID3D12Device* device)
-{
-	assert(SUCCEEDED(device->CreateFence(val, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&f))));
-}
-void Fence::Wait()
-{
-	if (f->GetCompletedValue() != val)
-	{
-		HANDLE event = CreateEvent(nullptr, false, false, nullptr);
-		f->SetEventOnCompletion(val, event);
-		if (event != 0)
-		{
-			WaitForSingleObject(event, INFINITE);
-			CloseHandle(event);
-		}
-	}
-}
+//void Fence::Wait()
+//{
+//	if (f->GetCompletedValue() != val)
+//	{
+//		HANDLE event = CreateEvent(nullptr, false, false, nullptr);
+//		f->SetEventOnCompletion(val, event);
+//		if (event != 0)
+//		{
+//			WaitForSingleObject(event, INFINITE);
+//			CloseHandle(event);
+//		}
+//	}
+//}
 
 void ShaderResourceView::SetHeapDesc()
 {

@@ -54,29 +54,9 @@ public:
 	void SerializeRootSignature(ID3D12Device* device, ID3DBlob* errorBlob);
 };
 
-class DirectXInit
-{
-private:
-	std::vector<ComPtr<IDXGIAdapter4>> adapters;
-	ComPtr<IDXGIAdapter4> tmpAdapter = nullptr;
-	D3D_FEATURE_LEVEL featureLevel{};
-public:
-	ComPtr<IDXGIFactory7> dxgiFactory;
-	DirectXInit();
-	void AdapterChoice();
-	ID3D12Device* CreateDevice(D3D_FEATURE_LEVEL* levels, size_t levelsNum, ID3D12Device* device);
-};
-
 class RenderTargetView
 {
 protected:
-	ComPtr<ID3D12DescriptorHeap> rtvHeap;
-	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc;
-	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc;
-	ComPtr<ID3D12Device> devicePtr;
-	UINT bbIndex;
-public:
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
 	RenderTargetView();
 	void GetHandle();
@@ -85,16 +65,10 @@ public:
 class SwapChain :public RenderTargetView
 {
 private:
-	DXGI_SWAP_CHAIN_DESC1 scDesc;
 
 public:
-	std::vector<ComPtr<ID3D12Resource>> backBuffers;
-	ComPtr<IDXGISwapChain4> sc;
-
-	SwapChain(ID3D12Device* device);
-	void Create(IDXGIFactory7*, ID3D12CommandQueue* commandQueue, HWND hwnd);
 	void CreateRenderTargetView();
-	void Flip() { assert(SUCCEEDED(sc->Present(1, 0))); }
+	//void Flip() { assert(SUCCEEDED(sc->Present(1, 0))); }
 	void CreateDescriptorHeap();
 	ID3D12Resource* GetBackBuffersPtr();
 };
@@ -129,18 +103,6 @@ public:
 class Command
 {
 private:
-	ComPtr<ID3D12Device> devicePtr;
-	D3D12_COMMAND_QUEUE_DESC queueDesc;
-	ComPtr<ID3D12CommandAllocator> allocator;
-	ID3D12CommandList* cLists;
-public:
-	ComPtr<ID3D12GraphicsCommandList> list;
-	ComPtr<ID3D12CommandQueue> queue;
-
-	Command(ID3D12Device* device);
-	void CreateCommandAllocator();
-	void CreateCommandList();
-	void CreateCommandQueue();
 	void Reset();
 	void ExecuteCommandLists();
 };
@@ -150,11 +112,6 @@ class Fence
 private:
 	HANDLE event;
 public:
-	ComPtr<ID3D12Fence> f;
-	UINT64 val;
-
-	Fence();
-	void CreateFence(ID3D12Device* device);
 	void Wait();
 };
 
