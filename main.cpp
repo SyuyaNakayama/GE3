@@ -15,10 +15,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	wAPI->Initialize();
 #pragma endregion 
 #pragma region DirectX初期化処理
-	/*DirectXCommon* dxCommon = nullptr;
+	DirectXCommon* dxCommon = nullptr;
 	dxCommon = new DirectXCommon();
-	dxCommon->Initialize();
-	Command command(device.Get());
+	dxCommon->Initialize(wAPI);
+	/*Command command(device.Get());
 	// コマンドアロケータを生成
 	command.CreateCommandAllocator();
 
@@ -366,7 +366,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//delete input;
 	wAPI->Finalize();
 	delete wAPI;
-	//delete dxCommon;
+	delete dxCommon;
 
 	return 0;
 }

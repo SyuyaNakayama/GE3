@@ -131,8 +131,8 @@ void DirectXCommon::InitializeSwapchain()
 void DirectXCommon::InitializeRenderTargetView()
 {
 	ComPtr<ID3D12DescriptorHeap> rtvHeap;
-	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc;
-	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc;
+	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
+	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
 	UINT bbIndex;
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
