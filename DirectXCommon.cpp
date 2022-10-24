@@ -169,11 +169,12 @@ void DirectXCommon::InitializeDepthBuffer()
 	depthClearValue.Format = DXGI_FORMAT_D32_FLOAT;
 
 	ComPtr<ID3D12Resource> depthBuff = nullptr;
-	device->CreateCommittedResource(
+	result = device->CreateCommittedResource(
 		&depthHeapProp, D3D12_HEAP_FLAG_NONE,
 		&depthResourceDesc,
 		D3D12_RESOURCE_STATE_DEPTH_WRITE,
 		&depthClearValue, IID_PPV_ARGS(&depthBuff));
+	assert(SUCCEEDED(result));
 
 	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc{};
 	dsvHeapDesc.NumDescriptors = 1;
@@ -204,8 +205,7 @@ void DirectXCommon::PreDraw()
 
 	rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
 	rtvHandle.ptr += bbIndex * device->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle{};
-	dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
 	commandList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
 
 	FLOAT clearColor[] = { 0.1f,0.25f,0.5f,0.0f }; // ê¬Ç¡Ç€Ç¢êF

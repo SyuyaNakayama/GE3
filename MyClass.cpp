@@ -68,7 +68,8 @@ void Pipeline::SetOthers()
 }
 void Pipeline::CreatePipelineState(ID3D12Device* device)
 {
-	assert(SUCCEEDED(device->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(&state))));
+	HRESULT result = device->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(&state));
+	assert(SUCCEEDED(result));
 }
 
 RootSignature::RootSignature()
@@ -161,7 +162,8 @@ void ShaderResourceView::SetHeapDesc()
 }
 void ShaderResourceView::CreateDescriptorHeap(ID3D12Device* device)
 {
-	assert(SUCCEEDED(device->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&heap))));
+	HRESULT result = device->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&heap));
+	assert(SUCCEEDED(result));
 }
 void ShaderResourceView::GetDescriptorHandleForHeapStart(Type type)
 {

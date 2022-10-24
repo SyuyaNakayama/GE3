@@ -12,6 +12,7 @@ class Buffer
 protected:
 	void Init();
 public:
+	HRESULT result;
 	D3D12_RESOURCE_DESC resDesc;
 	ComPtr<ID3D12Resource> buff;
 	D3D12_HEAP_PROPERTIES heapProp;

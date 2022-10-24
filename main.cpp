@@ -21,12 +21,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #pragma endregion
 #pragma region 描画初期化処理
 #pragma region 定数バッファ
-	/*ConstBuf cb = ConstBuf::Type::Material;
+	ConstBuf cb = ConstBuf::Type::Material;
 	cb.SetResource(cb.size, 1, D3D12_RESOURCE_DIMENSION_BUFFER);
 	cb.SetHeapProp(D3D12_HEAP_TYPE_UPLOAD); // ヒープ設定
-	cb.CreateBuffer(device.Get());
+	cb.CreateBuffer(dxCommon->GetDevice());
 	cb.Mapping(); // 定数バッファのマッピング
-
 	// 値を書き込むと自動的に転送される
 	cb.mapMaterial->color = XMFLOAT4(1, 1, 1, 1);
 
@@ -34,7 +33,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	vector<Object3d> object3ds;
 	for (size_t i = 0; i < OBJ_COUNT; i++)
 	{
-		object3ds.push_back({ device.Get() });
+		object3ds.push_back({ dxCommon->GetDevice() });
 	}
 
 	ViewProjection viewProjection = { { 0,0,-100 } };
@@ -134,7 +133,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	VertexBuf vertex(static_cast<UINT>(sizeof(vertices[0]) * _countof(vertices)));
 	vertex.SetResource(vertex.size, 1, D3D12_RESOURCE_DIMENSION_BUFFER);
 	vertex.SetHeapProp(D3D12_HEAP_TYPE_UPLOAD);
-	vertex.CreateBuffer(device.Get());
+	vertex.CreateBuffer(dxCommon->GetDevice());
 	vertex.Mapping(vertices, _countof(vertices));
 	vertex.CreateView(); // 頂点バッファビューの作成
 #pragma endregion
@@ -142,26 +141,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	IndexBuf index(static_cast<UINT>(sizeof(uint16_t) * _countof(indices)));
 	index.SetResource(index.size, 1, D3D12_RESOURCE_DIMENSION_BUFFER);
 	index.SetHeapProp(D3D12_HEAP_TYPE_UPLOAD);
-	index.CreateBuffer(device.Get());
+	index.CreateBuffer(dxCommon->GetDevice());
 	index.Mapping(indices, _countof(indices));
 	index.CreateView(); // インデックスビューの作成
 #pragma endregion
 #pragma region テクスチャバッファ
 	ShaderResourceView srv{};
 	srv.SetHeapDesc();
-	srv.CreateDescriptorHeap(device.Get());
+	srv.CreateDescriptorHeap(dxCommon->GetDevice());
 	srv.GetDescriptorHandleForHeapStart(ShaderResourceView::Type::CPU);
 	TextureBuf texture[2] = { L"Resources/mario.jpg",L"Resources/reimu.png" };
-	UINT incrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	UINT incrementSize = dxCommon->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 	for (size_t i = 0; i < 2; i++)
 	{
 		texture[i].SetResource();
 		texture[i].SetHeapProp(D3D12_HEAP_TYPE_CUSTOM, D3D12_CPU_PAGE_PROPERTY_WRITE_BACK, D3D12_MEMORY_POOL_L0);
-		texture[i].CreateBuffer(device.Get());
+		texture[i].CreateBuffer(dxCommon->GetDevice());
 		texture[i].Transfer();
 		texture[i].CreateView();
-		device->CreateShaderResourceView(texture[i].buff.Get(), &texture[i].view, srv.handle);
+		dxCommon->GetDevice()->CreateShaderResourceView(texture[i].buff.Get(), &texture[i].view, srv.handle);
 		srv.handle.ptr += incrementSize;
 	}
 #pragma endregion
@@ -222,17 +221,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	RootSignature rootSignature{};								// ルートシグネチャ
 	rootSignature.SetParam(descriptorRange);					// ルートパラメータの設定
 	rootSignature.SetRootSignature(samplerDesc);				// ルートシグネチャの設定
-	rootSignature.SerializeRootSignature(device.Get(), errorBlob.Get());	// ルートシグネチャのシリアライズ
+	rootSignature.SerializeRootSignature(dxCommon->GetDevice(), errorBlob.Get());	// ルートシグネチャのシリアライズ
 	// パイプラインにルートシグネチャをセット
 	pipeline.desc.pRootSignature = rootSignature.rs.Get();
 	// パイプランステートの生成
-	pipeline.CreatePipelineState(device.Get());
+	pipeline.CreatePipelineState(dxCommon->GetDevice());
 #pragma endregion
 #pragma endregion
+	Input* input = nullptr;
+	input = new Input();
+	input->Initialize(*wAPI);
 #pragma region ゲームループで使う変数の定義
 	float angle = 0.0f;
 
-	bool texHandle = 0;*/
+	bool texHandle = 0;
 #pragma endregion
 	// ゲームループ
 	while (1)
@@ -243,7 +245,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #pragma endregion
 #pragma region DirectX毎フレーム処理
 #pragma region 更新処理
-		/*input->Update();
+		input->Update();
 
 		object3ds[0].trans.y += input->Move(DIK_UP, DIK_DOWN, 1.0f);
 		object3ds[0].trans.x += input->Move(DIK_RIGHT, DIK_LEFT, 1.0f);
@@ -265,37 +267,36 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 
 		if (input->IsTrigger(DIK_SPACE)) { texHandle = !texHandle; }
-#pragma endregion*/
-		dxCommon->PreDraw();
+#pragma endregion
 #pragma region 描画コマンド
-		/*
+		dxCommon->PreDraw();
 		// パイプラインステートとルートシグネチャの設定コマンド
-		command.list->SetPipelineState(pipeline.state.Get());
-		command.list->SetGraphicsRootSignature(rootSignature.rs.Get());
-		command.list->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // プリミティブ形状の設定コマンド
-		command.list->IASetVertexBuffers(0, 1, &vertex.view); // 頂点バッファビューの設定コマンド
-		command.list->IASetIndexBuffer(&index.view); // 頂点バッファビューの設定コマンド
+		dxCommon->GetCommandList()->SetPipelineState(pipeline.state.Get());
+		dxCommon->GetCommandList()->SetGraphicsRootSignature(rootSignature.rs.Get());
+		dxCommon->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // プリミティブ形状の設定コマンド
+		dxCommon->GetCommandList()->IASetVertexBuffers(0, 1, &vertex.view); // 頂点バッファビューの設定コマンド
+		dxCommon->GetCommandList()->IASetIndexBuffer(&index.view); // 頂点バッファビューの設定コマンド
 		// 定数バッファビューの設定コマンド
-		command.list->SetGraphicsRootConstantBufferView(0, cb.buff->GetGPUVirtualAddress());
-		command.list->SetDescriptorHeaps(1, &srv.heap);
+		dxCommon->GetCommandList()->SetGraphicsRootConstantBufferView(0, cb.buff->GetGPUVirtualAddress());
+		dxCommon->GetCommandList()->SetDescriptorHeaps(1, &srv.heap);
 		srv.GetDescriptorHandleForHeapStart(ShaderResourceView::Type::GPU);
 		srv.gpuHandle.ptr += incrementSize * texHandle;
-		command.list->SetGraphicsRootDescriptorTable(1, srv.gpuHandle);
+		dxCommon->GetCommandList()->SetGraphicsRootDescriptorTable(1, srv.gpuHandle);
 
 		for (size_t i = 0; i < OBJ_COUNT; i++)
 		{
-			command.list->SetGraphicsRootConstantBufferView(2, object3ds[i].buff->GetGPUVirtualAddress());
+			dxCommon->GetCommandList()->SetGraphicsRootConstantBufferView(2, object3ds[i].buff->GetGPUVirtualAddress());
 			// 描画コマンド
-			command.list->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0); // 全ての頂点を使って描画
+			dxCommon->GetCommandList()->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0); // 全ての頂点を使って描画
 		}
-#pragma endregion
-#pragma endregion*/
 		dxCommon->PostDraw();
+#pragma endregion
+#pragma endregion
 #pragma endregion
 	}
 
 	// ウィンドウクラスを登録解除
-	//delete input;
+	delete input;
 	wAPI->Finalize();
 	delete wAPI;
 	delete dxCommon;

@@ -24,11 +24,12 @@ void Buffer::SetHeapProp(D3D12_HEAP_TYPE Type, D3D12_CPU_PAGE_PROPERTY CPUPagePr
 }
 void Buffer::CreateBuffer(ID3D12Device* device)
 {
-	device->CreateCommittedResource(
+	result = device->CreateCommittedResource(
 		&heapProp, D3D12_HEAP_FLAG_NONE,
 		&resDesc,
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr, IID_PPV_ARGS(&buff));
+	assert(SUCCEEDED(result));
 }
 
 ConstBuf::ConstBuf(Type type)
@@ -55,10 +56,12 @@ void ConstBuf::Mapping()
 	switch (type)
 	{
 	case ConstBuf::Material:
-		assert(SUCCEEDED(buff->Map(0, nullptr, (void**)&mapMaterial)));
+		result = buff->Map(0, nullptr, (void**)&mapMaterial);
+		assert(SUCCEEDED(result));
 		break;
 	case ConstBuf::Transform:
-		assert(SUCCEEDED(buff->Map(0, nullptr, (void**)&mapTransform)));
+		result = buff->Map(0, nullptr, (void**)&mapTransform);
+		assert(SUCCEEDED(result));
 		break;
 	}
 }
@@ -72,7 +75,8 @@ VertexBuf::VertexBuf(UINT size)
 }
 void VertexBuf::Mapping(Vertex* vertices, const int ARRAY_NUM)
 {
-	assert(SUCCEEDED(buff->Map(0, nullptr, (void**)&map)));
+	result = buff->Map(0, nullptr, (void**)&map);
+	assert(SUCCEEDED(result));
 
 	for (int i = 0; i < ARRAY_NUM; i++) { map[i] = vertices[i]; }
 	buff->Unmap(0, nullptr);
@@ -93,7 +97,8 @@ IndexBuf::IndexBuf(UINT size)
 }
 void IndexBuf::Mapping(uint16_t* indices, const int ARRAY_NUM)
 {
-	assert(SUCCEEDED(buff->Map(0, nullptr, (void**)&map)));
+	result = buff->Map(0, nullptr, (void**)&map);
+	assert(SUCCEEDED(result));
 
 	for (int i = 0; i < ARRAY_NUM; i++) { map[i] = indices[i]; }
 	buff->Unmap(0, nullptr);
@@ -115,7 +120,7 @@ TextureBuf::TextureBuf(const wchar_t* texName)
 
 	LoadFromWICFile(texName, WIC_FLAGS_NONE, &metadata, scratchImg);
 
-	HRESULT result = GenerateMipMaps(scratchImg.GetImages(), scratchImg.GetImageCount(),
+	result = GenerateMipMaps(scratchImg.GetImages(), scratchImg.GetImageCount(),
 		scratchImg.GetMetadata(), TEX_FILTER_DEFAULT, 0, mipChain);
 	if (SUCCEEDED(result))
 	{
@@ -137,7 +142,7 @@ void TextureBuf::SetResource()
 }
 void TextureBuf::CreateMipMap()
 {
-	HRESULT result = GenerateMipMaps(scratchImg.GetImages(), scratchImg.GetImageCount(),
+	result = GenerateMipMaps(scratchImg.GetImages(), scratchImg.GetImageCount(),
 		scratchImg.GetMetadata(), TEX_FILTER_DEFAULT, 0, mipChain);
 	if (SUCCEEDED(result))
 	{
@@ -147,8 +152,6 @@ void TextureBuf::CreateMipMap()
 }
 void TextureBuf::Transfer()
 {
-	HRESULT result;
-
 	for (size_t i = 0; i < metadata.mipLevels; i++)
 	{
 		const Image* IMG = scratchImg.GetImage(i, 0, 0);

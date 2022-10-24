@@ -44,4 +44,7 @@ public:
 	void Initialize(WindowsAPI* winApp);
 	void PreDraw();
 	void PostDraw();
+
+	ID3D12Device* GetDevice() { return device.Get(); }
+	ID3D12GraphicsCommandList* GetCommandList() { return commandList.Get(); }
 };
