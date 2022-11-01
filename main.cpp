@@ -247,25 +247,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #pragma endregion
 #pragma region 描画コマンド
 		dxCommon->PreDraw();
-		// パイプラインステートとルートシグネチャの設定コマンド
-		dxCommon->GetCommandList()->SetPipelineState(pipeline.state.Get());
-		dxCommon->GetCommandList()->SetGraphicsRootSignature(rootSignature.rs.Get());
-		dxCommon->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // プリミティブ形状の設定コマンド
-		dxCommon->GetCommandList()->IASetVertexBuffers(0, 1, &vertex.view); // 頂点バッファビューの設定コマンド
-		dxCommon->GetCommandList()->IASetIndexBuffer(&index.view); // 頂点バッファビューの設定コマンド
-		// 定数バッファビューの設定コマンド
-		dxCommon->GetCommandList()->SetGraphicsRootConstantBufferView(0, cb.buff->GetGPUVirtualAddress());
-		dxCommon->GetCommandList()->SetDescriptorHeaps(1, &srv.heap);
-		srv.GetDescriptorHandleForHeapStart(ShaderResourceView::Type::GPU);
-		srv.gpuHandle.ptr += incrementSize * texHandle;
-		dxCommon->GetCommandList()->SetGraphicsRootDescriptorTable(1, srv.gpuHandle);
 
-		for (size_t i = 0; i < OBJ_COUNT; i++)
-		{
-			dxCommon->GetCommandList()->SetGraphicsRootConstantBufferView(2, object3ds[i].buff->GetGPUVirtualAddress());
-			// 描画コマンド
-			dxCommon->GetCommandList()->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0); // 全ての頂点を使って描画
-		}
 		dxCommon->PostDraw();
 #pragma endregion
 #pragma endregion
