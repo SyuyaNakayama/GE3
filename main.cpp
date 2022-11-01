@@ -232,9 +232,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	input = new Input();
 	input->Initialize(*wAPI);
 #pragma region ゲームループで使う変数の定義
-	float angle = 0.0f;
-
-	bool texHandle = 0;
+	
 #pragma endregion
 	// ゲームループ
 	while (1)
@@ -246,27 +244,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #pragma region DirectX毎フレーム処理
 #pragma region 更新処理
 		input->Update();
-
-		object3ds[0].trans.y += input->Move(DIK_UP, DIK_DOWN, 1.0f);
-		object3ds[0].trans.x += input->Move(DIK_RIGHT, DIK_LEFT, 1.0f);
-
-		if (input->IsInput(DIK_D) || input->IsInput(DIK_A))
-		{
-			angle += input->Move(DIK_A, DIK_D, XMConvertToRadians(2.0f));
-
-			viewProjection.eye.x = -100 * sinf(angle);
-			viewProjection.eye.z = -100 * cosf(angle);
-
-			viewProjection.CreateViewMatrix();
-		}
-
-		for (size_t i = 0; i < OBJ_COUNT; i++)
-		{
-			object3ds[i].UpdateMatrix();
-			object3ds[i].TransferMatrix(viewProjection);
-		}
-
-		if (input->IsTrigger(DIK_SPACE)) { texHandle = !texHandle; }
 #pragma endregion
 #pragma region 描画コマンド
 		dxCommon->PreDraw();
@@ -297,9 +274,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	// ウィンドウクラスを登録解除
 	delete input;
+	delete dxCommon;
 	wAPI->Finalize();
 	delete wAPI;
-	delete dxCommon;
 
 	return 0;
 }
