@@ -17,22 +17,6 @@ LRESULT WindowsAPI::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam
 	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
-LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
-{
-	// メッセージに応じてゲーム固有の処理を行う
-	switch (msg)
-	{
-		// ウィンドウが破棄された
-	case WM_DESTROY:
-		// OSに対して、アプリの終了を伝える
-		PostQuitMessage(0);
-		return 0;
-	}
-
-	// 標準のメッセージ処理を行う
-	return DefWindowProc(hwnd, msg, wparam, lparam);
-}
-
 bool WindowsAPI::ProcessMessage()
 {
 	MSG msg{}; // メッセージ
@@ -50,7 +34,7 @@ bool WindowsAPI::ProcessMessage()
 void WindowsAPI::Initialize()
 {
 	w.cbSize = sizeof(WNDCLASSEX);
-	w.lpfnWndProc = WindowProc; // ウィンドウプロシージャを設定
+	w.lpfnWndProc = (WNDPROC)WindowProc; // ウィンドウプロシージャを設定
 	w.lpszClassName = L"DirectXGame"; // ウィンドウクラス名
 	w.hInstance = GetModuleHandle(nullptr); // ウィンドウハンドル
 	w.hCursor = LoadCursor(NULL, IDC_ARROW); // カーソル指定
@@ -58,12 +42,12 @@ void WindowsAPI::Initialize()
 	// ウィンドウクラスをOSに登録する
 	RegisterClassEx(&w);
 
-	wrc = { 0, 0, WIN_WIDTH, WIN_HEIGHT };
+	RECT wrc = { 0, 0, WIN_WIDTH, WIN_HEIGHT };
 	// 自動でサイズを補正する
 	AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW, false);
 
 	hwnd = CreateWindow(w.lpszClassName, // クラス名
-		L"LE2C_17_ナカヤマ_シュウヤ_GE3", // タイトルバーの文字
+		L"LE2C_18_ナカヤマ_シュウヤ_GE3", // タイトルバーの文字
 		WS_OVERLAPPEDWINDOW, // 標準的なウィンドウスタイル
 		CW_USEDEFAULT, // 表示X座標(OSに任せる)
 		CW_USEDEFAULT, // 表示Y座標(OSに任せる)

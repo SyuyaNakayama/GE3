@@ -77,6 +77,7 @@ void DirectXCommon::InitializeDevice()
 		{
 			// デバイスを生成できた時点でループを抜ける
 			featureLevel = levels[i];
+			break;
 		}
 	}
 
@@ -84,6 +85,19 @@ void DirectXCommon::InitializeDevice()
 	// エラー時にブレークを発生させる
 	ComPtr<ID3D12InfoQueue> infoQueue;
 	if (SUCCEEDED(device->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
+		// 抑制するエラー
+		D3D12_MESSAGE_ID denyIds[] = {
+			D3D12_MESSAGE_ID_RESOURCE_BARRIER_MISMATCHING_COMMAND_LIST_TYPE };
+		// 抑制する表示レベル
+		D3D12_MESSAGE_SEVERITY severities[] = { D3D12_MESSAGE_SEVERITY_INFO };
+		D3D12_INFO_QUEUE_FILTER filter{};
+		filter.DenyList.NumIDs = _countof(denyIds);
+		filter.DenyList.pIDList = denyIds;
+		filter.DenyList.NumSeverities = _countof(severities);
+		filter.DenyList.pSeverityList = severities;
+		// 指定したエラーの表示を抑制する
+		infoQueue->PushStorageFilter(&filter);
+		// エラー時にブレークを発生させる
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
@@ -96,7 +110,7 @@ void DirectXCommon::InitializeCommand()
 	result = device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&commandAllocator));
 	assert(SUCCEEDED(result));
 
-	device->CreateCommandList(0,
+	result = device->CreateCommandList(0,
 		D3D12_COMMAND_LIST_TYPE_DIRECT,
 		commandAllocator.Get(), nullptr,
 		IID_PPV_ARGS(&commandList));
@@ -117,33 +131,34 @@ void DirectXCommon::InitializeSwapchain()
 	swapchainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // フリップ後は破棄
 	swapchainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
-	backBuffers.resize(swapchainDesc.BufferCount);
-
 	ComPtr<IDXGISwapChain1> swapchain1;
-
-	dxgiFactory->CreateSwapChainForHwnd(
+	result = dxgiFactory->CreateSwapChainForHwnd(
 		commandQueue.Get(), winApp->GetHwnd(), &swapchainDesc, nullptr, nullptr,
 		&swapchain1);
+	assert(SUCCEEDED(result));
 
-	swapchain1.As(&swapchain);
+	result = swapchain1->QueryInterface(IID_PPV_ARGS(&swapchain));
+	assert(SUCCEEDED(result));
 }
 
 void DirectXCommon::InitializeRenderTargetView()
 {
-	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
-
 	// デスクリプタヒープの設定
+	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
 	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; // レンダーターゲットビュー
 	rtvHeapDesc.NumDescriptors = swapchainDesc.BufferCount; // 裏表の2つ
 	// デスクリプタヒープの生成
 	result = device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&rtvHeap));
 	assert(SUCCEEDED(result));
 
+	backBuffers.resize(swapchainDesc.BufferCount);
+
 	for (size_t i = 0; i < backBuffers.size(); i++)
 	{
 		swapchain->GetBuffer((UINT)i, IID_PPV_ARGS(&backBuffers[i]));
 		rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
 		rtvHandle.ptr += i * device->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
+		D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
 		rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 		rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 		device->CreateRenderTargetView(backBuffers[i].Get(), &rtvDesc, rtvHandle);
@@ -168,7 +183,7 @@ void DirectXCommon::InitializeDepthBuffer()
 	depthClearValue.DepthStencil.Depth = 1.0f;
 	depthClearValue.Format = DXGI_FORMAT_D32_FLOAT;
 
-	ComPtr<ID3D12Resource> depthBuff = nullptr;
+	ID3D12Resource* depthBuff;
 	result = device->CreateCommittedResource(
 		&depthHeapProp, D3D12_HEAP_FLAG_NONE,
 		&depthResourceDesc,
@@ -186,7 +201,7 @@ void DirectXCommon::InitializeDepthBuffer()
 	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 	device->CreateDepthStencilView(
-		depthBuff.Get(), &dsvDesc, dsvHeap->GetCPUDescriptorHandleForHeapStart());
+		depthBuff, &dsvDesc, dsvHeap->GetCPUDescriptorHandleForHeapStart());
 }
 
 void DirectXCommon::InitializeFence()
@@ -198,17 +213,19 @@ void DirectXCommon::InitializeFence()
 void DirectXCommon::PreDraw()
 {
 	UINT bbIndex = swapchain->GetCurrentBackBufferIndex();
+
 	barrierDesc.Transition.pResource = backBuffers[bbIndex].Get();
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	commandList->ResourceBarrier(1, &barrierDesc);
 
 	rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
-	rtvHandle.ptr += bbIndex * device->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
-	commandList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
+	rtvHandle.ptr += bbIndex * device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
-	FLOAT clearColor[] = { 0.1f,0.25f,0.5f,0.0f }; // 青っぽい色
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
+	commandList->OMSetRenderTargets(0, &rtvHandle, false, &dsvHandle);
+
+	float clearColor[] = { 0.1f,0.25f,0.5f,0.0f }; // 青っぽい色
 	commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
@@ -226,8 +243,8 @@ void DirectXCommon::PreDraw()
 	scissorRect.right = scissorRect.left + WindowsAPI::WIN_WIDTH; // 切り抜き座標右
 	scissorRect.top = 0; // 切り抜き座標上
 	scissorRect.bottom = scissorRect.top + WindowsAPI::WIN_HEIGHT; // 切り抜き座標下
-	// シザー矩形設定コマンドを、コマンドリストに積む
-	commandList->RSSetScissorRects(1, &scissorRect);
+
+	commandList->RSSetScissorRects(1, &scissorRect); // シザー矩形設定コマンドを、コマンドリストに積む
 	commandList->RSSetViewports(1, &viewport); // ビューポート設定コマンドを、コマンドリストに積む
 }
 
@@ -241,9 +258,12 @@ void DirectXCommon::PostDraw()
 	result = commandList->Close();
 	assert(SUCCEEDED(result));
 	// コマンドリストの実行
-	ID3D12CommandList* commandLists;
-	commandLists = commandList.Get();
-	commandQueue->ExecuteCommandLists(1, &commandLists);
+	ID3D12CommandList* commandLists[] = { commandList.Get() };
+	commandQueue->ExecuteCommandLists(0, commandLists);
+
+	// 画面に表示するバッファをフリップ(裏表の入替え)
+	result = swapchain->Present(1, 0);
+	assert(SUCCEEDED(result));
 
 	commandQueue->Signal(fence.Get(), ++fenceVal);
 	if (fence->GetCompletedValue() != fenceVal)
@@ -261,8 +281,5 @@ void DirectXCommon::PostDraw()
 	assert(SUCCEEDED(result));
 	// 再びコマンドリストを貯める準備
 	result = commandList->Reset(commandAllocator.Get(), nullptr);
-	assert(SUCCEEDED(result));
-	// 画面に表示するバッファをフリップ(裏表の入替え)
-	result = swapchain->Present(1, 0);
 	assert(SUCCEEDED(result));
 }

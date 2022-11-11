@@ -4,9 +4,8 @@
 class WindowsAPI
 {
 private:
-	RECT wrc;
 	HWND hwnd;
-	WNDCLASSEX w;
+	WNDCLASSEX w{};
 public:
 	// ウィンドウサイズ
 	static const int WIN_WIDTH = 1280;

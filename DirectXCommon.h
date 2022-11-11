@@ -16,24 +16,17 @@ private:
 	ComPtr<ID3D12CommandAllocator> commandAllocator;
 	ComPtr<ID3D12GraphicsCommandList> commandList;
 	ComPtr<ID3D12CommandQueue> commandQueue;
-
 	ComPtr<IDXGISwapChain4> swapchain;
 	DXGI_SWAP_CHAIN_DESC1 swapchainDesc;
 	std::vector<ComPtr<ID3D12Resource>> backBuffers;
-
-	ComPtr<ID3D12DescriptorHeap> dsvHeap = nullptr;
-	
+	ComPtr<ID3D12DescriptorHeap> dsvHeap = nullptr;	
 	ComPtr<ID3D12DescriptorHeap> rtvHeap;
-	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
-
 	D3D12_RESOURCE_BARRIER barrierDesc{};
-	
 	WindowsAPI* winApp = nullptr;
-
 	ComPtr<ID3D12Fence> fence;
 	UINT64 fenceVal;
-	
+
 	void InitializeDevice();
 	void InitializeCommand();
 	void InitializeSwapchain();

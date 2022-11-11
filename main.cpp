@@ -38,6 +38,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #pragma endregion
 #pragma region 描画コマンド
 		dxCommon->PreDraw();
+		
 
 		dxCommon->PostDraw();
 #pragma endregion
