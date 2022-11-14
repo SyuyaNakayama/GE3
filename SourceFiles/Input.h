@@ -2,7 +2,6 @@
 #include <dinput.h>
 #include <wrl.h>
 #include <string>
-#include "WindowsAPI.h"
 
 class Input
 {
@@ -13,7 +12,7 @@ private:
 	std::string key, oldkey;
 	ComPtr<IDirectInputDevice8> keyboard;
 public:
-	void Initialize(WindowsAPI& wAPI);
+	void Initialize();
 	void Update();
 	bool IsInput(const int KEY);
 	bool IsTrigger(const int KEY);

@@ -1,16 +1,19 @@
 #include "DirectXCommon.h"
+#include "WindowsAPI.h"
 #include <cassert>
 #include <vector>
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
+using namespace std;
 
-using namespace Microsoft::WRL;
-
-void DirectXCommon::Initialize(WindowsAPI* winApp)
+DirectXCommon* DirectXCommon::GetInstance()
 {
-	assert(winApp);
-	this->winApp = winApp;
+	static DirectXCommon* dxCommon = new DirectXCommon;
+	return dxCommon;
+}
 
+void DirectXCommon::Initialize()
+{
 	InitializeDevice();				// デバイスの生成
 	InitializeCommand();			// コマンド関連の初期化
 	InitializeSwapchain();			// スワップチェーンの初期化
@@ -32,7 +35,7 @@ void DirectXCommon::InitializeDevice()
 	result = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory));
 	assert(SUCCEEDED(result));
 
-	std::vector<ComPtr<IDXGIAdapter4>> adapters;
+	vector<ComPtr<IDXGIAdapter4>> adapters;
 	ComPtr<IDXGIAdapter4> tmpAdapter;
 	// パフォーマンスが高いものから順に、全てのアダプターを列挙する
 	for (UINT i = 0;
@@ -61,7 +64,7 @@ void DirectXCommon::InitializeDevice()
 
 	D3D_FEATURE_LEVEL featureLevel{};
 	// 対応レベルの配列
-	D3D_FEATURE_LEVEL levels[] =
+	vector<D3D_FEATURE_LEVEL> levels =
 	{
 		D3D_FEATURE_LEVEL_12_1,
 		D3D_FEATURE_LEVEL_12_0,
@@ -69,7 +72,7 @@ void DirectXCommon::InitializeDevice()
 		D3D_FEATURE_LEVEL_11_0,
 	};
 
-	for (size_t i = 0; i < _countof(levels); i++)
+	for (size_t i = 0; i < levels.size(); i++)
 	{
 		// 採用したアダプターでデバイスを生成
 		result = D3D12CreateDevice(tmpAdapter.Get(), levels[i], IID_PPV_ARGS(&device));
@@ -116,6 +119,7 @@ void DirectXCommon::InitializeCommand()
 		IID_PPV_ARGS(&commandList));
 	assert(SUCCEEDED(result));
 
+	D3D12_COMMAND_QUEUE_DESC commandQueueDesc{};
 	device->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue));
 	assert(SUCCEEDED(result));
 }
@@ -133,7 +137,7 @@ void DirectXCommon::InitializeSwapchain()
 
 	ComPtr<IDXGISwapChain1> swapchain1;
 	result = dxgiFactory->CreateSwapChainForHwnd(
-		commandQueue.Get(), winApp->GetHwnd(), &swapchainDesc, nullptr, nullptr,
+		commandQueue.Get(), WindowsAPI::GetInstance()->GetHwnd(), &swapchainDesc, nullptr, nullptr,
 		&swapchain1);
 	assert(SUCCEEDED(result));
 
@@ -214,6 +218,7 @@ void DirectXCommon::PreDraw()
 {
 	UINT bbIndex = swapchain->GetCurrentBackBufferIndex();
 
+	D3D12_RESOURCE_BARRIER barrierDesc{};
 	barrierDesc.Transition.pResource = backBuffers[bbIndex].Get();
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
@@ -223,7 +228,7 @@ void DirectXCommon::PreDraw()
 	rtvHandle.ptr += bbIndex * device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
-	commandList->OMSetRenderTargets(0, &rtvHandle, false, &dsvHandle);
+	commandList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
 
 	float clearColor[] = { 0.1f,0.25f,0.5f,0.0f }; // 青っぽい色
 	commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
@@ -252,14 +257,18 @@ void DirectXCommon::PostDraw()
 {
 	UINT bbIndex = swapchain->GetCurrentBackBufferIndex();
 
+	D3D12_RESOURCE_BARRIER barrierDesc{};
+	barrierDesc.Transition.pResource = backBuffers[bbIndex].Get();
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	commandList->ResourceBarrier(1, &barrierDesc);
+	
 	// 命令のクローズ
 	result = commandList->Close();
 	assert(SUCCEEDED(result));
 	// コマンドリストの実行
 	ID3D12CommandList* commandLists[] = { commandList.Get() };
-	commandQueue->ExecuteCommandLists(0, commandLists);
+	commandQueue->ExecuteCommandLists(1, commandLists);
 
 	// 画面に表示するバッファをフリップ(裏表の入替え)
 	result = swapchain->Present(1, 0);

@@ -17,6 +17,12 @@ LRESULT WindowsAPI::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam
 	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
+WindowsAPI* WindowsAPI::GetInstance()
+{
+	static WindowsAPI* wAPI = new WindowsAPI;
+	return wAPI;
+}
+
 bool WindowsAPI::ProcessMessage()
 {
 	MSG msg{}; // メッセージ

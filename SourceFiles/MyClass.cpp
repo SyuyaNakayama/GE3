@@ -1,10 +1,10 @@
 #include "MyClass.h"
 
-ShaderBlob::ShaderBlob(const std::wstring fileName, const LPCSTR target, ID3DBlob* errorBlob)
+ShaderBlob::ShaderBlob(const std::wstring shaderName, const LPCSTR target, ID3DBlob* errorBlob)
 {
 	HRESULT result;
 
-	std::wstring filePath = L"Resources/shaders/" + fileName;
+	std::wstring filePath = L"Resources/shaders/" + shaderName + L".hlsl";
 
 	result = D3DCompileFromFile(
 		filePath.c_str(), // シェーダファイル名
@@ -29,25 +29,15 @@ ShaderBlob::ShaderBlob(const std::wstring fileName, const LPCSTR target, ID3DBlo
 	}
 }
 
-Pipeline::Pipeline()
+void Pipeline::Initialize(ShaderBlob vs, ShaderBlob ps, std::vector<D3D12_INPUT_ELEMENT_DESC> inputLayout, ID3D12Device* device)
 {
-	desc = {};
-	state = nullptr;
-}
-void Pipeline::SetShader(ShaderBlob vs, ShaderBlob ps)
-{
-	desc.VS.pShaderBytecode = vs.blob->GetBufferPointer();
-	desc.VS.BytecodeLength = vs.blob->GetBufferSize();
-	desc.PS.pShaderBytecode = ps.blob->GetBufferPointer();
-	desc.PS.BytecodeLength = ps.blob->GetBufferSize();
-}
-void Pipeline::SetInputLayout(D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT layoutNum)
-{
-	desc.InputLayout.pInputElementDescs = inputLayout;
-	desc.InputLayout.NumElements = layoutNum;
-}
-void Pipeline::SetOthers()
-{
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC desc{};
+	desc.VS.pShaderBytecode = vs.GetBufferPointer();
+	desc.VS.BytecodeLength = vs.GetBufferSize();
+	desc.PS.pShaderBytecode = ps.GetBufferPointer();
+	desc.PS.BytecodeLength = ps.GetBufferSize();
+	desc.InputLayout.pInputElementDescs = inputLayout.data();
+	desc.InputLayout.NumElements = inputLayout.size();
 	// サンプルマスクの設定
 	desc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // 標準設定
 	// ラスタライザの設定
@@ -65,9 +55,7 @@ void Pipeline::SetOthers()
 	desc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 	desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
 	desc.DSVFormat = DXGI_FORMAT_D32_FLOAT;
-}
-void Pipeline::CreatePipelineState(ID3D12Device* device)
-{
+
 	HRESULT result = device->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(&state));
 	assert(SUCCEEDED(result));
 }

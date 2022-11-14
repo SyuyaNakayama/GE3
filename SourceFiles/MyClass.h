@@ -1,6 +1,4 @@
 #pragma once
-#include <d3d12.h>
-#include <dxgi1_6.h>
 #include <cassert>
 #include <vector>
 #include <string>
@@ -20,23 +18,22 @@ LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
 class ShaderBlob
 {
-public:
+private:
 	ComPtr<ID3DBlob> blob = nullptr;
 
-	ShaderBlob(const std::wstring fileName, const LPCSTR target, ID3DBlob* errorBlob);
+public:
+	ShaderBlob(const std::wstring shaderName, const LPCSTR target, ID3DBlob* errorBlob);
+	LPVOID GetBufferPointer() { return blob->GetBufferPointer(); }
+	size_t GetBufferSize() { return blob->GetBufferSize(); }
 };
 
 class Pipeline
 {
-public:
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC desc;
-	ComPtr<ID3D12PipelineState> state;
+private:
+	ComPtr<ID3D12PipelineState> state = nullptr;
 
-	Pipeline();
-	void SetShader(ShaderBlob vs, ShaderBlob ps);
-	void SetInputLayout(D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT layoutNum);
-	void SetOthers();
-	void CreatePipelineState(ID3D12Device* device);
+public:
+	void Initialize(ShaderBlob vs, ShaderBlob ps, std::vector<D3D12_INPUT_ELEMENT_DESC> inputLayout, ID3D12Device* device);
 };
 
 class RootSignature
@@ -57,7 +54,7 @@ public:
 class Blend
 {
 private:
-	D3D12_RENDER_TARGET_BLEND_DESC* desc;
+	D3D12_RENDER_TARGET_BLEND_DESC *desc;
 public:
 	enum BlendMode
 	{

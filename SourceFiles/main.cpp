@@ -1,8 +1,9 @@
 ﻿#include "MyClass.h"
 #include "Buffer.h"
 #include "Input.h"
-#include "DirectXCommon.h"
-
+#include "Sprite.h"
+#include <memory>
+#include "WindowsAPI.h"
 using namespace DirectX;
 using namespace std;
 
@@ -10,20 +11,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 #pragma region WindowsAPI初期化処理
 	// ウィンドウクラスの設定
-	WindowsAPI* wAPI = nullptr;
-	wAPI = new WindowsAPI();
+	WindowsAPI* wAPI = WindowsAPI::GetInstance();
 	wAPI->Initialize();
 #pragma endregion 
 #pragma region DirectX初期化処理
-	DirectXCommon* dxCommon = nullptr;
-	dxCommon = new DirectXCommon();
-	dxCommon->Initialize(wAPI);
+	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
+	dxCommon->Initialize();
 #pragma endregion
-	Input* input = nullptr;
-	input = new Input();
-	input->Initialize(*wAPI);
-#pragma region ゲームループで使う変数の定義
+#pragma region 基盤システム初期化処理
+	unique_ptr<SpriteCommon> spriteCommon = make_unique<SpriteCommon>();
+	spriteCommon->Initialize();
 	
+	unique_ptr<Input> input = make_unique<Input>();
+	input->Initialize();
+#pragma endregion
+#pragma region ゲームループで使う変数の定義
+	unique_ptr<Sprite> sprite = make_unique<Sprite>();
+	sprite->Initialize(spriteCommon.get());
 #pragma endregion
 	// ゲームループ
 	while (1)
@@ -38,19 +42,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #pragma endregion
 #pragma region 描画コマンド
 		dxCommon->PreDraw();
-		
-
+		sprite->Draw();
 		dxCommon->PostDraw();
-#pragma endregion
 #pragma endregion
 #pragma endregion
 	}
 
 	// ウィンドウクラスを登録解除
-	delete input;
-	delete dxCommon;
 	wAPI->Finalize();
-	delete wAPI;
 
 	return 0;
 }
