@@ -2,6 +2,7 @@
 #include "Buffer.h"
 #include "Input.h"
 #include "Sprite.h"
+#include "SpriteCommon.h"
 #include <memory>
 #include "WindowsAPI.h"
 using namespace DirectX;
@@ -19,15 +20,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	dxCommon->Initialize();
 #pragma endregion
 #pragma region 基盤システム初期化処理
-	unique_ptr<SpriteCommon> spriteCommon = make_unique<SpriteCommon>();
+	SpriteCommon* spriteCommon = SpriteCommon::GetInstance();
 	spriteCommon->Initialize();
 	
-	unique_ptr<Input> input = make_unique<Input>();
+	Input* input = Input::GetInstance();
 	input->Initialize();
 #pragma endregion
 #pragma region ゲームループで使う変数の定義
 	unique_ptr<Sprite> sprite = make_unique<Sprite>();
-	sprite->Initialize(spriteCommon.get());
+	sprite->Initialize();
 #pragma endregion
 	// ゲームループ
 	while (1)
@@ -39,6 +40,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #pragma region DirectX毎フレーム処理
 #pragma region 更新処理
 		input->Update();
+		sprite->Update();
 #pragma endregion
 #pragma region 描画コマンド
 		dxCommon->PreDraw();

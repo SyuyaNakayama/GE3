@@ -11,7 +11,10 @@ private:
 	ComPtr<IDirectInput8> directInput;
 	std::string key, oldkey;
 	ComPtr<IDirectInputDevice8> keyboard;
+	Input() = default;
+	~Input() = default;
 public:
+	static Input* GetInstance();
 	void Initialize();
 	void Update();
 	bool IsInput(const int KEY);

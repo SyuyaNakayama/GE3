@@ -4,6 +4,12 @@
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
 
+Input* Input::GetInstance()
+{
+	static Input* input = new Input;
+	return input;
+}
+
 void Input::Initialize()
 {
 	HRESULT result;
