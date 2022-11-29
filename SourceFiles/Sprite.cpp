@@ -5,37 +5,35 @@
 using namespace Microsoft::WRL;
 using namespace DirectX;
 
-template<class T> void BufferMapping(ID3D12Resource** constBuff, T** constMapData)
+template<class T> void BufferMapping(ID3D12Resource** buff, T** map, UINT64 width)
 {
-	D3D12_HEAP_PROPERTIES cbHeapProp{};
-	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;
+	// ヒープ設定
+	D3D12_HEAP_PROPERTIES heapProp{};
+	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD; // GPUへの転送用
 
-	D3D12_RESOURCE_DESC cbResourceDesc{};
-	cbResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-	cbResourceDesc.Width = (sizeof(T) + 0xff) & ~0xff;
-	cbResourceDesc.Height = 1;
-	cbResourceDesc.DepthOrArraySize = 1;
-	cbResourceDesc.MipLevels = 1;
-	cbResourceDesc.SampleDesc.Count = 1;
-	cbResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+	// リソース設定
+	D3D12_RESOURCE_DESC resDesc{};
+	resDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	resDesc.Width = width;
+	resDesc.Height = 1;
+	resDesc.DepthOrArraySize = 1;
+	resDesc.MipLevels = 1;
+	resDesc.SampleDesc.Count = 1;
+	resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
+	// バッファの生成
 	HRESULT result = DirectXCommon::GetInstance()->GetDevice()->CreateCommittedResource(
-		&cbHeapProp, // ヒープ設定
-		D3D12_HEAP_FLAG_NONE,
-		&cbResourceDesc, // リソース設定
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(constBuff));
+		&heapProp, D3D12_HEAP_FLAG_NONE, &resDesc,
+		D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(buff));
 	assert(SUCCEEDED(result));
 
-	result = (*constBuff)->Map(0, nullptr, (void**)constMapData);
+	// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
+	result = (*buff)->Map(0, nullptr, (void**)map);
 	assert(SUCCEEDED(result));
 }
 
 void Sprite::Initialize()
 {
-	HRESULT result;
-	ID3D12Device* device = DirectXCommon::GetInstance()->GetDevice();
 #pragma region 頂点バッファ
 	vertices.push_back({ { 0.0f,   100.0f }, { 0.0f, 1.0f } }); // 左下
 	vertices.push_back({ { 0.0f,     0.0f }, { 0.0f, 0.0f } }); // 左上
@@ -43,37 +41,13 @@ void Sprite::Initialize()
 	vertices.push_back(vertices[2]); // 右下
 	vertices.push_back(vertices[1]); // 左上
 	vertices.push_back({ { 100.0f,   0.0f }, { 1.0f, 0.0f } }); // 右上
+
 	// 頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
 	UINT sizeVB = static_cast<UINT>(sizeof(vertices[0]) * vertices.size());
-
-	// 頂点バッファの設定
-	D3D12_HEAP_PROPERTIES heapProp{}; // ヒープ設定
-	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD; // GPUへの転送用
-	// リソース設定
-	D3D12_RESOURCE_DESC resDesc{};
-	resDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-	resDesc.Width = sizeVB; // 頂点データ全体のサイズ
-	resDesc.Height = 1;
-	resDesc.DepthOrArraySize = 1;
-	resDesc.MipLevels = 1;
-	resDesc.SampleDesc.Count = 1;
-	resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-
-	// 頂点バッファの生成
 	ID3D12Resource* vertBuff = nullptr;
-	result = device->CreateCommittedResource(
-		&heapProp, // ヒープ設定
-		D3D12_HEAP_FLAG_NONE,
-		&resDesc, // リソース設定
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&vertBuff));
-	assert(SUCCEEDED(result));
-
-	// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
 	Vertex* vertMap = nullptr;
-	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
-	assert(SUCCEEDED(result));
+	BufferMapping<Vertex>(&vertBuff, &vertMap, sizeVB);
+
 	// 全頂点に対して
 	for (int i = 0; i < vertices.size(); i++) {
 		vertMap[i] = vertices[i]; // 座標をコピー
@@ -86,14 +60,16 @@ void Sprite::Initialize()
 	// 頂点バッファのサイズ
 	vbView.SizeInBytes = sizeVB;
 	// 頂点1つ分のデータサイズ
-	vbView.StrideInBytes = sizeof(vertices[0]);
+	vbView.StrideInBytes = sizeof(Vertex);
 #pragma endregion
 #pragma region 定数バッファ
 	ConstBufferDataMaterial* constMapMaterial = nullptr;
-	BufferMapping<ConstBufferDataMaterial>(constBuffMaterial.GetAddressOf(), &constMapMaterial);
+	BufferMapping<ConstBufferDataMaterial>(constBuffMaterial.GetAddressOf(),
+		&constMapMaterial, (sizeof(ConstBufferDataMaterial) + 0xff) & ~0xff);
 	constMapMaterial->color = XMFLOAT4(1, 1, 1, 1);
 
-	BufferMapping<ConstBufferDataTransform>(constBuffTransform.GetAddressOf(), &constMapTransform);
+	BufferMapping<ConstBufferDataTransform>(constBuffTransform.GetAddressOf(),
+		&constMapTransform, (sizeof(ConstBufferDataTransform) + 0xff) & ~0xff);
 
 	// 平行投影行列の生成
 	matProj.r[0].m128_f32[0] = 2.0f / WindowsAPI::WIN_WIDTH;
