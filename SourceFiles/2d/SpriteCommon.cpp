@@ -3,9 +3,8 @@
 #include <d3dcompiler.h>
 #include <cassert>
 #include <DirectXTex.h>
+#include "../base/DirectXCommon.h"
 #include "SpriteCommon.h"
-#include "SpriteCommon.h"
-#include "DirectXCommon.h"
 #include "Sprite.h"
 #pragma comment(lib, "d3dcompiler.lib")
 using namespace std;

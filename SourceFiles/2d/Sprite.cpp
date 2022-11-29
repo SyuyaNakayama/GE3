@@ -1,7 +1,7 @@
 #include "Sprite.h"
 #include "SpriteCommon.h"
-#include "WindowsAPI.h"
-#include "DirectXCommon.h"
+#include "../base/WindowsAPI.h"
+#include "../base/DirectXCommon.h"
 using namespace Microsoft::WRL;
 using namespace DirectX;
 

@@ -180,24 +180,27 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SourceFiles\Buffer.cpp" />
-    <ClCompile Include="SourceFiles\DirectXCommon.cpp" />
-    <ClCompile Include="SourceFiles\Input.cpp" />
+    <ClCompile Include="SourceFiles\2d\Sprite.cpp" />
+    <ClCompile Include="SourceFiles\2d\SpriteCommon.cpp" />
+    <ClCompile Include="SourceFiles\base\DirectXCommon.cpp" />
+    <ClCompile Include="SourceFiles\base\Input.cpp" />
+    <ClCompile Include="SourceFiles\base\WindowsAPI.cpp" />
     <ClCompile Include="SourceFiles\main.cpp" />
+    <ClCompile Include="SourceFiles\math\Matrix4.cpp" />
+    <ClCompile Include="SourceFiles\math\Vector2.cpp" />
+    <ClCompile Include="SourceFiles\math\Vector3.cpp" />
     <ClCompile Include="SourceFiles\MyClass.cpp" />
-    <ClCompile Include="SourceFiles\Sprite.cpp" />
-    <ClCompile Include="SourceFiles\SpriteCommon.cpp" />
-    <ClCompile Include="SourceFiles\WindowsAPI.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SourceFiles\Buffer.h" />
-    <ClInclude Include="SourceFiles\DirectXCommon.h" />
-    <ClInclude Include="SourceFiles\Input.h" />
+    <ClInclude Include="SourceFiles\2d\Sprite.h" />
+    <ClInclude Include="SourceFiles\2d\SpriteCommon.h" />
+    <ClInclude Include="SourceFiles\base\DirectXCommon.h" />
+    <ClInclude Include="SourceFiles\base\Input.h" />
+    <ClInclude Include="SourceFiles\base\WindowsAPI.h" />
+    <ClInclude Include="SourceFiles\math\Matrix4.h" />
+    <ClInclude Include="SourceFiles\math\Vector2.h" />
+    <ClInclude Include="SourceFiles\math\Vector3.h" />
     <ClInclude Include="SourceFiles\MyClass.h" />
-    <ClInclude Include="SourceFiles\Sprite.h" />
-    <ClInclude Include="SourceFiles\SpriteCommon.h" />
-    <ClInclude Include="SourceFiles\struct.h" />
-    <ClInclude Include="SourceFiles\WindowsAPI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

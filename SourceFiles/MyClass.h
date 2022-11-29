@@ -1,8 +1,6 @@
 #pragma once
 #include <DirectXMath.h>
-#include "Buffer.h"
 #include <DirectXTex.h>
-#include "struct.h"
 
 using namespace DirectX;
 
@@ -16,7 +14,7 @@ public:
 
 	ViewProjection(XMFLOAT3 eye, XMFLOAT3 target = {}, XMFLOAT3 up = { 0,1,0 });
 	void CreateViewMatrix();
-	void CreateProjectionMatrix(Int2 windowSize);
+	void CreateProjectionMatrix(XMINT2 windowSize);
 	XMMATRIX GetViewProjectionMatrix() { return view * projection; }
 };
 
@@ -35,9 +33,9 @@ public:
 	void UpdateMatrix();
 };
 
-class Object3d :public ConstBuf, public WorldTransform
-{
-public:
-	Object3d(ID3D12Device* device, Type type = Transform);
-	void TransferMatrix(ViewProjection viewProjection);
-};
+//class Object3d :public ConstBuf, public WorldTransform
+//{
+//public:
+//	Object3d(ID3D12Device* device, Type type = Transform);
+//	void TransferMatrix(ViewProjection viewProjection);
+//};
