@@ -1,10 +1,10 @@
 ﻿#include "MyClass.h"
-#include "base/Input.h"
-#include "2d/Sprite.h"
-#include "2d/SpriteCommon.h"
+#include "Input.h"
+#include "Sprite.h"
+#include "SpriteCommon.h"
 #include <memory>
-#include "base/WindowsAPI.h"
-#include "base/DirectXCommon.h"
+#include "WindowsAPI.h"
+#include "DirectXCommon.h"
 using namespace DirectX;
 using namespace std;
 
