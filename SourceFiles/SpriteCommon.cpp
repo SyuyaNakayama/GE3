@@ -67,7 +67,7 @@ void SpriteCommon::Initialize()
 	// 頂点レイアウト
 	vector<D3D12_INPUT_ELEMENT_DESC> inputLayout =
 	{
-		SetInputLayout("POSITION",DXGI_FORMAT_R32G32B32_FLOAT),
+		SetInputLayout("POSITION",DXGI_FORMAT_R32G32_FLOAT),
 		SetInputLayout("TEXCOORD",DXGI_FORMAT_R32G32_FLOAT)
 	};
 

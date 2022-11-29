@@ -11,7 +11,7 @@ void Sprite::Initialize()
 	ID3D12Device* device = DirectXCommon::GetInstance()->GetDevice();
 #pragma region 頂点バッファ
 	vertices.push_back({ { 0.0f,   100.0f }, { 0.0f, 1.0f } }); // 左下
-	vertices.push_back({ { 0.0f,   0.0f,  }, { 0.0f, 0.0f } }); // 左上
+	vertices.push_back({ { 0.0f,   0.0f  }, { 0.0f, 0.0f } }); // 左上
 	vertices.push_back({ { 100.0f, 100.0f }, { 1.0f, 1.0f } }); // 右下
 	vertices.push_back(vertices[2]); // 右下
 	vertices.push_back(vertices[1]); // 左上
@@ -87,7 +87,7 @@ void Sprite::Initialize()
 	result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial);
 	assert(SUCCEEDED(result));
 
-	constMapMaterial->color = XMFLOAT4(1, 0, 0, 0.5f);
+	constMapMaterial->color = XMFLOAT4(1,1,1,1);
 
 	{
 		D3D12_HEAP_PROPERTIES cbHeapProp{};
