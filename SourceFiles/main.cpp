@@ -22,32 +22,34 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #pragma region 基盤システム初期化処理
 	SpriteCommon* spriteCommon = SpriteCommon::GetInstance();
 	spriteCommon->Initialize();
-	
+
 	Input* input = Input::GetInstance();
 	input->Initialize();
 #pragma endregion
 #pragma region ゲームループで使う変数の定義
-	unique_ptr<Sprite> sprite = make_unique<Sprite>();
-	sprite->Initialize();
+	unique_ptr<Sprite> sprites[4];
+	for (int i = 0; i < 4; i++)
+	{
+		sprites[i] = make_unique<Sprite>();
+		sprites[i]->Initialize();
+		Vector2 pos = sprites[i]->GetPosition();
+		pos = { 200.0f * (float)i,200.0f * (float)i };
+		sprites[i]->SetPosition(pos);
+	}
+	sprites[2]->SetIsInvisible();
 #pragma endregion
 	// ゲームループ
-	while (1)
+	while (!wAPI->ProcessMessage())
 	{
-#pragma region ウィンドウメッセージ処理
 		// ✖ボタンで終了メッセージが来たらゲームループを抜ける
 		if (wAPI->ProcessMessage()) { break; }
-#pragma endregion
-#pragma region DirectX毎フレーム処理
-#pragma region 更新処理
+		// 更新処理
 		input->Update();
-		sprite->Update();
-#pragma endregion
-#pragma region 描画コマンド
+		for (unique_ptr<Sprite>& sprite : sprites) { sprite->Update(); }
+		// 描画処理
 		dxCommon->PreDraw();
-		sprite->Draw();
+		for (unique_ptr<Sprite>& sprite : sprites) { sprite->Draw(); }
 		dxCommon->PostDraw();
-#pragma endregion
-#pragma endregion
 	}
 
 	// ウィンドウクラスを登録解除

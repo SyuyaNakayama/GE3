@@ -38,20 +38,16 @@ void Sprite::Initialize()
 	vertices.push_back({ { 0.0f,   100.0f }, { 0.0f, 1.0f } }); // 左下
 	vertices.push_back({ { 0.0f,     0.0f }, { 0.0f, 0.0f } }); // 左上
 	vertices.push_back({ { 100.0f, 100.0f }, { 1.0f, 1.0f } }); // 右下
-	vertices.push_back(vertices[2]); // 右下
-	vertices.push_back(vertices[1]); // 左上
 	vertices.push_back({ { 100.0f,   0.0f }, { 1.0f, 0.0f } }); // 右上
 
 	// 頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
 	UINT sizeVB = static_cast<UINT>(sizeof(vertices[0]) * vertices.size());
 	ID3D12Resource* vertBuff = nullptr;
-	Vertex* vertMap = nullptr;
 	BufferMapping<Vertex>(&vertBuff, &vertMap, sizeVB);
 
-	// 全頂点に対して
-	for (int i = 0; i < vertices.size(); i++) {
-		vertMap[i] = vertices[i]; // 座標をコピー
-	}
+	// 全頂点に対して座標をコピー
+	for (int i = 0; i < vertices.size(); i++) { vertMap[i] = vertices[i]; }
+	
 	// 繋がりを解除
 	vertBuff->Unmap(0, nullptr);
 
@@ -63,10 +59,8 @@ void Sprite::Initialize()
 	vbView.StrideInBytes = sizeof(Vertex);
 #pragma endregion
 #pragma region 定数バッファ
-	ConstBufferDataMaterial* constMapMaterial = nullptr;
 	BufferMapping<ConstBufferDataMaterial>(constBuffMaterial.GetAddressOf(),
 		&constMapMaterial, (sizeof(ConstBufferDataMaterial) + 0xff) & ~0xff);
-	constMapMaterial->color = Color(1, 1, 1, 1);
 
 	BufferMapping<ConstBufferDataTransform>(constBuffTransform.GetAddressOf(),
 		&constMapTransform, (sizeof(ConstBufferDataTransform) + 0xff) & ~0xff);
@@ -77,18 +71,35 @@ void Sprite::Initialize()
 
 void Sprite::Update()
 {
-	Matrix4 matRot, matTrans;
-	matRot = RotateZ(rotation);
-	position.x++;
-	matTrans = Translate(VectorChange(position));
+	float left = (0.0f - anchorPoint_.x) * size_.x;
+	float right = (1.0f - anchorPoint_.x) * size_.x;
+	float top = (0.0f - anchorPoint_.y) * size_.y;
+	float bottom = (1.0f - anchorPoint_.y) * size_.y;
 
-	matWorld = Identity();
+	if (isFlipX_) { left = -left; right = -right; }
+	if (isFlipY_) { top = -top; bottom = -bottom; }
+
+	vertices[LB].pos = { left, bottom };
+	vertices[LT].pos = { left, top };
+	vertices[RB].pos = { right, bottom };
+	vertices[RT].pos = { right, top };
+
+	Matrix4 matRot, matTrans;
+	matRot = RotateZ(rotation_);
+	matTrans = Translate(VectorChange(position_));
+
 	matWorld = matRot * matTrans;
+
+	// GPU転送
 	constMapTransform->mat = matWorld * matProj;
+	constMapMaterial->color = color_;
+	std::copy(std::begin(vertices), std::end(vertices), vertMap);
 }
 
 void Sprite::Draw()
 {
+	if (isInvisible_) { return; }
+
 	ID3D12GraphicsCommandList* cmdList = DirectXCommon::GetInstance()->GetCommandList();
 	SpriteCommon* spriteCommon = SpriteCommon::GetInstance();
 
