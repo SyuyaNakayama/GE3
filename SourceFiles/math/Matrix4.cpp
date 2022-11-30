@@ -1,7 +1,7 @@
 #include "Matrix4.h"
 #include <cmath>
 
-Matrix4 identity()
+Matrix4 Identity()
 {
 	Matrix4 result
 	{
@@ -14,7 +14,20 @@ Matrix4 identity()
 	return result;
 }
 
-Matrix4 scale(const Vector3& s)
+Matrix4 Zero()
+{
+	Matrix4 result
+	{
+		0.0f,0.0f,0.0f,0.0f,
+		0.0f,0.0f,0.0f,0.0f,
+		0.0f,0.0f,0.0f,0.0f,
+		0.0f,0.0f,0.0f,0.0f
+	};
+
+	return result;
+}
+
+Matrix4 Scale(const Vector3& s)
 {
 	Matrix4 result
 	{
@@ -27,7 +40,7 @@ Matrix4 scale(const Vector3& s)
 	return result;
 }
 
-Matrix4 rotateX(float angle)
+Matrix4 RotateX(float angle)
 {
 	float sin = std::sin(angle);
 	float cos = std::cos(angle);
@@ -43,7 +56,7 @@ Matrix4 rotateX(float angle)
 	return result;
 }
 
-Matrix4 rotateY(float angle)
+Matrix4 RotateY(float angle)
 {
 	float sin = std::sin(angle);
 	float cos = std::cos(angle);
@@ -59,7 +72,7 @@ Matrix4 rotateY(float angle)
 	return result;
 }
 
-Matrix4 rotateZ(float angle)
+Matrix4 RotateZ(float angle)
 {
 	float sin = std::sin(angle);
 	float cos = std::cos(angle);
@@ -75,7 +88,7 @@ Matrix4 rotateZ(float angle)
 	return result;
 }
 
-Matrix4 translate(const Vector3& t)
+Matrix4 Translate(const Vector3& t)
 {
 	Matrix4 result
 	{
@@ -86,6 +99,17 @@ Matrix4 translate(const Vector3& t)
 	};
 
 	return result;
+}
+
+Matrix4 OrthoGraphic(Vector2 windowSize)
+{
+	Matrix4 matProj;
+	// ïΩçsìäâeçsóÒÇÃê∂ê¨
+	matProj.m[0][0] = 2.0f / windowSize.x;
+	matProj.m[1][1] = -2.0f / windowSize.y;
+	matProj.m[3][0] = -1.0f;
+	matProj.m[3][1] = 1.0f;
+	return matProj;
 }
 
 Vector3 operator*(const Vector3& v, const Matrix4& m)
@@ -105,13 +129,13 @@ Vector3 operator*(const Vector3& v, const Matrix4& m)
 Matrix4 operator*(const Matrix4& m1, const Matrix4& m2)
 {
 	Matrix4 result = m1;
-
-	return result *= m2;
+	result *= m2;
+	return result;
 }
 
 Matrix4& Matrix4::operator*=(const Matrix4& m2)
 {
-	Matrix4 result{};
+	Matrix4 result = Zero();
 
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {

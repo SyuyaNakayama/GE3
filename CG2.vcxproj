@@ -191,6 +191,7 @@
     <ClCompile Include="SourceFiles\math\Matrix4.cpp" />
     <ClCompile Include="SourceFiles\math\Vector2.cpp" />
     <ClCompile Include="SourceFiles\math\Vector3.cpp" />
+    <ClCompile Include="SourceFiles\math\VectorChange.cpp" />
     <ClCompile Include="SourceFiles\MyClass.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -202,6 +203,7 @@
     <ClInclude Include="SourceFiles\math\Matrix4.h" />
     <ClInclude Include="SourceFiles\math\Vector2.h" />
     <ClInclude Include="SourceFiles\math\Vector3.h" />
+    <ClInclude Include="SourceFiles\math\VectorChange.h" />
     <ClInclude Include="SourceFiles\MyClass.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

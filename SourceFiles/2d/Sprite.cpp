@@ -2,8 +2,8 @@
 #include "SpriteCommon.h"
 #include "WindowsAPI.h"
 #include "DirectXCommon.h"
+#include <cassert>
 using namespace Microsoft::WRL;
-using namespace DirectX;
 
 template<class T> void BufferMapping(ID3D12Resource** buff, T** map, UINT64 width)
 {
@@ -66,27 +66,23 @@ void Sprite::Initialize()
 	ConstBufferDataMaterial* constMapMaterial = nullptr;
 	BufferMapping<ConstBufferDataMaterial>(constBuffMaterial.GetAddressOf(),
 		&constMapMaterial, (sizeof(ConstBufferDataMaterial) + 0xff) & ~0xff);
-	constMapMaterial->color = XMFLOAT4(1, 1, 1, 1);
+	constMapMaterial->color = Color(1, 1, 1, 1);
 
 	BufferMapping<ConstBufferDataTransform>(constBuffTransform.GetAddressOf(),
 		&constMapTransform, (sizeof(ConstBufferDataTransform) + 0xff) & ~0xff);
 
-	// •½s“Š‰es—ñ‚Ì¶¬
-	matProj.r[0].m128_f32[0] = 2.0f / WindowsAPI::WIN_WIDTH;
-	matProj.r[1].m128_f32[1] = -2.0f / WindowsAPI::WIN_HEIGHT;
-	matProj.r[3].m128_f32[0] = -1.0f;
-	matProj.r[3].m128_f32[1] = 1.0f;
+	matProj = OrthoGraphic(WindowsAPI::GetInstance()->WIN_SIZE);
 #pragma endregion
 }
 
 void Sprite::Update()
 {
-	XMMATRIX matRot, matTrans;
-	matRot = XMMatrixRotationZ(rotation);
-	matTrans = XMMatrixTranslation(position.x, position.y, 0);
+	Matrix4 matRot, matTrans;
+	matRot = RotateZ(rotation);
+	matTrans = Translate(VectorChange(position));
 
-	matWorld = XMMatrixIdentity();
-	matWorld *= matRot * matTrans;
+	matWorld = Identity();
+	matWorld = matRot * matTrans;
 	constMapTransform->mat = matWorld * matProj;
 }
 

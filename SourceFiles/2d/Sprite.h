@@ -1,28 +1,28 @@
 #pragma once
-#include <DirectXMath.h>
 #include <vector>
 #include <wrl.h>
 #include <d3d12.h>
+#include "Matrix4.h"
+#include "VectorChange.h"
 
 class Sprite
 {
-	using XMFLOAT2 = DirectX::XMFLOAT2;
-	using XMMATRIX = DirectX::XMMATRIX;
-	
+	struct Color { float r = 0, g = 0, b = 0, a = 0; };
+
 	struct ConstBufferDataMaterial
 	{
-		DirectX::XMFLOAT4 color;
+		Color color;
 	};
 
 	struct ConstBufferDataTransform
 	{
-		XMMATRIX mat = DirectX::XMMatrixIdentity();
+		Matrix4 mat;
 	};
 
 	struct Vertex
 	{
-		XMFLOAT2 pos{};
-		XMFLOAT2 uv{};
+		Vector2 pos{};
+		Vector2 uv{};
 	};
 
 	// 頂点データ
@@ -31,9 +31,9 @@ class Sprite
 	D3D12_VERTEX_BUFFER_VIEW vbView{};
 	Microsoft::WRL::ComPtr<ID3D12Resource> constBuffMaterial, constBuffTransform;
 	ConstBufferDataTransform* constMapTransform = nullptr;
-	XMMATRIX matWorld = DirectX::XMMatrixIdentity();
-	XMMATRIX matProj = DirectX::XMMatrixIdentity();
-	XMFLOAT2 position{};
+	Matrix4 matWorld;
+	Matrix4 matProj;
+	Vector2 position{};
 	float rotation = 0;
 public:
 	void Initialize();

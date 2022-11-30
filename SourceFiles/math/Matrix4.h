@@ -1,17 +1,26 @@
 #pragma once
+#include "Vector2.h"
 #include "Vector3.h"
 
 struct Matrix4
 {
-	float m[4][4];
+	float m[4][4]=
+	{
+		1.0f,0.0f,0.0f,0.0f,
+		0.0f,1.0f,0.0f,0.0f,
+		0.0f,0.0f,1.0f,0.0f,
+		0.0f,0.0f,0.0f,1.0f
+	};
 	Matrix4& operator*=(const Matrix4& m2);
 };
 
-Matrix4 identity();
-Matrix4 scale(const Vector3& s);
-Matrix4 rotateX(float angle);
-Matrix4 rotateY(float angle);
-Matrix4 rotateZ(float angle);
-Matrix4 translate(const Vector3& t);
+Matrix4 Identity();
+Matrix4 Zero();
+Matrix4 Scale(const Vector3& s);
+Matrix4 RotateX(float angle);
+Matrix4 RotateY(float angle);
+Matrix4 RotateZ(float angle);
+Matrix4 Translate(const Vector3& t);
+Matrix4 OrthoGraphic(Vector2 windowSize);
 Matrix4 operator*(const Matrix4& m1, const Matrix4& m2);
 Vector3 operator*(const Vector3& v, const Matrix4& m);
