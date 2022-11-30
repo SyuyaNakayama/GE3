@@ -1,4 +1,5 @@
 #include "WindowsAPI.h"
+#pragma comment(lib,"winmm.lib")
 
 // ウィンドウプロシージャ
 LRESULT WindowsAPI::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
@@ -66,6 +67,9 @@ void WindowsAPI::Initialize()
 
 	// ウィンドウを表示状態にする
 	ShowWindow(hwnd, SW_SHOW);
+
+	// システムタイマーの分解能を上げる
+	timeBeginPeriod(1);
 }
 
 void WindowsAPI::Finalize()

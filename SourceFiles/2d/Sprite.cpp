@@ -79,6 +79,7 @@ void Sprite::Update()
 {
 	Matrix4 matRot, matTrans;
 	matRot = RotateZ(rotation);
+	position.x++;
 	matTrans = Translate(VectorChange(position));
 
 	matWorld = Identity();

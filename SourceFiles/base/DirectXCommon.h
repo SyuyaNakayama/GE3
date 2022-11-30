@@ -3,6 +3,7 @@
 #include <dxgi1_6.h>
 #include <wrl.h>
 #include <vector>
+#include <chrono>
 
 class DirectXCommon
 {
@@ -23,6 +24,7 @@ private:
 	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> backBuffers;
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle{};
 	UINT64 fenceVal = 0;
+	std::chrono::steady_clock::time_point reference_;
 
 	void InitializeDevice();
 	void InitializeCommand();
@@ -30,6 +32,8 @@ private:
 	void InitializeRenderTargetView();
 	void InitializeDepthBuffer();
 	void InitializeFence();
+	void InitializeFixFPS();
+	void UpdateFixFPS();
 	DirectXCommon() = default;
 	~DirectXCommon() = default;
 public:
