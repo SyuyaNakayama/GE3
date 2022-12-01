@@ -1,7 +1,6 @@
 #include "Sprite.h"
 #include "SpriteCommon.h"
 #include "WindowsAPI.h"
-#include "DirectXCommon.h"
 #include <cassert>
 using namespace Microsoft::WRL;
 
@@ -103,19 +102,11 @@ void Sprite::Draw()
 	ID3D12GraphicsCommandList* cmdList = DirectXCommon::GetInstance()->GetCommandList();
 	SpriteCommon* spriteCommon = SpriteCommon::GetInstance();
 
-	// パイプラインステートとルートシグネチャの設定コマンド
-	cmdList->SetPipelineState(spriteCommon->GetPipelineState());
-	cmdList->SetGraphicsRootSignature(spriteCommon->GetRootSignature());
-	// プリミティブ形状の設定コマンド
-	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP); // 三角形リスト
+	spriteCommon->SetTextureCommands(textureIndex_);
+
 	// 頂点バッファビューの設定コマンド
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
 	cmdList->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
-
-	ID3D12DescriptorHeap* ppHeaps[] = { spriteCommon->GetSRVHeap() };
-	cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
-	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = spriteCommon->GetSRVHeap()->GetGPUDescriptorHandleForHeapStart();
-	cmdList->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 	cmdList->SetGraphicsRootConstantBufferView(2, constBuffTransform->GetGPUVirtualAddress());
 	// 描画コマンド
 	cmdList->DrawInstanced((UINT)vertices.size(), 1, 0, 0); // 全ての頂点を使って描画

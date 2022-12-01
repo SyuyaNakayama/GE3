@@ -3,12 +3,13 @@
 #include <d3dcompiler.h>
 #include <cassert>
 #include <DirectXTex.h>
-#include "DirectXCommon.h"
 #include "SpriteCommon.h"
 #include "Sprite.h"
 #pragma comment(lib, "d3dcompiler.lib")
 using namespace std;
 using namespace DirectX;
+
+string SpriteCommon::DEFAULT_TEXTURE_DIRECTORY_PATH = "Resources/";
 
 D3D12_INPUT_ELEMENT_DESC SetInputLayout(LPCSTR semanticName, DXGI_FORMAT format)
 {
@@ -85,14 +86,14 @@ void SpriteCommon::Initialize()
 	pipelineDesc.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
 	// 頂点レイアウトの設定
 	pipelineDesc.InputLayout.pInputElementDescs = inputLayout.data();
-	pipelineDesc.InputLayout.NumElements = inputLayout.size();
+	pipelineDesc.InputLayout.NumElements = (UINT)inputLayout.size();
 	// 図形の形状設定
 	pipelineDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	// その他の設定
 	pipelineDesc.NumRenderTargets = 1; // 描画対象は1つ
 	pipelineDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // 0~255指定のRGBA
 	pipelineDesc.SampleDesc.Count = 1; // 1ピクセルにつき1回サンプリング
-	
+
 	// ブレンドステート
 	D3D12_RENDER_TARGET_BLEND_DESC& blenddesc = pipelineDesc.BlendState.RenderTarget[0];
 	blenddesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL; // RBGA全てのチャンネルを描画
@@ -122,7 +123,7 @@ void SpriteCommon::Initialize()
 	rootParams[1].DescriptorTable.pDescriptorRanges = &descriptorRange;
 	rootParams[1].DescriptorTable.NumDescriptorRanges = 1;
 	rootParams[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-	
+
 	rootParams[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	rootParams[2].Descriptor.ShaderRegister = 1;
 	rootParams[2].Descriptor.RegisterSpace = 0;
@@ -130,7 +131,7 @@ void SpriteCommon::Initialize()
 
 	D3D12_STATIC_SAMPLER_DESC samplerDesc{};
 	samplerDesc.AddressU = samplerDesc.AddressV =
-	samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 	samplerDesc.BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
 	samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
 	samplerDesc.MaxLOD = D3D12_FLOAT32_MAX;
@@ -153,7 +154,6 @@ void SpriteCommon::Initialize()
 		&rootSigBlob, &errorBlob);
 	assert(SUCCEEDED(result));
 
-	ID3D12Device* device = DirectXCommon::GetInstance()->GetDevice();
 	result = device->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(),
 		IID_PPV_ARGS(&rootSignature));
 	assert(SUCCEEDED(result));
@@ -161,12 +161,35 @@ void SpriteCommon::Initialize()
 
 	// パイプラインにルートシグネチャをセット
 	pipelineDesc.pRootSignature = rootSignature.Get();
+
+	// パイプラインステートの生成
 	result = device->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(&pipelineState));
 	assert(SUCCEEDED(result));
 
+	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc{};
+	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	srvHeapDesc.NumDescriptors = MAX_SRV_COUNT;
+
+	result = device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&srvHeap));
+	assert(SUCCEEDED(result));
+
+}
+
+void SpriteCommon::LoadTexture(uint32_t index, const std::string& FILE_NAME)
+{
 	TexMetadata metadata{};
 	ScratchImage scratchImg{}, mipChain{};
-	result = LoadFromWICFile(L"Resources/Map.png", WIC_FLAGS_NONE, &metadata, scratchImg);
+
+	string fullPath = DEFAULT_TEXTURE_DIRECTORY_PATH + FILE_NAME;
+
+	// ワイド文字列に変換した際の文字列バッファサイズを計算
+	int filePathBufferSize = MultiByteToWideChar(CP_ACP, 0, fullPath.c_str(), -1, nullptr, 0);
+	// ワイド文字列に変換
+	vector<wchar_t> wfilePath(filePathBufferSize);
+	MultiByteToWideChar(CP_ACP, 0, fullPath.c_str(), -1, wfilePath.data(), filePathBufferSize);
+
+	HRESULT result = LoadFromWICFile(wfilePath.data(), WIC_FLAGS_NONE, &metadata, scratchImg);
 	assert(SUCCEEDED(result));
 
 	result = GenerateMipMaps(scratchImg.GetImages(), scratchImg.GetImageCount(),
@@ -192,34 +215,26 @@ void SpriteCommon::Initialize()
 	textureResourceDesc.MipLevels = (UINT16)metadata.mipLevels;
 	textureResourceDesc.SampleDesc.Count = 1;
 
-	ID3D12Resource* texBuff = nullptr;
 	result = device->CreateCommittedResource(
 		&textureHeapProp, // ヒープ設定
 		D3D12_HEAP_FLAG_NONE,
 		&textureResourceDesc, // リソース設定
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&texBuff));
+		IID_PPV_ARGS(&textureBuffers_[index]));
 	assert(SUCCEEDED(result));
 
 	for (size_t i = 0; i < metadata.mipLevels; i++)
 	{
 		const Image* img = scratchImg.GetImage(i, 0, 0);
-		result = texBuff->WriteToSubresource((UINT)i, nullptr, img->pixels,
+		result = textureBuffers_[index]->WriteToSubresource((UINT)i, nullptr, img->pixels,
 			(UINT)img->rowPitch, (UINT)img->slicePitch);
 		assert(SUCCEEDED(result));
 	}
 
-	const size_t MAX_SRV_COUNT = 2056;
-	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc{};
-	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	srvHeapDesc.NumDescriptors = MAX_SRV_COUNT;
-
-	result = device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&srvHeap));
-	assert(SUCCEEDED(result));
-
 	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart();
+	UINT incrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	srvHandle.ptr += (size_t)incrementSize * index;
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format = textureResourceDesc.Format;
@@ -227,5 +242,30 @@ void SpriteCommon::Initialize()
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MipLevels = textureResourceDesc.MipLevels;
 
-	device->CreateShaderResourceView(texBuff, &srvDesc, srvHandle);
+	device->CreateShaderResourceView(textureBuffers_[index].Get(), &srvDesc, srvHandle);
+}
+
+void SpriteCommon::SetTextureCommands(uint32_t index)
+{
+	ID3D12GraphicsCommandList* cmdList = DirectXCommon::GetInstance()->GetCommandList();
+
+	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
+	UINT incrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	srvGpuHandle.ptr += (size_t)incrementSize * index;
+
+	cmdList->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+}
+
+void SpriteCommon::PreDraw()
+{
+	ID3D12GraphicsCommandList* cmdList = DirectXCommon::GetInstance()->GetCommandList();
+	
+	// パイプラインステートとルートシグネチャの設定コマンド
+	cmdList->SetPipelineState(pipelineState.Get());
+	cmdList->SetGraphicsRootSignature(rootSignature.Get());
+	// プリミティブ形状の設定コマンド
+	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP); // 三角形リスト
+	// デスクリプタヒープの設定コマンド
+	ID3D12DescriptorHeap* ppHeaps[] = { srvHeap.Get() };
+	cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 }

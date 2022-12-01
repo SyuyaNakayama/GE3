@@ -36,12 +36,14 @@ class Sprite
 	bool isFlipX_ = false;
 	bool isFlipY_ = false;
 	bool isInvisible_ = false;
+	uint32_t textureIndex_ = 0;
 
 public:
 	void Initialize();
 	void Update();
 	void Draw();
 
+	// setter
 	void SetPosition(const Vector2& position) { position_ = position; }
 	void SetRotation(float rotation) { rotation_ = rotation; }
 	void SetColor(const Color& color) { color_ = color; }
@@ -50,7 +52,8 @@ public:
 	void SetIsFlipX(bool isFlipX = true) { isFlipX_ = isFlipX; }
 	void SetIsFlipY(bool isFlipY = true) { isFlipY_ = isFlipY; }
 	void SetIsInvisible(bool isInvisible = true) { isInvisible_ = isInvisible; }
-
+	void SetTextureIndex(uint32_t textureIndex) { textureIndex_ = textureIndex; }
+	// getter
 	const Vector2& GetPosition() const { return position_; }
 	float GetRotation() const { return rotation_; }
 	const Color& GetColor() const { return color_; }
@@ -59,4 +62,5 @@ public:
 	bool GetIsFlipX() const { return isFlipX_; }
 	bool GetIsFlipY() const { return isFlipY_; }
 	bool GetIsInvisible() const { return isInvisible_; }
+	uint32_t GetTextureIndex() { return textureIndex_; }
 };

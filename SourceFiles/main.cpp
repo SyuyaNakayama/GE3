@@ -10,33 +10,36 @@ using namespace std;
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
-#pragma region WindowsAPI初期化処理
-	// ウィンドウクラスの設定
+#pragma region 汎用機能初期化
+	// WindowsAPI初期化処理
 	WindowsAPI* wAPI = WindowsAPI::GetInstance();
 	wAPI->Initialize();
-#pragma endregion 
-#pragma region DirectX初期化処理
+	// DirectX初期化処理
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
 	dxCommon->Initialize();
-#pragma endregion
-#pragma region 基盤システム初期化処理
+	// 基盤システム初期化処理
 	SpriteCommon* spriteCommon = SpriteCommon::GetInstance();
 	spriteCommon->Initialize();
-
+	// 入力の初期化処理
 	Input* input = Input::GetInstance();
 	input->Initialize();
 #pragma endregion
-#pragma region ゲームループで使う変数の定義
+	// リソース読み込み
+	spriteCommon->LoadTexture(0, "Map.png");
+	spriteCommon->LoadTexture(1, "reimu.png");
+
+	// ゲームループで使う変数の定義
 	unique_ptr<Sprite> sprites[4];
 	for (int i = 0; i < 4; i++)
 	{
 		sprites[i] = make_unique<Sprite>();
 		sprites[i]->Initialize();
 		Vector2 pos = sprites[i]->GetPosition();
-		pos = { 200.0f * (float)i,200.0f * (float)i };
+		pos = { 200.0f * (float)i,0 };
 		sprites[i]->SetPosition(pos);
+		sprites[i]->SetTextureIndex(i % 2);
 	}
-	sprites[2]->SetIsInvisible();
+	
 #pragma endregion
 	// ゲームループ
 	while (!wAPI->ProcessMessage())
@@ -48,7 +51,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		for (unique_ptr<Sprite>& sprite : sprites) { sprite->Update(); }
 		// 描画処理
 		dxCommon->PreDraw();
+
+		spriteCommon->PreDraw();
 		for (unique_ptr<Sprite>& sprite : sprites) { sprite->Draw(); }
+		spriteCommon->PostDraw();
+		
 		dxCommon->PostDraw();
 	}
 
