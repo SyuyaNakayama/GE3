@@ -181,8 +181,14 @@ size_t SpriteCommon::GetIncrementSize(uint32_t index)
 	return (size_t)incrementSize * index;
 }
 
-void SpriteCommon::LoadTexture(uint32_t index, const std::string& FILE_NAME)
+uint32_t SpriteCommon::LoadTexture(const std::string& FILE_NAME)
 {
+	for (uint32_t i = 0; i < textureIndex_; i++)
+	{
+		if (textures_[i].fileName.find(FILE_NAME) == string::npos) { continue; }
+		return i;
+	}
+
 	TexMetadata metadata{};
 	ScratchImage scratchImg{}, mipChain{};
 
@@ -226,19 +232,19 @@ void SpriteCommon::LoadTexture(uint32_t index, const std::string& FILE_NAME)
 		&textureResourceDesc, // ƒŠƒ\[ƒXÝ’è
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&textureBuffers_[index]));
+		IID_PPV_ARGS(&textures_[textureIndex_].buffer));
 	assert(SUCCEEDED(result));
 
 	for (size_t i = 0; i < metadata.mipLevels; i++)
 	{
 		const Image* img = scratchImg.GetImage(i, 0, 0);
-		result = textureBuffers_[index]->WriteToSubresource((UINT)i, nullptr, img->pixels,
+		result = textures_[textureIndex_].buffer->WriteToSubresource((UINT)i, nullptr, img->pixels,
 			(UINT)img->rowPitch, (UINT)img->slicePitch);
 		assert(SUCCEEDED(result));
 	}
 
 	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart();
-	srvHandle.ptr += GetIncrementSize(index);
+	srvHandle.ptr += GetIncrementSize(textureIndex_);
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format = textureResourceDesc.Format;
@@ -246,15 +252,20 @@ void SpriteCommon::LoadTexture(uint32_t index, const std::string& FILE_NAME)
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MipLevels = textureResourceDesc.MipLevels;
 
-	device->CreateShaderResourceView(textureBuffers_[index].Get(), &srvDesc, srvHandle);
+	device->CreateShaderResourceView(GetTextureBuffer(textureIndex_), &srvDesc, srvHandle);
+
+	textures_[textureIndex_].fileName = FILE_NAME;
+	textures_[textureIndex_].cpuHandle = srvHandle;
+	
+	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
+	srvGpuHandle.ptr += GetIncrementSize(textureIndex_);
+	textures_[textureIndex_].gpuHandle = srvGpuHandle;
+	return textureIndex_++;
 }
 
 void SpriteCommon::SetTextureCommands(uint32_t index)
 {
-	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-	srvGpuHandle.ptr += GetIncrementSize(index);
-
-	cmdList->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+	cmdList->SetGraphicsRootDescriptorTable(1, textures_[index].gpuHandle);
 }
 
 void SpriteCommon::PreDraw()

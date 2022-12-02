@@ -4,6 +4,7 @@
 #include <d3d12.h>
 #include "Matrix4.h"
 #include "VectorChange.h"
+#include <string>
 
 class Sprite
 {
@@ -42,6 +43,7 @@ class Sprite
 
 	void AdjustTextureSize();
 public:
+	static Sprite* Create(const std::string& FILE_NAME);
 	void Initialize(uint32_t textureIndex);
 	void Update();
 	void Draw();

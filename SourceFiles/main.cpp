@@ -24,21 +24,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Input* input = Input::GetInstance();
 	input->Initialize();
 #pragma endregion
-	// リソース読み込み
-	spriteCommon->LoadTexture(0, "Map.png");
-	spriteCommon->LoadTexture(1, "reimu.png");
-
 	// ゲームループで使う変数の定義
-	unique_ptr<Sprite> sprites[4];
-	for (int i = 0; i < 4; i++)
+	vector<Sprite*> sprites{};
+	sprites.push_back(Sprite::Create("Map.png"));
+	sprites.push_back(Sprite::Create("reimu.png"));
+	sprites.push_back(Sprite::Create("Map.png"));
+	sprites.push_back(Sprite::Create("reimu.png"));
+
+	for (size_t i = 0; i < 4; i++)
 	{
-		sprites[i] = make_unique<Sprite>();
-		sprites[i]->Initialize(i % 2);
 		Vector2 pos = sprites[i]->GetPosition();
 		pos = { 200.0f * (float)i,0 };
 		sprites[i]->SetPosition(pos);
 	}
-	
 #pragma endregion
 	// ゲームループ
 	while (!wAPI->ProcessMessage())
@@ -47,17 +45,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		if (wAPI->ProcessMessage()) { break; }
 		// 更新処理
 		input->Update();
-		for (unique_ptr<Sprite>& sprite : sprites) { sprite->Update(); }
+		for (Sprite*& sprite : sprites) { sprite->Update(); }
 		// 描画処理
 		dxCommon->PreDraw();
 
 		spriteCommon->PreDraw();
-		for (unique_ptr<Sprite>& sprite : sprites) { sprite->Draw(); }
+		for (Sprite*& sprite : sprites) { sprite->Draw(); }
 		spriteCommon->PostDraw();
 		
 		dxCommon->PostDraw();
 	}
 
+	for (Sprite*& sprite : sprites) { delete sprite; }
+	
 	// ウィンドウクラスを登録解除
 	wAPI->Finalize();
 
