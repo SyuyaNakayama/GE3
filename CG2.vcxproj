@@ -188,6 +188,7 @@
     <ClCompile Include="SourceFiles\base\Input.cpp" />
     <ClCompile Include="SourceFiles\base\WindowsAPI.cpp" />
     <ClCompile Include="SourceFiles\Framework.cpp" />
+    <ClCompile Include="SourceFiles\GamePlayScene.cpp" />
     <ClCompile Include="SourceFiles\main.cpp" />
     <ClCompile Include="SourceFiles\math\Matrix4.cpp" />
     <ClCompile Include="SourceFiles\math\Vector2.cpp" />
@@ -203,6 +204,7 @@
     <ClInclude Include="SourceFiles\base\Input.h" />
     <ClInclude Include="SourceFiles\base\WindowsAPI.h" />
     <ClInclude Include="SourceFiles\Framework.h" />
+    <ClInclude Include="SourceFiles\GamePlayScene.h" />
     <ClInclude Include="SourceFiles\math\Matrix4.h" />
     <ClInclude Include="SourceFiles\math\Vector2.h" />
     <ClInclude Include="SourceFiles\math\Vector3.h" />

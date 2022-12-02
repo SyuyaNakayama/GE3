@@ -1,13 +1,12 @@
 #pragma once
-#include "Sprite.h"
 #include <memory>
 #include "Framework.h"
+#include "GamePlayScene.h"
 
 class MyGame : public Framework
 {
 private:
-	// ゲームループで使う変数の定義
-	std::vector<Sprite*> sprites{};
+	GamePlayScene* scene_ = nullptr;
 
 public:
 	void Initialize() override;
