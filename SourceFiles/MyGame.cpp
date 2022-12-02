@@ -1,10 +1,10 @@
 ﻿#include "MyGame.h"
-using namespace std;
 
 void MyGame::Initialize()
 {
 	Framework::Initialize();
-	scene_ = new GamePlayScene();
+	//scene_ = new GamePlayScene();
+	scene_ = new TitleScene();
 	scene_->Initialize();
 }
 
