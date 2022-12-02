@@ -1,13 +1,9 @@
 ﻿#include "MyGame.h"
-using namespace DirectX;
 using namespace std;
 
 void MyGame::Initialize()
 {
-	wAPI->Initialize();
-	dxCommon->Initialize();
-	spriteCommon->Initialize();
-	input->Initialize();
+	Framework::Initialize();
 
 	sprites.push_back(Sprite::Create("Map.png"));
 	sprites.push_back(Sprite::Create("reimu.png"));
@@ -25,14 +21,12 @@ void MyGame::Initialize()
 void MyGame::Finalize()
 {
 	for (Sprite*& sprite : sprites) { delete sprite; }
-
-	// ウィンドウクラスを登録解除
-	wAPI->Finalize();
+	Framework::Finalize();
 }
 
 void MyGame::Update()
 {
-	input->Update();
+	Framework::Update();
 	for (Sprite*& sprite : sprites) { sprite->Update(); }
 }
 
@@ -45,12 +39,4 @@ void MyGame::Draw()
 	spriteCommon->PostDraw();
 
 	dxCommon->PostDraw();
-}
-
-bool MyGame::IsEndRequest()
-{
-	// ✖ボタンで終了メッセージが来たらゲームループを抜ける
-	if (wAPI->ProcessMessage()) { return true; }
-	if (input->IsTrigger(DIK_ESCAPE)) { return true; }
-	return false;
 }

@@ -84,6 +84,9 @@
     <ClCompile Include="SourceFiles\MyGame.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="SourceFiles\Framework.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SourceFiles\base\DirectXCommon.h">
@@ -116,6 +119,11 @@
     <ClInclude Include="SourceFiles\math\VectorChange.h">
       <Filter>ソース ファイル\math</Filter>
     </ClInclude>
-    <ClInclude Include="SourceFiles\MyGame.h" />
+    <ClInclude Include="SourceFiles\Framework.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\MyGame.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
