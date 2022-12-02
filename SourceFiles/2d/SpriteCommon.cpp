@@ -59,6 +59,9 @@ SpriteCommon* SpriteCommon::GetInstance()
 
 void SpriteCommon::Initialize()
 {
+	device = DirectXCommon::GetInstance()->GetDevice();
+	cmdList = DirectXCommon::GetInstance()->GetCommandList();
+
 	ID3DBlob* vsBlob = nullptr; // 頂点シェーダオブジェクト
 	ID3DBlob* psBlob = nullptr; // ピクセルシェーダオブジェクト
 	LoadShader(&vsBlob, L"SpriteVS", "vs_5_0");
@@ -256,7 +259,7 @@ uint32_t SpriteCommon::LoadTexture(const std::string& FILE_NAME)
 
 	textures_[textureIndex_].fileName = FILE_NAME;
 	textures_[textureIndex_].cpuHandle = srvHandle;
-	
+
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
 	srvGpuHandle.ptr += GetIncrementSize(textureIndex_);
 	textures_[textureIndex_].gpuHandle = srvGpuHandle;

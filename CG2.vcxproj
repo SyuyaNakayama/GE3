@@ -193,6 +193,7 @@
     <ClCompile Include="SourceFiles\math\Vector3.cpp" />
     <ClCompile Include="SourceFiles\math\VectorChange.cpp" />
     <ClCompile Include="SourceFiles\MyClass.cpp" />
+    <ClCompile Include="SourceFiles\MyGame.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SourceFiles\2d\Sprite.h" />
@@ -205,6 +206,7 @@
     <ClInclude Include="SourceFiles\math\Vector3.h" />
     <ClInclude Include="SourceFiles\math\VectorChange.h" />
     <ClInclude Include="SourceFiles\MyClass.h" />
+    <ClInclude Include="SourceFiles\MyGame.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

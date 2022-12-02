@@ -20,14 +20,14 @@ private:
 	static const size_t MAX_SRV_COUNT = 2056;
 	// デフォルトディレクトリ
 	static std::string DEFAULT_TEXTURE_DIRECTORY_PATH;
-	Microsoft::WRL::ComPtr<ID3D12Device> device = DirectXCommon::GetInstance()->GetDevice();
+	Microsoft::WRL::ComPtr<ID3D12Device> device=nullptr;
 	// ルートシグネチャ
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature;
 	// パイプランステート
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> srvHeap;
 	std::array<TextureData, MAX_SRV_COUNT> textures_;
-	ID3D12GraphicsCommandList* cmdList = DirectXCommon::GetInstance()->GetCommandList();
+	ID3D12GraphicsCommandList* cmdList=nullptr;
 	uint32_t textureIndex_ = 0;
 
 	SpriteCommon() = default;
