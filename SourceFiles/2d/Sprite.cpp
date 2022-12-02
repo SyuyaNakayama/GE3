@@ -4,6 +4,9 @@
 #include <cassert>
 using namespace Microsoft::WRL;
 
+// 平行投影行列
+const Matrix4 Sprite::matProj = OrthoGraphic(WindowsAPI::GetInstance()->WIN_SIZE);
+
 template<class T> void BufferMapping(ID3D12Resource** buff, T** map, UINT64 width)
 {
 	// ヒープ設定
@@ -31,14 +34,8 @@ template<class T> void BufferMapping(ID3D12Resource** buff, T** map, UINT64 widt
 	assert(SUCCEEDED(result));
 }
 
-void Sprite::Initialize()
+void Sprite::Initialize(uint32_t textureIndex)
 {
-#pragma region 頂点バッファ
-	vertices.push_back({ { 0.0f,   100.0f }, { 0.0f, 1.0f } }); // 左下
-	vertices.push_back({ { 0.0f,     0.0f }, { 0.0f, 0.0f } }); // 左上
-	vertices.push_back({ { 100.0f, 100.0f }, { 1.0f, 1.0f } }); // 右下
-	vertices.push_back({ { 100.0f,   0.0f }, { 1.0f, 0.0f } }); // 右上
-
 	// 頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
 	UINT sizeVB = static_cast<UINT>(sizeof(vertices[0]) * vertices.size());
 	ID3D12Resource* vertBuff = nullptr;
@@ -46,7 +43,7 @@ void Sprite::Initialize()
 
 	// 全頂点に対して座標をコピー
 	for (int i = 0; i < vertices.size(); i++) { vertMap[i] = vertices[i]; }
-	
+
 	// 繋がりを解除
 	vertBuff->Unmap(0, nullptr);
 
@@ -56,38 +53,69 @@ void Sprite::Initialize()
 	vbView.SizeInBytes = sizeVB;
 	// 頂点1つ分のデータサイズ
 	vbView.StrideInBytes = sizeof(Vertex);
-#pragma endregion
-#pragma region 定数バッファ
+
+	// 定数バッファ
 	BufferMapping<ConstBufferDataMaterial>(constBuffMaterial.GetAddressOf(),
 		&constMapMaterial, (sizeof(ConstBufferDataMaterial) + 0xff) & ~0xff);
 
 	BufferMapping<ConstBufferDataTransform>(constBuffTransform.GetAddressOf(),
 		&constMapTransform, (sizeof(ConstBufferDataTransform) + 0xff) & ~0xff);
 
-	matProj = OrthoGraphic(WindowsAPI::GetInstance()->WIN_SIZE);
-#pragma endregion
+	textureIndex_ = textureIndex;
+	AdjustTextureSize();
+	size_ = textureSize_;
+}
+
+void Sprite::AdjustTextureSize()
+{
+	ID3D12Resource* textureBuffer = SpriteCommon::GetInstance()->GetTextureBuffer(textureIndex_);
+	assert(textureBuffer);
+
+	D3D12_RESOURCE_DESC resDesc = textureBuffer->GetDesc();
+
+	textureSize_.x = static_cast<float>(resDesc.Width);
+	textureSize_.y = static_cast<float>(resDesc.Height);
 }
 
 void Sprite::Update()
 {
-	float left = (0.0f - anchorPoint_.x) * size_.x;
-	float right = (1.0f - anchorPoint_.x) * size_.x;
-	float top = (0.0f - anchorPoint_.y) * size_.y;
-	float bottom = (1.0f - anchorPoint_.y) * size_.y;
+	static bool flag = false;
+	if (!flag)
+	{
+		flag = true;
 
-	if (isFlipX_) { left = -left; right = -right; }
-	if (isFlipY_) { top = -top; bottom = -bottom; }
+		float left = (0.0f - anchorPoint_.x) * size_.x;
+		float right = (1.0f - anchorPoint_.x) * size_.x;
+		float top = (0.0f - anchorPoint_.y) * size_.y;
+		float bottom = (1.0f - anchorPoint_.y) * size_.y;
 
-	vertices[LB].pos = { left, bottom };
-	vertices[LT].pos = { left, top };
-	vertices[RB].pos = { right, bottom };
-	vertices[RT].pos = { right, top };
+		if (isFlipX_) { left = -left; right = -right; }
+		if (isFlipY_) { top = -top; bottom = -bottom; }
 
-	Matrix4 matRot, matTrans;
-	matRot = RotateZ(rotation_);
-	matTrans = Translate(VectorChange(position_));
+		vertices[LB].pos = { left, bottom };
+		vertices[LT].pos = { left, top };
+		vertices[RB].pos = { right, bottom };
+		vertices[RT].pos = { right, top };
 
-	matWorld = matRot * matTrans;
+		ID3D12Resource* textureBuffer = SpriteCommon::GetInstance()->GetTextureBuffer(textureIndex_);
+		D3D12_RESOURCE_DESC resDesc = textureBuffer->GetDesc();
+
+		float tex_left = textureLeftTop_.x / resDesc.Width;
+		float tex_right = (textureLeftTop_.x + textureSize_.x) / resDesc.Width;
+		float tex_top = textureLeftTop_.y / resDesc.Height;
+		float tex_bottom = (textureLeftTop_.y + textureSize_.y) / resDesc.Height;
+
+		vertices[LB].uv = { tex_left, tex_bottom };
+		vertices[LT].uv = { tex_left, tex_top };
+		vertices[RB].uv = { tex_right, tex_bottom };
+		vertices[RT].uv = { tex_right, tex_top };
+
+	}
+		Matrix4 matRot, matTrans;
+		matRot = RotateZ(rotation_);
+		matTrans = Translate(VectorChange(position_));
+
+		matWorld = matRot * matTrans;
 
 	// GPU転送
 	constMapTransform->mat = matWorld * matProj;

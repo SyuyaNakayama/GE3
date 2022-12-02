@@ -33,11 +33,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	for (int i = 0; i < 4; i++)
 	{
 		sprites[i] = make_unique<Sprite>();
-		sprites[i]->Initialize();
+		sprites[i]->Initialize(i % 2);
 		Vector2 pos = sprites[i]->GetPosition();
 		pos = { 200.0f * (float)i,0 };
 		sprites[i]->SetPosition(pos);
-		sprites[i]->SetTextureIndex(i % 2);
 	}
 	
 #pragma endregion

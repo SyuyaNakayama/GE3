@@ -173,7 +173,12 @@ void SpriteCommon::Initialize()
 
 	result = device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&srvHeap));
 	assert(SUCCEEDED(result));
+}
 
+size_t SpriteCommon::GetIncrementSize(uint32_t index)
+{
+	UINT incrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	return (size_t)incrementSize * index;
 }
 
 void SpriteCommon::LoadTexture(uint32_t index, const std::string& FILE_NAME)
@@ -233,8 +238,7 @@ void SpriteCommon::LoadTexture(uint32_t index, const std::string& FILE_NAME)
 	}
 
 	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart();
-	UINT incrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	srvHandle.ptr += (size_t)incrementSize * index;
+	srvHandle.ptr += GetIncrementSize(index);
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format = textureResourceDesc.Format;
@@ -247,19 +251,14 @@ void SpriteCommon::LoadTexture(uint32_t index, const std::string& FILE_NAME)
 
 void SpriteCommon::SetTextureCommands(uint32_t index)
 {
-	ID3D12GraphicsCommandList* cmdList = DirectXCommon::GetInstance()->GetCommandList();
-
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-	UINT incrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	srvGpuHandle.ptr += (size_t)incrementSize * index;
+	srvGpuHandle.ptr += GetIncrementSize(index);
 
 	cmdList->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 }
 
 void SpriteCommon::PreDraw()
 {
-	ID3D12GraphicsCommandList* cmdList = DirectXCommon::GetInstance()->GetCommandList();
-	
 	// パイプラインステートとルートシグネチャの設定コマンド
 	cmdList->SetPipelineState(pipelineState.Get());
 	cmdList->SetGraphicsRootSignature(rootSignature.Get());
