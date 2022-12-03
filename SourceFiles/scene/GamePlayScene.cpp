@@ -11,11 +11,11 @@ void GamePlayScene::Initialize()
 		obj = Object3d::Create();
 	}
 	object3d[0]->SetModel(model[0]);
-	//object3d[1]->SetModel(model[1]);
-	//object3d[2]->SetModel(model[1]);
+	object3d[1]->SetModel(model[1]);
+	object3d[2]->SetModel(model[1]);
 
-	//object3d[1]->SetPosition({ -25,0,-25 });
-	//object3d[2]->SetPosition({ +25,0,+25 });
+	object3d[1]->SetPosition({ -25,0,-25 });
+	object3d[2]->SetPosition({ +25,0,+25 });
 }
 
 void GamePlayScene::Finalize()
@@ -26,14 +26,14 @@ void GamePlayScene::Finalize()
 
 void GamePlayScene::Update()
 {
-	object3d[0]->Update();
-	//for (Object3d* obj : object3d) { obj->Update(); }
+	//object3d[0]->Update();
+	for (Object3d* obj : object3d) { obj->Update(); }
 }
 
 void GamePlayScene::Draw()
 {
 	Model::PreDraw();
-	object3d[0]->Draw();
-	//for (Object3d* obj : object3d) { obj->Draw(); }
+	//object3d[0]->Draw();
+	for (Object3d* obj : object3d) { obj->Draw(); }
 	Model::PostDraw();
 }

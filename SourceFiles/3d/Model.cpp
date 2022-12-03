@@ -8,10 +8,6 @@
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
-CD3DX12_CPU_DESCRIPTOR_HANDLE Model::cpuDescHandleSRV;
-CD3DX12_GPU_DESCRIPTOR_HANDLE Model::gpuDescHandleSRV;
-ComPtr<ID3D12DescriptorHeap> Model::descHeap;
-UINT Model::descriptorHandleIncrementSize = 0;
 ID3D12GraphicsCommandList* Model::cmdList = nullptr;
 ID3D12Device* Model::device = nullptr;
 ComPtr<ID3D12PipelineState> Model::pipelinestate;
@@ -110,10 +106,6 @@ void Model::LoadTexture(const string& DIRECTORY_PATH, const string& FILENAME)
 		&srvDesc, //テクスチャ設定情報
 		cpuDescHandleSRV
 	);
-
-	UINT incrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	cpuDescHandleSRV.ptr += (size_t)incrementSize;
-	gpuDescHandleSRV.ptr += (size_t)incrementSize;
 }
 
 void LoadVector3Stream(istringstream& stream, XMFLOAT3& vec)
