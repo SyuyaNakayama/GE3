@@ -9,7 +9,6 @@ void MyGame::Initialize()
 	BaseScene* scene = new GamePlayScene();
 	sceneManager_->SetNextScene(scene);
 	Object3d::StaticInitialize();
-	Model::StaticInitialize();
 }
 
 void MyGame::Finalize()

@@ -57,7 +57,7 @@ public:
 	};
 private:
 	// デバイス
-	static ID3D12Device* device;
+	//static ID3D12Device* device;
 	// 頂点バッファ
 	ComPtr<ID3D12Resource> vertBuff;
 	// インデックスバッファ
@@ -86,8 +86,6 @@ private:
 	UINT descriptorHandleIncrementSize = 0;
 
 	void LoadFromOBJInternal(const std::string& modelName);
-public:
-	static void StaticInitialize();
 
 	/// <summary>
 	/// デスクリプタヒープの初期化
@@ -104,14 +102,12 @@ public:
 	/// </summary>
 	void LoadMaterial(const string& DIRECTORY_PATH, const string& FILENAME);
 
+	void CreateBuffers();
+public:
 	/// <summary>
 	/// モデル作成
 	/// </summary>
-	void Initialize();
-
-	void CreateBuffers();
-
 	static Model* LoadFromOBJ(const std::string& modelName);
-
-	void Draw(UINT rootParamIndexMaterial);
+	
+	void Draw();
 };

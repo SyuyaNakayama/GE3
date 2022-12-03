@@ -4,25 +4,23 @@
 #include <DirectXTex.h>
 #include "DirectXCommon.h"
 #include "Functions.h"
+#include "Vector3.h"
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
-
-ID3D12Device* Model::device = DirectXCommon::GetInstance()->GetDevice();
 
 void Model::InitializeDescriptorHeap()
 {
 	HRESULT result = S_FALSE;
 
+	ID3D12Device* device = DirectXCommon::GetInstance()->GetDevice();
 	// デスクリプタヒープを生成	
 	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
 	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダから見えるように
 	descHeapDesc.NumDescriptors = 1; // シェーダーリソースビュー1つ
 	result = device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&descHeap));//生成
-	if (FAILED(result)) {
-		assert(0);
-	}
+	assert(SUCCEEDED(result));
 
 	// デスクリプタサイズを取得
 	descriptorHandleIncrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
@@ -67,6 +65,7 @@ void Model::LoadTexture(const string& DIRECTORY_PATH, const string& FILENAME)
 	CD3DX12_HEAP_PROPERTIES heapProps =
 		CD3DX12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK, D3D12_MEMORY_POOL_L0);
 
+	ID3D12Device* device = DirectXCommon::GetInstance()->GetDevice();
 	// テクスチャ用バッファの生成
 	result = device->CreateCommittedResource(
 		&heapProps, D3D12_HEAP_FLAG_NONE, &texresDesc,
@@ -101,8 +100,7 @@ void Model::LoadTexture(const string& DIRECTORY_PATH, const string& FILENAME)
 
 	device->CreateShaderResourceView(texbuff.Get(), //ビューと関連付けるバッファ
 		&srvDesc, //テクスチャ設定情報
-		cpuDescHandleSRV
-	);
+		cpuDescHandleSRV);
 }
 
 void LoadVector3Stream(istringstream& stream, XMFLOAT3& vec)
@@ -126,7 +124,6 @@ void Model::LoadMaterial(const string& DIRECTORY_PATH, const string& FILENAME)
 		getline(line_stream, key, ' ');
 
 		if (key[0] == '\t') { key.erase(key.begin()); }
-
 		if (key == "newmtl") { line_stream >> material.name; }
 		if (key == "Ka") { LoadVector3Stream(line_stream, material.ambient); }
 		if (key == "Kd") { LoadVector3Stream(line_stream, material.diffuse); }
@@ -138,11 +135,6 @@ void Model::LoadMaterial(const string& DIRECTORY_PATH, const string& FILENAME)
 		}
 	}
 	file.close();
-}
-
-void Model::Initialize()
-{
-	InitializeDescriptorHeap();
 }
 
 void Model::CreateBuffers()
@@ -191,7 +183,6 @@ Model* Model::LoadFromOBJ(const std::string& modelName)
 
 	return model;
 }
-
 
 void Model::LoadFromOBJInternal(const std::string& modelName)
 {
@@ -257,22 +248,20 @@ void Model::LoadFromOBJInternal(const std::string& modelName)
 				index_stream >> indexNormal;
 
 				VertexPosNormalUv vertex{};
-				vertex.pos = positions[indexPosition - 1];
-				vertex.normal = normals[indexNormal - 1];
-				vertex.uv = texcoords[indexTexcoord - 1];
+				vertex.pos = positions[(size_t)indexPosition - 1];
+				vertex.normal = normals[(size_t)indexNormal - 1];
+				vertex.uv = texcoords[(size_t)indexTexcoord - 1];
 				vertices.emplace_back(vertex);
 				vert.emplace_back(vertex);
 				indices.emplace_back(indices.size());
 
-				if (vert.size() == 4)
+				if (vert.size() != 4) { continue; }
+				vertices.pop_back();
+				for (size_t j = 0; j < 4; j++)
 				{
-					vertices.pop_back();
-					for (size_t j = 0; j < 4; j++)
-					{
-						if (j == 1) { continue; }
-						vertices.push_back(vert[j]);
-						indices.emplace_back(indices.size());
-					}
+					if (j == 1) { continue; }
+					vertices.push_back(vert[j]);
+					indices.emplace_back(indices.size());
 				}
 			}
 		}
@@ -280,23 +269,15 @@ void Model::LoadFromOBJInternal(const std::string& modelName)
 	file.close();
 }
 
-void Model::StaticInitialize()
+void Model::Draw()
 {
-	Model::device = DirectXCommon::GetInstance()->GetDevice();
-	assert(Model::device);
-}
-
-void Model::Draw(UINT rootParamIndexMaterial)
-{
-	// nullptrチェック
-	assert(device);
 	ID3D12GraphicsCommandList* cmdList = DirectXCommon::GetInstance()->GetCommandList();
 
 	// 頂点バッファの設定
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
 	// インデックスバッファの設定
 	cmdList->IASetIndexBuffer(&ibView);
-	cmdList->SetGraphicsRootConstantBufferView(rootParamIndexMaterial, constBuffB1->GetGPUVirtualAddress());
+	cmdList->SetGraphicsRootConstantBufferView(1, constBuffB1->GetGPUVirtualAddress());
 
 	// デスクリプタヒープの配列
 	ID3D12DescriptorHeap* ppHeaps[] = { descHeap.Get() };
