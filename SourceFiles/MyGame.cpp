@@ -1,12 +1,15 @@
 ﻿#include "MyGame.h"
 #include "scene/GamePlayScene.h"
 #include "scene/TitleScene.h"
+#include "Model.h"
 
 void MyGame::Initialize()
 {
 	Framework::Initialize();
-	BaseScene* scene = new TitleScene();
+	BaseScene* scene = new GamePlayScene();
 	sceneManager_->SetNextScene(scene);
+	Object3d::StaticInitialize();
+	Model::StaticInitialize();
 }
 
 void MyGame::Finalize()

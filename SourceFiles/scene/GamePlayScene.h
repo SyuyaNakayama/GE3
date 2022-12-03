@@ -2,11 +2,13 @@
 #include <vector>
 #include "Sprite.h"
 #include "BaseScene.h"
+#include "Object3d.h"
 
 class GamePlayScene : public BaseScene
 {
 private:
-	std::vector<Sprite*> sprites{};
+	Model* model[2]{};
+	Object3d* object3d[3]{};
 
 public:
 	void Initialize() override;
