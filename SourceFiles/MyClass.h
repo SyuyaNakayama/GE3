@@ -18,24 +18,3 @@ public:
 	XMMATRIX GetViewProjectionMatrix() { return view * projection; }
 };
 
-class WorldTransform
-{
-protected:
-	XMMATRIX matWorld, matScale, matRot, matTrans;
-
-	void InitializeMatrix();
-public:
-	XMFLOAT3 scale, rot, trans;
-	WorldTransform* parent = nullptr;
-
-	WorldTransform();
-	WorldTransform(XMFLOAT3 scale, XMFLOAT3 rot, XMFLOAT3 trans);
-	void UpdateMatrix();
-};
-
-//class Object3d :public ConstBuf, public WorldTransform
-//{
-//public:
-//	Object3d(ID3D12Device* device, Type type = Transform);
-//	void TransferMatrix(ViewProjection viewProjection);
-//};

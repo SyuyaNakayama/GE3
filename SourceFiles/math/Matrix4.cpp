@@ -1,7 +1,23 @@
 #include "Matrix4.h"
 #include <cmath>
 
-Matrix4 Identity()
+const Matrix4& Matrix4::operator*=(const Matrix4& m2)
+{
+	Matrix4 result = Zero();
+
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			for (int k = 0; k < 4; k++)
+			{
+				result.m[i][j] += m[i][k] * m2.m[k][j];
+			}
+		}
+	}
+	*this = result;
+	return *this;
+}
+
+const Matrix4& Identity()
 {
 	Matrix4 result
 	{
@@ -14,7 +30,7 @@ Matrix4 Identity()
 	return result;
 }
 
-Matrix4 Zero()
+const Matrix4& Zero()
 {
 	Matrix4 result
 	{
@@ -27,7 +43,7 @@ Matrix4 Zero()
 	return result;
 }
 
-Matrix4 Scale(const Vector3& s)
+const Matrix4& Scale(const Vector3& s)
 {
 	Matrix4 result
 	{
@@ -40,7 +56,7 @@ Matrix4 Scale(const Vector3& s)
 	return result;
 }
 
-Matrix4 RotateX(float angle)
+const Matrix4& RotateX(float angle)
 {
 	float sin = std::sin(angle);
 	float cos = std::cos(angle);
@@ -56,7 +72,7 @@ Matrix4 RotateX(float angle)
 	return result;
 }
 
-Matrix4 RotateY(float angle)
+const Matrix4& RotateY(float angle)
 {
 	float sin = std::sin(angle);
 	float cos = std::cos(angle);
@@ -72,7 +88,7 @@ Matrix4 RotateY(float angle)
 	return result;
 }
 
-Matrix4 RotateZ(float angle)
+const Matrix4& RotateZ(float angle)
 {
 	float sin = std::sin(angle);
 	float cos = std::cos(angle);
@@ -88,7 +104,12 @@ Matrix4 RotateZ(float angle)
 	return result;
 }
 
-Matrix4 Translate(const Vector3& t)
+const Matrix4& Rotate(const Vector3& r)
+{
+	return RotateZ(r.z) * RotateX(r.x) * RotateY(r.y);
+}
+
+const Matrix4& Translate(const Vector3& t)
 {
 	Matrix4 result
 	{
@@ -101,7 +122,7 @@ Matrix4 Translate(const Vector3& t)
 	return result;
 }
 
-Matrix4 OrthoGraphic(Vector2 windowSize)
+const Matrix4& OrthoGraphic(const Vector2& windowSize)
 {
 	Matrix4 matProj;
 	// •½s“Š‰es—ñ‚Ì¶¬
@@ -112,7 +133,7 @@ Matrix4 OrthoGraphic(Vector2 windowSize)
 	return matProj;
 }
 
-Vector3 operator*(const Vector3& v, const Matrix4& m)
+const Vector3& operator*(const Vector3& v, const Matrix4& m)
 {
 	float w = v.x * m.m[0][3] + v.y * m.m[1][3] + v.z * m.m[2][3] + v.x * m.m[3][3];
 
@@ -126,25 +147,9 @@ Vector3 operator*(const Vector3& v, const Matrix4& m)
 	return result;
 }
 
-Matrix4 operator*(const Matrix4& m1, const Matrix4& m2)
+const Matrix4& operator*(const Matrix4& m1, const Matrix4& m2)
 {
 	Matrix4 result = m1;
 	result *= m2;
 	return result;
-}
-
-Matrix4& Matrix4::operator*=(const Matrix4& m2)
-{
-	Matrix4 result = Zero();
-
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
-			for (int k = 0; k < 4; k++)
-			{
-				result.m[i][j] += m[i][k] * m2.m[k][j];
-			}
-		}
-	}
-	*this = result;
-	return *this;
 }
