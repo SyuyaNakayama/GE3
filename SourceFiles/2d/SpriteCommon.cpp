@@ -1,12 +1,7 @@
-#include <string>
-#include <array>
-#include <d3dcompiler.h>
-#include <cassert>
 #include <DirectXTex.h>
 #include "SpriteCommon.h"
 #include "Sprite.h"
 #include "Functions.h"
-#pragma comment(lib, "d3dcompiler.lib")
 using namespace std;
 using namespace DirectX;
 

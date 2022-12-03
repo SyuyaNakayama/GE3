@@ -186,6 +186,7 @@
     <ClCompile Include="SourceFiles\2d\SpriteCommon.cpp" />
     <ClCompile Include="SourceFiles\3d\Model.cpp" />
     <ClCompile Include="SourceFiles\3d\Object3d.cpp" />
+    <ClCompile Include="SourceFiles\3d\ViewProjection.cpp" />
     <ClCompile Include="SourceFiles\3d\WorldTransform.cpp" />
     <ClCompile Include="SourceFiles\base\DirectXCommon.cpp" />
     <ClCompile Include="SourceFiles\base\Functions.cpp" />
@@ -197,7 +198,6 @@
     <ClCompile Include="SourceFiles\math\Vector2.cpp" />
     <ClCompile Include="SourceFiles\math\Vector3.cpp" />
     <ClCompile Include="SourceFiles\math\VectorChange.cpp" />
-    <ClCompile Include="SourceFiles\MyClass.cpp" />
     <ClCompile Include="SourceFiles\MyGame.cpp" />
     <ClCompile Include="SourceFiles\scene\GamePlayScene.cpp" />
     <ClCompile Include="SourceFiles\scene\SceneManager.cpp" />
@@ -208,6 +208,7 @@
     <ClInclude Include="SourceFiles\2d\SpriteCommon.h" />
     <ClInclude Include="SourceFiles\3d\Model.h" />
     <ClInclude Include="SourceFiles\3d\Object3d.h" />
+    <ClInclude Include="SourceFiles\3d\ViewProjection.h" />
     <ClInclude Include="SourceFiles\3d\WorldTransform.h" />
     <ClInclude Include="SourceFiles\base\DirectXCommon.h" />
     <ClInclude Include="SourceFiles\base\Functions.h" />
@@ -218,7 +219,6 @@
     <ClInclude Include="SourceFiles\math\Vector2.h" />
     <ClInclude Include="SourceFiles\math\Vector3.h" />
     <ClInclude Include="SourceFiles\math\VectorChange.h" />
-    <ClInclude Include="SourceFiles\MyClass.h" />
     <ClInclude Include="SourceFiles\MyGame.h" />
     <ClInclude Include="SourceFiles\scene\BaseScene.h" />
     <ClInclude Include="SourceFiles\scene\GamePlayScene.h" />

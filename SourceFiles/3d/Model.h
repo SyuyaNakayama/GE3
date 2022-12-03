@@ -56,8 +56,6 @@ public:
 		float alpha;
 	};
 private:
-	// デバイス
-	//static ID3D12Device* device;
 	// 頂点バッファ
 	ComPtr<ID3D12Resource> vertBuff;
 	// インデックスバッファ

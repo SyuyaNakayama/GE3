@@ -13,9 +13,9 @@ private:
 	};
 
 	Matrix4 matWorld;
-	Microsoft::WRL::ComPtr<ID3D12Resource> constBuffer;
 	ConstBufferData* constMap = nullptr;
 public:
+	Microsoft::WRL::ComPtr<ID3D12Resource> constBuffer;
 	Vector3 scale, rotation, translation;
 	WorldTransform* parent = nullptr;
 

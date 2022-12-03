@@ -14,8 +14,9 @@ void GamePlayScene::Initialize()
 	object3d[1]->SetModel(model[1]);
 	object3d[2]->SetModel(model[1]);
 
-	object3d[1]->SetPosition({ -25,0,-25 });
-	object3d[2]->SetPosition({ +25,0,+25 });
+	for (WorldTransform& w : worldTransforms) { w.Initialize(); }
+	worldTransforms[1].translation = { +25,0,+25 };
+	worldTransforms[2].translation = { -25,0,-25 };
 }
 
 void GamePlayScene::Finalize()
@@ -26,14 +27,12 @@ void GamePlayScene::Finalize()
 
 void GamePlayScene::Update()
 {
-	//object3d[0]->Update();
-	for (Object3d* obj : object3d) { obj->Update(); }
+	for (WorldTransform& w : worldTransforms) { w.Update(); }
 }
 
 void GamePlayScene::Draw()
 {
 	Object3d::PreDraw();
-	//object3d[0]->Draw();
-	for (Object3d* obj : object3d) { obj->Draw(); }
+	for (size_t i = 0; i < 3; i++) { object3d[i]->Draw(worldTransforms[i]); }
 	Object3d::PostDraw();
 }

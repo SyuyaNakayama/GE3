@@ -9,6 +9,7 @@ class GamePlayScene : public BaseScene
 private:
 	Model* model[2]{};
 	Object3d* object3d[3]{};
+	WorldTransform worldTransforms[3];
 
 public:
 	void Initialize() override;

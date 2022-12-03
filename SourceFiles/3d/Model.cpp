@@ -2,7 +2,6 @@
 #include <fstream>
 #include <sstream>
 #include <DirectXTex.h>
-#include "DirectXCommon.h"
 #include "Functions.h"
 #include "Vector3.h"
 

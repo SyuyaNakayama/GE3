@@ -1,12 +1,6 @@
 ﻿#include "Object3d.h"
-#include <fstream>
-#include <sstream>
-#include "DirectXCommon.h"
 #include "WindowsAPI.h"
-#include <d3dcompiler.h>
 #include "Functions.h"
-
-#pragma comment(lib, "d3dcompiler.lib")
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
@@ -136,19 +130,7 @@ Object3d* Object3d::Create()
 {
 	// 3Dオブジェクトのインスタンスを生成
 	Object3d* object3d = new Object3d();
-	if (object3d == nullptr) {
-		return nullptr;
-	}
-
-	// 初期化
-	if (!object3d->Initialize()) {
-		delete object3d;
-		assert(0);
-		return nullptr;
-	}
-
-	float scale_val = 20;
-	object3d->scale = { scale_val ,scale_val ,scale_val };
+	if (object3d == nullptr) { return nullptr; }
 
 	return object3d;
 }
@@ -207,59 +189,6 @@ void Object3d::UpdateViewMatrix()
 	matView = XMMatrixLookAtLH(XMLoadFloat3(&eye), XMLoadFloat3(&target), XMLoadFloat3(&up));
 }
 
-bool Object3d::Initialize()
-{
-	// nullptrチェック
-	assert(device);
-
-	// ヒーププロパティ
-	CD3DX12_HEAP_PROPERTIES heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
-	// リソース設定
-	CD3DX12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataB0) + 0xff) & ~0xff);
-	HRESULT result;
-
-	// 定数バッファの生成
-	result = device->CreateCommittedResource(
-		&heapProps, // アップロード可能
-		D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
-		IID_PPV_ARGS(&constBuffB0));
-	assert(SUCCEEDED(result));
-
-	return true;
-}
-
-void Object3d::Update()
-{
-	HRESULT result;
-	XMMATRIX matScale, matRot, matTrans;
-
-	// スケール、回転、平行移動行列の計算
-	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
-	matRot = XMMatrixIdentity();
-	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
-	matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
-	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
-	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
-
-	// ワールド行列の合成
-	matWorld = XMMatrixIdentity(); // 変形をリセット
-	matWorld *= matScale; // ワールド行列にスケーリングを反映
-	matWorld *= matRot; // ワールド行列に回転を反映
-	matWorld *= matTrans; // ワールド行列に平行移動を反映
-
-	// 親オブジェクトがあれば
-	if (parent != nullptr) {
-		// 親オブジェクトのワールド行列を掛ける
-		matWorld *= parent->matWorld;
-	}
-
-	// 定数バッファへデータ転送
-	ConstBufferDataB0* constMap = nullptr;
-	result = constBuffB0->Map(0, nullptr, (void**)&constMap);
-	constMap->mat = matWorld * matView * matProjection;	// 行列の合成
-	constBuffB0->Unmap(0, nullptr);
-}
-
 void Object3d::PreDraw()
 {
 	// PreDrawとPostDrawがペアで呼ばれていなければエラー
@@ -282,9 +211,9 @@ void Object3d::PostDraw()
 	Object3d::cmdList = nullptr;
 }
 
-void Object3d::Draw()
+void Object3d::Draw(const WorldTransform& worldTransform)
 {
 	if (model == nullptr) { return; }
-	cmdList->SetGraphicsRootConstantBufferView(0, constBuffB0->GetGPUVirtualAddress());
+	cmdList->SetGraphicsRootConstantBufferView(0, worldTransform.constBuffer->GetGPUVirtualAddress());
 	model->Draw();
 }
