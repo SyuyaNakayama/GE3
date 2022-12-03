@@ -3,6 +3,7 @@
 #include "DirectXCommon.h"
 #include "SpriteCommon.h"
 #include "Input.h"
+#include "scene/SceneFactory.h"
 #include "scene/SceneManager.h"
 
 class Framework
@@ -17,6 +18,7 @@ protected:
 	// “ü—Í‚Ì‰Šú‰»ˆ—
 	Input* input = Input::GetInstance();
 	SceneManager* sceneManager_ = nullptr;
+	AbstractSceneFactory* sceneFactory_ = nullptr;
 
 public:
 	virtual ~Framework() = default;

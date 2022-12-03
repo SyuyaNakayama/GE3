@@ -6,11 +6,14 @@ void Framework::Initialize()
 	dxCommon->Initialize();
 	spriteCommon->Initialize();
 	input->Initialize();
+	sceneFactory_ = new SceneFactory();
 	sceneManager_ = SceneManager::GetInstance();
+	sceneManager_->SetSceneFactory(sceneFactory_);
 }
 
 void Framework::Finalize()
 {
+	delete sceneFactory_;
 	wAPI->Finalize();
 }
 
