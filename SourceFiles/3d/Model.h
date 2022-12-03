@@ -58,8 +58,6 @@ public:
 private:
 	// デバイス
 	static ID3D12Device* device;
-	// コマンドリスト
-	static ID3D12GraphicsCommandList* cmdList;
 	// 頂点バッファ
 	ComPtr<ID3D12Resource> vertBuff;
 	// インデックスバッファ
@@ -85,36 +83,16 @@ private:
 	// デスクリプタヒープ
 	ComPtr<ID3D12DescriptorHeap> descHeap;
 	// デスクリプタサイズ
-	UINT descriptorHandleIncrementSize=0;
-	// パイプラインステートオブジェクト
-	static ComPtr<ID3D12PipelineState> pipelinestate;
-	// ルートシグネチャ
-	static ComPtr<ID3D12RootSignature> rootsignature;
+	UINT descriptorHandleIncrementSize = 0;
 
 	void LoadFromOBJInternal(const std::string& modelName);
 public:
 	static void StaticInitialize();
-	/// <summary>
-	/// 描画前処理
-	/// </summary>
-	/// <param name="cmdList">描画コマンドリスト</param>
-	static void PreDraw();
-
-	/// <summary>
-	/// 描画後処理
-	/// </summary>
-	static void PostDraw();
 
 	/// <summary>
 	/// デスクリプタヒープの初期化
 	/// </summary>
 	void InitializeDescriptorHeap();
-
-	/// <summary>
-	/// グラフィックパイプライン生成
-	/// </summary>
-	/// <returns>成否</returns>
-	static void InitializeGraphicsPipeline();
 
 	/// <summary>
 	/// テクスチャ読み込み
@@ -126,7 +104,6 @@ public:
 	/// </summary>
 	void LoadMaterial(const string& DIRECTORY_PATH, const string& FILENAME);
 
-	ID3D12GraphicsCommandList* GetCommandList() { return cmdList; }
 	/// <summary>
 	/// モデル作成
 	/// </summary>

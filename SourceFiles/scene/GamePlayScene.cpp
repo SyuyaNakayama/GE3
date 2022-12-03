@@ -32,8 +32,8 @@ void GamePlayScene::Update()
 
 void GamePlayScene::Draw()
 {
-	Model::PreDraw();
+	Object3d::PreDraw();
 	//object3d[0]->Draw();
 	for (Object3d* obj : object3d) { obj->Draw(); }
-	Model::PostDraw();
+	Object3d::PostDraw();
 }

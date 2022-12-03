@@ -83,9 +83,26 @@ public: // 静的メンバ関数
 	/// <param name="move">移動量</param>
 	static void CameraMoveVector(XMFLOAT3 move);
 
+	/// <summary>
+	/// 描画前処理
+	/// </summary>
+	/// <param name="cmdList">描画コマンドリスト</param>
+	static void PreDraw();
+
+	/// <summary>
+	/// 描画後処理
+	/// </summary>
+	static void PostDraw();
+
 private: // 静的メンバ変数
 	// デバイス
 	static ID3D12Device* device;
+	// コマンドリスト
+	static ID3D12GraphicsCommandList* cmdList;
+	// パイプラインステートオブジェクト
+	static ComPtr<ID3D12PipelineState> pipelinestate;
+	// ルートシグネチャ
+	static ComPtr<ID3D12RootSignature> rootsignature;
 	// ビュー行列
 	static XMMATRIX matView;
 	// 射影行列
@@ -111,6 +128,11 @@ private:// 静的メンバ関数
 	/// </summary>
 	static void UpdateViewMatrix();
 
+	/// <summary>
+	/// グラフィックパイプライン生成
+	/// </summary>
+	/// <returns>成否</returns>
+	static void InitializeGraphicsPipeline();
 public: // メンバ関数
 	bool Initialize();
 	/// <summary>
