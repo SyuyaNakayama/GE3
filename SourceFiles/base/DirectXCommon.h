@@ -5,7 +5,7 @@
 #include <vector>
 #include <chrono>
 
-class DirectXCommon
+class DirectXCommon final
 {
 private:
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
@@ -21,7 +21,7 @@ private:
 	ComPtr<ID3D12Fence> fence;
 	HRESULT result = S_OK;
 	DXGI_SWAP_CHAIN_DESC1 swapchainDesc{};
-	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> backBuffers;
+	std::vector<ComPtr<ID3D12Resource>> backBuffers;
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle{};
 	UINT64 fenceVal = 0;
 	std::chrono::steady_clock::time_point reference_;
@@ -35,9 +35,9 @@ private:
 	void InitializeFixFPS();
 	void UpdateFixFPS();
 	DirectXCommon() = default;
-	~DirectXCommon() = default;
 public:
 	static DirectXCommon* GetInstance();
+	DirectXCommon(const DirectXCommon& obj) = delete;
 	void Initialize();
 	void PreDraw();
 	void PostDraw();

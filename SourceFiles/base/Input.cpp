@@ -35,7 +35,7 @@ void Input::Update()
 {
 	oldkey = key;
 	keyboard->Acquire();
-	keyboard->GetDeviceState(key.size(), (LPVOID)key.c_str());
+	keyboard->GetDeviceState((DWORD)key.size(), (LPVOID)key.c_str());
 }
 
 bool Input::IsInput(const int KEY) { return key[KEY]; }

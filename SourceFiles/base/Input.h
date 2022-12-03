@@ -3,18 +3,18 @@
 #include <wrl.h>
 #include <string>
 
-class Input
+class Input final
 {
-public:
-	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 private:
+	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+	
 	ComPtr<IDirectInput8> directInput;
 	std::string key, oldkey;
 	ComPtr<IDirectInputDevice8> keyboard;
 	Input() = default;
-	~Input() = default;
 public:
 	static Input* GetInstance();
+	Input(const Input& obj) = delete;
 	void Initialize();
 	void Update();
 	bool IsInput(const int KEY);

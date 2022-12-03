@@ -10,7 +10,6 @@ private:
 public:
 	static SceneManager* GetInstance();
 	SceneManager(const SceneManager& obj) = delete;
-	void operator=(const SceneManager& obj) = delete;
 	~SceneManager() { scene_->Finalize(); delete scene_; }
 	void Update();
 	void Draw();

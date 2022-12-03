@@ -176,8 +176,8 @@ void DirectXCommon::InitializeDepthBuffer()
 {
 	D3D12_RESOURCE_DESC depthResourceDesc{};
 	depthResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-	depthResourceDesc.Width = WindowsAPI::GetInstance()->WIN_SIZE.x;
-	depthResourceDesc.Height = WindowsAPI::GetInstance()->WIN_SIZE.y;
+	depthResourceDesc.Width = (UINT64)WindowsAPI::GetInstance()->WIN_SIZE.x;
+	depthResourceDesc.Height = (UINT)WindowsAPI::GetInstance()->WIN_SIZE.y;
 	depthResourceDesc.DepthOrArraySize = 1;
 	depthResourceDesc.Format = DXGI_FORMAT_D32_FLOAT;
 	depthResourceDesc.SampleDesc.Count = 1;
@@ -260,7 +260,7 @@ void DirectXCommon::PreDraw()
 	commandList->ResourceBarrier(1, &barrierDesc);
 
 	rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
-	rtvHandle.ptr += bbIndex * device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	rtvHandle.ptr += (size_t)bbIndex * device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
 	commandList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
@@ -282,9 +282,9 @@ void DirectXCommon::PreDraw()
 	viewport.MaxDepth = 1.0f;
 	// シザー矩形
 	scissorRect.left = 0; // 切り抜き座標左
-	scissorRect.right = scissorRect.left + winSize.x; // 切り抜き座標右
+	scissorRect.right = scissorRect.left + (long)winSize.x; // 切り抜き座標右
 	scissorRect.top = 0; // 切り抜き座標上
-	scissorRect.bottom = scissorRect.top + winSize.y; // 切り抜き座標下
+	scissorRect.bottom = scissorRect.top + (long)winSize.y; // 切り抜き座標下
 
 	commandList->RSSetScissorRects(1, &scissorRect); // シザー矩形設定コマンドを、コマンドリストに積む
 	commandList->RSSetViewports(1, &viewport); // ビューポート設定コマンドを、コマンドリストに積む

@@ -11,7 +11,6 @@ void Framework::Initialize()
 
 void Framework::Finalize()
 {
-	delete sceneManager_;
 	wAPI->Finalize();
 }
 
