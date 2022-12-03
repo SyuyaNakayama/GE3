@@ -11,17 +11,17 @@ struct Matrix4
 		0.0f,0.0f,1.0f,0.0f,
 		0.0f,0.0f,0.0f,1.0f
 	};
-	const Matrix4& operator*=(const Matrix4& m2);
+	Matrix4 operator*=(const Matrix4& m2);
 };
 
-const Matrix4& Identity();
-const Matrix4& Zero();
-const Matrix4& Scale(const Vector3& s);
-const Matrix4& RotateX(float angle);
-const Matrix4& RotateY(float angle);
-const Matrix4& RotateZ(float angle);
-const Matrix4& Rotate(const Vector3& r);
-const Matrix4& Translate(const Vector3& t);
-const Matrix4& OrthoGraphic(const Vector2& windowSize);
-const Matrix4& operator*(const Matrix4& m1, const Matrix4& m2);
-const Vector3& operator*(const Vector3& v, const Matrix4& m);
+Matrix4 Identity();
+Matrix4 Zero();
+Matrix4 Scale(const Vector3& s);
+Matrix4 RotateX(float angle);
+Matrix4 RotateY(float angle);
+Matrix4 RotateZ(float angle);
+Matrix4 Rotate(const Vector3& r);
+Matrix4 Translate(const Vector3& t);
+Matrix4 OrthoGraphic(const Vector2& windowSize);
+Matrix4 operator*(const Matrix4& m1, const Matrix4& m2);
+Vector3 operator*(const Vector3& v, const Matrix4& m);

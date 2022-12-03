@@ -17,6 +17,10 @@ void GamePlayScene::Initialize()
 	for (WorldTransform& w : worldTransforms) { w.Initialize(); }
 	worldTransforms[1].translation = { +25,0,+25 };
 	worldTransforms[2].translation = { -25,0,-25 };
+	viewProjection.eye.z = -25.0f;
+	viewProjection.target.x = -1.0f;
+	viewProjection.eye.x = -1.0f;
+	viewProjection.Initialize();
 }
 
 void GamePlayScene::Finalize()
@@ -33,6 +37,6 @@ void GamePlayScene::Update()
 void GamePlayScene::Draw()
 {
 	Object3d::PreDraw();
-	for (size_t i = 0; i < 3; i++) { object3d[i]->Draw(worldTransforms[i]); }
+	for (size_t i = 0; i < 3; i++) { object3d[i]->Draw(worldTransforms[i],viewProjection); }
 	Object3d::PostDraw();
 }

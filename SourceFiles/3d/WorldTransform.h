@@ -12,11 +12,11 @@ private:
 		Matrix4 mat;	// 3Dïœä∑çsóÒ
 	};
 
+public:
 	Matrix4 matWorld;
 	ConstBufferData* constMap = nullptr;
-public:
 	Microsoft::WRL::ComPtr<ID3D12Resource> constBuffer;
-	Vector3 scale, rotation, translation;
+	Vector3 scale = { 1,1,1 }, rotation, translation;
 	WorldTransform* parent = nullptr;
 
 	void Initialize();

@@ -1,7 +1,7 @@
 #include "Matrix4.h"
 #include <cmath>
 
-const Matrix4& Matrix4::operator*=(const Matrix4& m2)
+Matrix4 Matrix4::operator*=(const Matrix4& m2)
 {
 	Matrix4 result = Zero();
 
@@ -17,7 +17,7 @@ const Matrix4& Matrix4::operator*=(const Matrix4& m2)
 	return *this;
 }
 
-const Matrix4& Identity()
+Matrix4 Identity()
 {
 	Matrix4 result
 	{
@@ -30,7 +30,7 @@ const Matrix4& Identity()
 	return result;
 }
 
-const Matrix4& Zero()
+Matrix4 Zero()
 {
 	Matrix4 result
 	{
@@ -43,7 +43,7 @@ const Matrix4& Zero()
 	return result;
 }
 
-const Matrix4& Scale(const Vector3& s)
+Matrix4 Scale(const Vector3& s)
 {
 	Matrix4 result
 	{
@@ -56,7 +56,7 @@ const Matrix4& Scale(const Vector3& s)
 	return result;
 }
 
-const Matrix4& RotateX(float angle)
+Matrix4 RotateX(float angle)
 {
 	float sin = std::sin(angle);
 	float cos = std::cos(angle);
@@ -72,7 +72,7 @@ const Matrix4& RotateX(float angle)
 	return result;
 }
 
-const Matrix4& RotateY(float angle)
+Matrix4 RotateY(float angle)
 {
 	float sin = std::sin(angle);
 	float cos = std::cos(angle);
@@ -88,7 +88,7 @@ const Matrix4& RotateY(float angle)
 	return result;
 }
 
-const Matrix4& RotateZ(float angle)
+Matrix4 RotateZ(float angle)
 {
 	float sin = std::sin(angle);
 	float cos = std::cos(angle);
@@ -104,12 +104,12 @@ const Matrix4& RotateZ(float angle)
 	return result;
 }
 
-const Matrix4& Rotate(const Vector3& r)
+Matrix4 Rotate(const Vector3& r)
 {
 	return RotateZ(r.z) * RotateX(r.x) * RotateY(r.y);
 }
 
-const Matrix4& Translate(const Vector3& t)
+Matrix4 Translate(const Vector3& t)
 {
 	Matrix4 result
 	{
@@ -122,7 +122,7 @@ const Matrix4& Translate(const Vector3& t)
 	return result;
 }
 
-const Matrix4& OrthoGraphic(const Vector2& windowSize)
+Matrix4 OrthoGraphic(const Vector2& windowSize)
 {
 	Matrix4 matProj;
 	// ïΩçsìäâeçsóÒÇÃê∂ê¨
@@ -133,7 +133,7 @@ const Matrix4& OrthoGraphic(const Vector2& windowSize)
 	return matProj;
 }
 
-const Vector3& operator*(const Vector3& v, const Matrix4& m)
+Vector3 operator*(const Vector3& v, const Matrix4& m)
 {
 	float w = v.x * m.m[0][3] + v.y * m.m[1][3] + v.z * m.m[2][3] + v.x * m.m[3][3];
 
@@ -147,7 +147,7 @@ const Vector3& operator*(const Vector3& v, const Matrix4& m)
 	return result;
 }
 
-const Matrix4& operator*(const Matrix4& m1, const Matrix4& m2)
+Matrix4 operator*(const Matrix4& m1, const Matrix4& m2)
 {
 	Matrix4 result = m1;
 	result *= m2;

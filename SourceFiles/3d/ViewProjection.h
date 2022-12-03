@@ -7,9 +7,9 @@ private:
 	Matrix4 matView, matProjection;
 
 public:
-	Vector3 eye, target, up;
+	Vector3 eye = { 0, 0, -50.0f }, target, up = { 0, 1, 0 };
 
 	void Initialize();
-	Matrix4 GetViewProjectionMatrix() { return matView * matProjection; }
+	void Update();
+	const Matrix4& GetViewProjectionMatrix() { return matView * matProjection; }
 };
-

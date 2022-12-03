@@ -14,11 +14,6 @@ ID3D12Device* Object3d::device = nullptr;
 ID3D12GraphicsCommandList* Object3d::cmdList = nullptr;
 ComPtr<ID3D12PipelineState> Object3d::pipelinestate = nullptr;
 ComPtr<ID3D12RootSignature> Object3d::rootsignature = nullptr;
-XMMATRIX Object3d::matView{};
-XMMATRIX Object3d::matProjection{};
-XMFLOAT3 Object3d::eye = { 0, 0, -50.0f };
-XMFLOAT3 Object3d::target = { 0, 0, 0 };
-XMFLOAT3 Object3d::up = { 0, 1, 0 };
 
 void Object3d::StaticInitialize()
 {
@@ -28,7 +23,6 @@ void Object3d::StaticInitialize()
 
 	Vector2 winSize = WindowsAPI::GetInstance()->WIN_SIZE;
 	// カメラ初期化
-	InitializeCamera((int)winSize.x, (int)winSize.y);
 	InitializeGraphicsPipeline();
 }
 
@@ -135,60 +129,6 @@ Object3d* Object3d::Create()
 	return object3d;
 }
 
-void Object3d::SetEye(XMFLOAT3 eye)
-{
-	Object3d::eye = eye;
-
-	UpdateViewMatrix();
-}
-
-void Object3d::SetTarget(XMFLOAT3 target)
-{
-	Object3d::target = target;
-
-	UpdateViewMatrix();
-}
-
-void Object3d::CameraMoveVector(XMFLOAT3 move)
-{
-	XMFLOAT3 eye_moved = GetEye();
-	XMFLOAT3 target_moved = GetTarget();
-
-	eye_moved.x += move.x;
-	eye_moved.y += move.y;
-	eye_moved.z += move.z;
-
-	target_moved.x += move.x;
-	target_moved.y += move.y;
-	target_moved.z += move.z;
-
-	SetEye(eye_moved);
-	SetTarget(target_moved);
-}
-
-void Object3d::InitializeCamera(int window_width, int window_height)
-{
-	// ビュー行列の生成
-	matView = XMMatrixLookAtLH(
-		XMLoadFloat3(&eye),
-		XMLoadFloat3(&target),
-		XMLoadFloat3(&up));
-
-	// 透視投影による射影行列の生成
-	matProjection = XMMatrixPerspectiveFovLH(
-		XMConvertToRadians(60.0f),
-		(float)window_width / window_height,
-		0.1f, 1000.0f
-	);
-}
-
-
-void Object3d::UpdateViewMatrix()
-{
-	// ビュー行列の更新
-	matView = XMMatrixLookAtLH(XMLoadFloat3(&eye), XMLoadFloat3(&target), XMLoadFloat3(&up));
-}
-
 void Object3d::PreDraw()
 {
 	// PreDrawとPostDrawがペアで呼ばれていなければエラー
@@ -211,9 +151,10 @@ void Object3d::PostDraw()
 	Object3d::cmdList = nullptr;
 }
 
-void Object3d::Draw(const WorldTransform& worldTransform)
+void Object3d::Draw(const WorldTransform& worldTransform, ViewProjection viewProjection)
 {
 	if (model == nullptr) { return; }
+	worldTransform.constMap->mat = viewProjection.GetViewProjectionMatrix();
 	cmdList->SetGraphicsRootConstantBufferView(0, worldTransform.constBuffer->GetGPUVirtualAddress());
 	model->Draw();
 }

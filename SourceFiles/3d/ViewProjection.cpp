@@ -20,7 +20,12 @@ const Matrix4& ChangeMat(const XMMATRIX& m)
 
 void ViewProjection::Initialize()
 {
-	matView =ChangeMat(XMMatrixLookAtLH(XMLoadFloat3(&ChangeVec(eye)), XMLoadFloat3(&ChangeVec(target)), XMLoadFloat3(&ChangeVec(up))));
+	Update();
 	matProjection = ChangeMat(XMMatrixPerspectiveFovLH(XMConvertToRadians(45.0f), 
 		WindowsAPI::GetInstance()->WIN_SIZE.x / WindowsAPI::GetInstance()->WIN_SIZE.y, 0.1f, 1000.0f));
+}
+
+void ViewProjection::Update()
+{
+	matView = ChangeMat(XMMatrixLookAtLH(XMLoadFloat3(&ChangeVec(eye)), XMLoadFloat3(&ChangeVec(target)), XMLoadFloat3(&ChangeVec(up))));
 }
