@@ -4,6 +4,7 @@
 #include "DirectXCommon.h"
 #include "WindowsAPI.h"
 #include <d3dcompiler.h>
+#include "Functions.h"
 
 #pragma comment(lib, "d3dcompiler.lib")
 
@@ -45,68 +46,16 @@ void Object3d::InitializeGraphicsPipeline()
 	ComPtr<ID3DBlob> errorBlob; // エラーオブジェクト
 
 	// 頂点シェーダの読み込みとコンパイル
-	result = D3DCompileFromFile(
-		L"Resources/Shaders/OBJVertexShader.hlsl",	// シェーダファイル名
-		nullptr,
-		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
-		"main", "vs_5_0",	// エントリーポイント名、シェーダーモデル指定
-		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
-		0,
-		&vsBlob, &errorBlob);
-	if (FAILED(result)) {
-		// errorBlobからエラー内容をstring型にコピー
-		std::string errstr;
-		errstr.resize(errorBlob->GetBufferSize());
-
-		std::copy_n((char*)errorBlob->GetBufferPointer(),
-			errorBlob->GetBufferSize(),
-			errstr.begin());
-		errstr += "\n";
-		// エラー内容を出力ウィンドウに表示
-		OutputDebugStringA(errstr.c_str());
-		exit(1);
-	}
-
+	LoadShader(&vsBlob, L"OBJVertexShader", "vs_5_0");
 	// ピクセルシェーダの読み込みとコンパイル
-	result = D3DCompileFromFile(
-		L"Resources/Shaders/OBJPixelShader.hlsl",	// シェーダファイル名
-		nullptr,
-		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
-		"main", "ps_5_0",	// エントリーポイント名、シェーダーモデル指定
-		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
-		0,
-		&psBlob, &errorBlob);
-	if (FAILED(result)) {
-		// errorBlobからエラー内容をstring型にコピー
-		std::string errstr;
-		errstr.resize(errorBlob->GetBufferSize());
-
-		std::copy_n((char*)errorBlob->GetBufferPointer(),
-			errorBlob->GetBufferSize(),
-			errstr.begin());
-		errstr += "\n";
-		// エラー内容を出力ウィンドウに表示
-		OutputDebugStringA(errstr.c_str());
-		exit(1);
-	}
+	LoadShader(&psBlob, L"OBJPixelShader", "ps_5_0");
 
 	// 頂点レイアウト
-	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
-		{ // xy座標(1行で書いたほうが見やすい)
-			"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
-			D3D12_APPEND_ALIGNED_ELEMENT,
-			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-		},
-		{ // 法線ベクトル(1行で書いたほうが見やすい)
-			"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
-			D3D12_APPEND_ALIGNED_ELEMENT,
-			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-		},
-		{ // uv座標(1行で書いたほうが見やすい)
-			"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0,
-			D3D12_APPEND_ALIGNED_ELEMENT,
-			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-		},
+	D3D12_INPUT_ELEMENT_DESC inputLayout[] =
+	{
+		SetInputLayout("POSITION",DXGI_FORMAT_R32G32B32_FLOAT),
+		SetInputLayout("NORMAL",DXGI_FORMAT_R32G32B32_FLOAT),
+		SetInputLayout("TEXCOORD",DXGI_FORMAT_R32G32_FLOAT)
 	};
 
 	// グラフィックスパイプラインの流れを設定

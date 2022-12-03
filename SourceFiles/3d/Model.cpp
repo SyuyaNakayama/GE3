@@ -3,6 +3,7 @@
 #include <sstream>
 #include <DirectXTex.h>
 #include "DirectXCommon.h"
+#include "Functions.h"
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
@@ -146,72 +147,34 @@ void Model::Initialize()
 
 void Model::CreateBuffers()
 {
-	HRESULT result = S_FALSE;
-
-	std::vector<VertexPosNormalUv> realVertices;
-
-	UINT sizeVB = static_cast<UINT>(sizeof(VertexPosNormalUv) * vertices.size());
-
-	// ヒーププロパティ
-	CD3DX12_HEAP_PROPERTIES heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
-	// リソース設定
-	CD3DX12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(sizeVB);
-
-	// 頂点バッファ生成
-	result = device->CreateCommittedResource(
-		&heapProps, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
-		IID_PPV_ARGS(&vertBuff));
-	assert(SUCCEEDED(result));
-
-	// 頂点バッファへのデータ転送
 	VertexPosNormalUv* vertMap = nullptr;
-	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
-	if (SUCCEEDED(result)) {
-		copy(vertices.begin(), vertices.end(), vertMap);
-		vertBuff->Unmap(0, nullptr);
-	}
-
+	UINT sizeVB = static_cast<UINT>(sizeof(VertexPosNormalUv) * vertices.size());
+	// 頂点バッファ生成
+	BufferMapping(&vertBuff, &vertMap, sizeVB);
+	// 全頂点に対して
+	copy(vertices.begin(), vertices.end(), vertMap); // 座標をコピー
+	vertBuff->Unmap(0, nullptr);
 	// 頂点バッファビューの作成
 	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
 	vbView.SizeInBytes = sizeVB;
-	vbView.StrideInBytes = sizeof(vertices[0]);
+	vbView.StrideInBytes = sizeof(VertexPosNormalUv);
 
-	UINT sizeIB = static_cast<UINT>(sizeof(unsigned short) * indices.size());
-	// リソース設定
-	resourceDesc.Width = sizeIB;
-
-	// インデックスバッファ生成
-	result = device->CreateCommittedResource(
-		&heapProps, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
-		IID_PPV_ARGS(&indexBuff));
-
-	// インデックスバッファへのデータ転送
 	unsigned short* indexMap = nullptr;
-	result = indexBuff->Map(0, nullptr, (void**)&indexMap);
-	if (SUCCEEDED(result)) {
-
-		// 全インデックスに対して
-		copy(indices.begin(), indices.end(), indexMap);	// インデックスをコピー
-
-		indexBuff->Unmap(0, nullptr);
-	}
-
+	UINT sizeIB = static_cast<UINT>(sizeof(unsigned short) * indices.size());
+	// インデックスバッファ生成
+	BufferMapping(&indexBuff, &indexMap, sizeIB);
+	// 全インデックスに対して
+	copy(indices.begin(), indices.end(), indexMap);	// インデックスをコピー
+	indexBuff->Unmap(0, nullptr);
 	// インデックスバッファビューの作成
 	ibView.BufferLocation = indexBuff->GetGPUVirtualAddress();
 	ibView.Format = DXGI_FORMAT_R16_UINT;
 	ibView.SizeInBytes = sizeIB;
 
-	resourceDesc.Width = (sizeof(ConstBufferDataB1) + 0xff) & ~0xff;
-	// 定数バッファの生成
-	result = device->CreateCommittedResource(
-		&heapProps, D3D12_HEAP_FLAG_NONE,
-		&resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
-		IID_PPV_ARGS(&constBuffB1));
-	assert(SUCCEEDED(result));
-
-	// 定数バッファへデータ転送
 	ConstBufferDataB1* constMap1 = nullptr;
-	result = constBuffB1->Map(0, nullptr, (void**)&constMap1);
+	// 定数バッファ生成
+	BufferMapping(&constBuffB1, &constMap1, (sizeof(ConstBufferDataB1) + 0xff) & ~0xff);
+
 	constMap1->ambient = material.ambient;
 	constMap1->diffuse = material.diffuse;
 	constMap1->specular = material.specular;

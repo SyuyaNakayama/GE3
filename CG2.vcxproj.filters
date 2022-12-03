@@ -108,6 +108,9 @@
     <ClCompile Include="SourceFiles\3d\Object3d.cpp">
       <Filter>ソース ファイル\3d</Filter>
     </ClCompile>
+    <ClCompile Include="SourceFiles\base\Functions.cpp">
+      <Filter>ソース ファイル\base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SourceFiles\base\DirectXCommon.h">
@@ -163,6 +166,9 @@
     </ClInclude>
     <ClInclude Include="SourceFiles\3d\Object3d.h">
       <Filter>ソース ファイル\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\base\Functions.h">
+      <Filter>ソース ファイル\base</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -8,10 +8,12 @@
 
 class Sprite
 {
+public:
+	struct Vertex { Vector2 pos, uv; };
+private:
 	struct Color { float r = 1, g = 1, b = 1, a = 1; };
 	struct ConstBufferDataMaterial { Color color; };
 	struct ConstBufferDataTransform { Matrix4 mat; };
-	struct Vertex { Vector2 pos, uv; };
 	enum VertexNumber
 	{
 		LB, // ç∂â∫
