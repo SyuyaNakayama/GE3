@@ -6,17 +6,19 @@ void Framework::Initialize()
 	dxCommon->Initialize();
 	spriteCommon->Initialize();
 	input->Initialize();
+	sceneManager_ = SceneManager::GetInstance();
 }
 
 void Framework::Finalize()
 {
-	// ウィンドウクラスを登録解除
+	delete sceneManager_;
 	wAPI->Finalize();
 }
 
 void Framework::Update()
 {
 	input->Update();
+	sceneManager_->Update();
 }
 
 bool Framework::IsEndRequest()

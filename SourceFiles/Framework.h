@@ -3,7 +3,7 @@
 #include "DirectXCommon.h"
 #include "SpriteCommon.h"
 #include "Input.h"
-#include "scene/BaseScene.h"
+#include "scene/SceneManager.h"
 
 class Framework
 {
@@ -16,8 +16,7 @@ protected:
 	SpriteCommon* spriteCommon = SpriteCommon::GetInstance();
 	// 入力の初期化処理
 	Input* input = Input::GetInstance();
-	// シーン基底クラス
-	BaseScene* baseScene_ = nullptr;
+	SceneManager* sceneManager_ = nullptr;
 
 public:
 	virtual ~Framework() = default;
