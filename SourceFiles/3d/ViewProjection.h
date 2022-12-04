@@ -1,5 +1,6 @@
 #pragma once
 #include "Matrix4.h"
+#include "WindowsAPI.h"
 
 class ViewProjection
 {
@@ -8,8 +9,12 @@ private:
 
 public:
 	Vector3 eye = { 0, 0, -50.0f }, target, up = { 0, 1, 0 };
+	float fovAngleY = 45.0f; // 画角(度)
+	// アスペクト比(基本はWindowsAPI::WIN_SIZEに準拠)
+	float aspectRatio = WindowsAPI::GetInstance()->WIN_SIZE.x / WindowsAPI::GetInstance()->WIN_SIZE.y;
+	float nearZ = 0.1f, farZ = 1000.0f; // 映る範囲
 
 	void Initialize();
 	void Update();
-	const Matrix4& GetViewProjectionMatrix() { return matView * matProjection; }
+	const Matrix4& GetViewProjectionMatrix() const { return matView * matProjection; }
 };
