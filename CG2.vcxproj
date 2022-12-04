@@ -198,7 +198,6 @@
     <ClCompile Include="SourceFiles\2d\Sprite.cpp" />
     <ClCompile Include="SourceFiles\2d\SpriteCommon.cpp" />
     <ClCompile Include="SourceFiles\3d\Model.cpp" />
-    <ClCompile Include="SourceFiles\3d\Object3d.cpp" />
     <ClCompile Include="SourceFiles\3d\ViewProjection.cpp" />
     <ClCompile Include="SourceFiles\3d\WorldTransform.cpp" />
     <ClCompile Include="SourceFiles\base\DirectXCommon.cpp" />
@@ -220,7 +219,6 @@
     <ClInclude Include="SourceFiles\2d\Sprite.h" />
     <ClInclude Include="SourceFiles\2d\SpriteCommon.h" />
     <ClInclude Include="SourceFiles\3d\Model.h" />
-    <ClInclude Include="SourceFiles\3d\Object3d.h" />
     <ClInclude Include="SourceFiles\3d\ViewProjection.h" />
     <ClInclude Include="SourceFiles\3d\WorldTransform.h" />
     <ClInclude Include="SourceFiles\base\DirectXCommon.h" />

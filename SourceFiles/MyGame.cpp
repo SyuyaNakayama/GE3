@@ -8,7 +8,7 @@ void MyGame::Initialize()
 	Framework::Initialize();
 	BaseScene* scene = new GamePlayScene();
 	sceneManager_->SetNextScene(scene);
-	Object3d::StaticInitialize();
+	Model::InitializeGraphicsPipeline();
 }
 
 void MyGame::Finalize()

@@ -114,9 +114,6 @@
     <ClCompile Include="SourceFiles\3d\Model.cpp">
       <Filter>ソース ファイル\3d</Filter>
     </ClCompile>
-    <ClCompile Include="SourceFiles\3d\Object3d.cpp">
-      <Filter>ソース ファイル\3d</Filter>
-    </ClCompile>
     <ClCompile Include="SourceFiles\base\Functions.cpp">
       <Filter>ソース ファイル\base</Filter>
     </ClCompile>
@@ -174,9 +171,6 @@
       <Filter>ソース ファイル\scene</Filter>
     </ClInclude>
     <ClInclude Include="SourceFiles\3d\Model.h">
-      <Filter>ソース ファイル\3d</Filter>
-    </ClInclude>
-    <ClInclude Include="SourceFiles\3d\Object3d.h">
       <Filter>ソース ファイル\3d</Filter>
     </ClInclude>
     <ClInclude Include="SourceFiles\base\Functions.h">

@@ -7,7 +7,7 @@
 
 class SpriteCommon
 {
-public:
+private:
 	struct TextureData
 	{
 		std::string fileName;
@@ -16,7 +16,6 @@ public:
 		D3D12_GPU_DESCRIPTOR_HANDLE	gpuHandle;
 	};
 
-private:
 	static const size_t MAX_SRV_COUNT = 2056;
 	// デフォルトディレクトリ
 	static std::string DEFAULT_TEXTURE_DIRECTORY_PATH;

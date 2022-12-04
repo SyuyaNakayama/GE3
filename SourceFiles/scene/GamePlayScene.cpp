@@ -6,13 +6,6 @@ void GamePlayScene::Initialize()
 {
 	model[0] = Model::LoadFromOBJ("triangle_mat");
 	model[1] = Model::LoadFromOBJ("player");
-	for (Object3d*& obj : object3d)
-	{
-		obj = Object3d::Create();
-	}
-	object3d[0]->SetModel(model[0]);
-	object3d[1]->SetModel(model[1]);
-	object3d[2]->SetModel(model[1]);
 
 	for (WorldTransform& w : worldTransforms) 
 	{
@@ -27,7 +20,6 @@ void GamePlayScene::Initialize()
 void GamePlayScene::Finalize()
 {
 	for (size_t i = 0; i < 2; i++) { delete model[i]; }
-	for (size_t i = 0; i < 3; i++) { delete object3d[i]; }
 }
 
 void GamePlayScene::Update()
@@ -37,7 +29,8 @@ void GamePlayScene::Update()
 
 void GamePlayScene::Draw()
 {
-	Object3d::PreDraw();
-	for (size_t i = 0; i < 3; i++) { object3d[i]->Draw(worldTransforms[i],viewProjection); }
-	Object3d::PostDraw();
+	Model::PreDraw();
+	for (size_t i = 0; i < 2; i++) { model[i]->Draw(worldTransforms[i],viewProjection); }
+	model[1]->Draw(worldTransforms[2],viewProjection);
+	Model::PostDraw();
 }

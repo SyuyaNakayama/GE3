@@ -1,13 +1,12 @@
 #pragma once
 #include <Windows.h>
 #include <wrl.h>
-#include <d3d12.h>
 #include <DirectXMath.h>
-#include <d3dx12.h>
 #include <vector>
 #include "Sprite.h"
-
-using namespace std;
+#include "WorldTransform.h"
+#include "ViewProjection.h"
+#include "VectorChange.h"
 
 class Model
 {
@@ -15,47 +14,37 @@ private:
 	// Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-	// DirectX::を省略
-	using XMFLOAT2 = DirectX::XMFLOAT2;
-	using XMFLOAT3 = DirectX::XMFLOAT3;
-	using XMFLOAT4 = DirectX::XMFLOAT4;
+	// std::を省略
+	using string = std::string;
+	template <class T> using vector = std::vector<T>;
 
-public:
 	// 頂点データ構造体
 	struct VertexPosNormalUv
 	{
-		XMFLOAT3 pos; // xyz座標
-		XMFLOAT3 normal; // 法線ベクトル
-		XMFLOAT2 uv;  // uv座標
-		XMFLOAT4 color; // 色
+		Vector3 pos; // xyz座標
+		Vector3 normal; // 法線ベクトル
+		Vector2 uv;  // uv座標
+		Sprite::Color color; // 色
 	};
 
 	// マテリアル
 	struct Material
 	{
 		string name;
-		XMFLOAT3 ambient;
-		XMFLOAT3 diffuse;
-		XMFLOAT3 specular;
-		float alpha;
+		Vector3 ambient = { 0.3f,0.3f,0.3f };
+		Vector3 diffuse;
+		Vector3 specular;
+		float alpha = 1.0f;
 		string textureFilename;
-
-		Material()
-		{
-			ambient = { 0.3f,0.3f,0.3f };
-			diffuse = {};
-			specular = {};
-			alpha = 1.0f;
-		}
 	};
 
-	struct ConstBufferDataB1
+	struct ConstBufferData
 	{
-		XMFLOAT3 ambient;
+		Vector3 ambient;
 		float pad1;
-		XMFLOAT3 diffuse;
+		Vector3 diffuse;
 		float pad2;
-		XMFLOAT3 specular;
+		Vector3 specular;
 		float alpha;
 	};
 private:
@@ -66,7 +55,7 @@ private:
 	// インデックスバッファ
 	ComPtr<ID3D12Resource> indexBuff;
 	// 定数バッファ
-	ComPtr<ID3D12Resource> constBuffB1;
+	ComPtr<ID3D12Resource> constBuffer;
 	// 頂点バッファビュー
 	D3D12_VERTEX_BUFFER_VIEW vbView;
 	// インデックスバッファビュー
@@ -77,10 +66,12 @@ private:
 	vector<unsigned short> indices;
 	// マテリアル
 	Material material;
-	// デスクリプタサイズ
-	UINT descriptorHandleIncrementSize = 0;
+	// パイプラインステートオブジェクト
+	static ComPtr<ID3D12PipelineState> pipelinestate;
+	// ルートシグネチャ
+	static ComPtr<ID3D12RootSignature> rootsignature;
 
-	void LoadFromOBJInternal(const std::string& modelName);
+	void LoadFromOBJInternal(const string& modelName);
 
 	/// <summary>
 	/// マテリアル読み込み
@@ -88,11 +79,29 @@ private:
 	void LoadMaterial(const string& DIRECTORY_PATH, const string& FILENAME);
 
 	void CreateBuffers();
+
 public:
+	/// <summary>
+	/// グラフィックパイプライン生成
+	/// </summary>
+	/// <returns>成否</returns>
+	static void InitializeGraphicsPipeline();
+
+	/// <summary>
+	/// 描画前処理
+	/// </summary>
+	/// <param name="cmdList">描画コマンドリスト</param>
+	static void PreDraw();
+
+	/// <summary>
+	/// 描画後処理
+	/// </summary>
+	static void PostDraw() {}
+
 	/// <summary>
 	/// モデル作成
 	/// </summary>
-	static Model* LoadFromOBJ(const std::string& modelName);
+	static Model* LoadFromOBJ(const string& modelName);
 	
-	void Draw();
+	void Draw(const WorldTransform& worldTransform, ViewProjection viewProjection);
 };
