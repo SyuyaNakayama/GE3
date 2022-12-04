@@ -20,6 +20,7 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::Update()
 {
+	WorldTransform::SetViewProjection(&viewProjection);
 	for (WorldTransform& w : worldTransforms) { w.Update(); }
 }
 
