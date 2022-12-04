@@ -14,12 +14,13 @@ void GamePlayScene::Initialize()
 	object3d[1]->SetModel(model[1]);
 	object3d[2]->SetModel(model[1]);
 
-	for (WorldTransform& w : worldTransforms) { w.Initialize(); }
+	for (WorldTransform& w : worldTransforms) 
+	{
+		w.Initialize(); 
+		w.scale = { 20,20,20 };
+	}
 	worldTransforms[1].translation = { +25,0,+25 };
 	worldTransforms[2].translation = { -25,0,-25 };
-	viewProjection.eye.z = -25.0f;
-	viewProjection.target.x = -1.0f;
-	viewProjection.eye.x = -1.0f;
 	viewProjection.Initialize();
 }
 

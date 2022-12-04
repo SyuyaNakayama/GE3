@@ -154,7 +154,7 @@ void Object3d::PostDraw()
 void Object3d::Draw(const WorldTransform& worldTransform, ViewProjection viewProjection)
 {
 	if (model == nullptr) { return; }
-	worldTransform.constMap->mat = viewProjection.GetViewProjectionMatrix();
+	worldTransform.constMap->mat *= viewProjection.GetViewProjectionMatrix();
 	cmdList->SetGraphicsRootConstantBufferView(0, worldTransform.constBuffer->GetGPUVirtualAddress());
 	model->Draw();
 }
