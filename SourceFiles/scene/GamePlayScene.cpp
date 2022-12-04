@@ -4,22 +4,18 @@
 
 void GamePlayScene::Initialize()
 {
+	WorldTransform::SetViewProjection(&viewProjection);
 	model[0] = Model::LoadFromOBJ("triangle_mat");
 	model[1] = Model::LoadFromOBJ("player");
 
-	for (WorldTransform& w : worldTransforms) 
+	for (WorldTransform& w : worldTransforms)
 	{
-		w.Initialize(); 
+		w.Initialize();
 		w.scale = { 20,20,20 };
 	}
 	worldTransforms[1].translation = { +25,0,+25 };
 	worldTransforms[2].translation = { -25,0,-25 };
 	viewProjection.Initialize();
-}
-
-void GamePlayScene::Finalize()
-{
-	for (size_t i = 0; i < 2; i++) { delete model[i]; }
 }
 
 void GamePlayScene::Update()
@@ -30,7 +26,14 @@ void GamePlayScene::Update()
 void GamePlayScene::Draw()
 {
 	Model::PreDraw();
-	for (size_t i = 0; i < 2; i++) { model[i]->Draw(worldTransforms[i],viewProjection); }
-	model[1]->Draw(worldTransforms[2],viewProjection);
+
+	for (size_t i = 0; i < 2; i++) { model[i]->Draw(worldTransforms[i]); }
+	model[1]->Draw(worldTransforms[2]);
+	
 	Model::PostDraw();
+}
+
+void GamePlayScene::Finalize()
+{
+	for (size_t i = 0; i < 2; i++) { delete model[i]; }
 }

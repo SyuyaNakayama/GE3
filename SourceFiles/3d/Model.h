@@ -1,12 +1,9 @@
 #pragma once
 #include <Windows.h>
 #include <wrl.h>
-#include <DirectXMath.h>
 #include <vector>
 #include "Sprite.h"
 #include "WorldTransform.h"
-#include "ViewProjection.h"
-#include "VectorChange.h"
 
 class Model
 {
@@ -19,7 +16,7 @@ private:
 	template <class T> using vector = std::vector<T>;
 
 	// 頂点データ構造体
-	struct VertexPosNormalUv
+	struct VertexData
 	{
 		Vector3 pos; // xyz座標
 		Vector3 normal; // 法線ベクトル
@@ -48,8 +45,9 @@ private:
 		float alpha;
 	};
 private:
-	VertexPosNormalUv* vertMap = nullptr;
+	VertexData* vertMap = nullptr;
 	Sprite* sprite = nullptr;
+	string name;
 	// 頂点バッファ
 	ComPtr<ID3D12Resource> vertBuff;
 	// インデックスバッファ
@@ -57,11 +55,11 @@ private:
 	// 定数バッファ
 	ComPtr<ID3D12Resource> constBuffer;
 	// 頂点バッファビュー
-	D3D12_VERTEX_BUFFER_VIEW vbView;
+	D3D12_VERTEX_BUFFER_VIEW vbView{};
 	// インデックスバッファビュー
-	D3D12_INDEX_BUFFER_VIEW ibView;
+	D3D12_INDEX_BUFFER_VIEW ibView{};
 	// 頂点データ配列
-	vector<VertexPosNormalUv> vertices;
+	vector<VertexData> vertices;
 	// 頂点インデックス配列
 	vector<unsigned short> indices;
 	// マテリアル
@@ -80,6 +78,7 @@ private:
 
 	void CreateBuffers();
 
+	static vector<Model*> models;
 public:
 	/// <summary>
 	/// グラフィックパイプライン生成
@@ -102,6 +101,6 @@ public:
 	/// モデル作成
 	/// </summary>
 	static Model* LoadFromOBJ(const string& modelName);
-	
-	void Draw(const WorldTransform& worldTransform, ViewProjection viewProjection);
+
+	void Draw(const WorldTransform& worldTransform);
 };

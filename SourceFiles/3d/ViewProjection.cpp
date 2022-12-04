@@ -1,5 +1,4 @@
 #include "ViewProjection.h"
-#include "WindowsAPI.h"
 #include <DirectXMath.h>
 using namespace DirectX;
 
@@ -21,11 +20,11 @@ const Matrix4& ChangeMat(const XMMATRIX& m)
 void ViewProjection::Initialize()
 {
 	Update();
-	matProjection = ChangeMat(XMMatrixPerspectiveFovLH(XMConvertToRadians(45.0f), 
-		WindowsAPI::GetInstance()->WIN_SIZE.x / WindowsAPI::GetInstance()->WIN_SIZE.y, 0.1f, 1000.0f));
 }
 
 void ViewProjection::Update()
 {
+	matProjection = ChangeMat(XMMatrixPerspectiveFovLH(XMConvertToRadians(fovAngleY), 
+		aspectRatio, nearZ, farZ));
 	matView = ChangeMat(XMMatrixLookAtLH(XMLoadFloat3(&ChangeVec(eye)), XMLoadFloat3(&ChangeVec(target)), XMLoadFloat3(&ChangeVec(up))));
 }
