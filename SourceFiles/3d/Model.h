@@ -5,6 +5,7 @@
 #include <DirectXMath.h>
 #include <d3dx12.h>
 #include <vector>
+#include "Sprite.h"
 
 using namespace std;
 
@@ -56,6 +57,7 @@ public:
 		float alpha;
 	};
 private:
+	Sprite* sprite = nullptr;
 	// 頂点バッファ
 	ComPtr<ID3D12Resource> vertBuff;
 	// インデックスバッファ
@@ -79,7 +81,7 @@ private:
 	// シェーダリソースビューのハンドル(CPU)
 	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV;
 	// デスクリプタヒープ
-	ComPtr<ID3D12DescriptorHeap> descHeap;
+	//ComPtr<ID3D12DescriptorHeap> descHeap;
 	// デスクリプタサイズ
 	UINT descriptorHandleIncrementSize = 0;
 

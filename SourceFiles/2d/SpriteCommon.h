@@ -20,14 +20,14 @@ private:
 	static const size_t MAX_SRV_COUNT = 2056;
 	// デフォルトディレクトリ
 	static std::string DEFAULT_TEXTURE_DIRECTORY_PATH;
-	Microsoft::WRL::ComPtr<ID3D12Device> device=nullptr;
+	Microsoft::WRL::ComPtr<ID3D12Device> device = nullptr;
 	// ルートシグネチャ
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature;
 	// パイプランステート
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> srvHeap;
 	std::array<TextureData, MAX_SRV_COUNT> textures_;
-	ID3D12GraphicsCommandList* cmdList=nullptr;
+	ID3D12GraphicsCommandList* cmdList = nullptr;
 	uint32_t textureIndex_ = 0;
 
 	SpriteCommon() = default;
@@ -39,5 +39,7 @@ public:
 	void SetTextureCommands(uint32_t index);
 	void PreDraw();
 	void PostDraw() {};
+	D3D12_GPU_DESCRIPTOR_HANDLE GetGpuHandle(UINT index) { return textures_[index].gpuHandle; }
+	ID3D12DescriptorHeap* GetDescriptorHeap() { return srvHeap.Get(); }
 	ID3D12Resource* GetTextureBuffer(uint32_t index) const { return textures_[index].buffer.Get(); }
 };
