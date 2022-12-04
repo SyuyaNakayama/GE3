@@ -18,6 +18,7 @@ private:
 	// DirectX::を省略
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
+	using XMFLOAT4 = DirectX::XMFLOAT4;
 
 public:
 	// 頂点データ構造体
@@ -26,6 +27,7 @@ public:
 		XMFLOAT3 pos; // xyz座標
 		XMFLOAT3 normal; // 法線ベクトル
 		XMFLOAT2 uv;  // uv座標
+		XMFLOAT4 color; // 色
 	};
 
 	// マテリアル
@@ -57,13 +59,12 @@ public:
 		float alpha;
 	};
 private:
+	VertexPosNormalUv* vertMap = nullptr;
 	Sprite* sprite = nullptr;
 	// 頂点バッファ
 	ComPtr<ID3D12Resource> vertBuff;
 	// インデックスバッファ
 	ComPtr<ID3D12Resource> indexBuff;
-	// テクスチャバッファ
-	ComPtr<ID3D12Resource> texbuff;
 	// 定数バッファ
 	ComPtr<ID3D12Resource> constBuffB1;
 	// 頂点バッファビュー
@@ -76,26 +77,10 @@ private:
 	vector<unsigned short> indices;
 	// マテリアル
 	Material material;
-	// シェーダリソースビューのハンドル(CPU)
-	CD3DX12_CPU_DESCRIPTOR_HANDLE cpuDescHandleSRV;
-	// シェーダリソースビューのハンドル(CPU)
-	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV;
-	// デスクリプタヒープ
-	//ComPtr<ID3D12DescriptorHeap> descHeap;
 	// デスクリプタサイズ
 	UINT descriptorHandleIncrementSize = 0;
 
 	void LoadFromOBJInternal(const std::string& modelName);
-
-	/// <summary>
-	/// デスクリプタヒープの初期化
-	/// </summary>
-	void InitializeDescriptorHeap();
-
-	/// <summary>
-	/// テクスチャ読み込み
-	/// </summary>
-	void LoadTexture(const string& DIRECTORY_PATH, const string& FILENAME);
 
 	/// <summary>
 	/// マテリアル読み込み

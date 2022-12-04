@@ -3,7 +3,6 @@
 #include "WindowsAPI.h"
 #include <cassert>
 #include "Functions.h"
-using namespace Microsoft::WRL;
 
 // •½s“Š‰es—ñ
 const Matrix4 Sprite::matProj = OrthoGraphic(WindowsAPI::GetInstance()->WIN_SIZE);

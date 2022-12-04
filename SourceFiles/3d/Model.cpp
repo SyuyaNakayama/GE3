@@ -8,100 +8,6 @@
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
-void Model::InitializeDescriptorHeap()
-{
-	//HRESULT result = S_FALSE;
-	//
-	//ID3D12Device* device = DirectXCommon::GetInstance()->GetDevice();
-	//// デスクリプタヒープを生成	
-	//D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
-	//descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	//descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダから見えるように
-	//descHeapDesc.NumDescriptors = 1; // シェーダーリソースビュー1つ
-	//result = device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&descHeap));//生成
-	//assert(SUCCEEDED(result));
-	//
-	//// デスクリプタサイズを取得
-	//descriptorHandleIncrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-}
-//
-//void Model::LoadTexture(const string& DIRECTORY_PATH, const string& FILENAME)
-//{
-//	HRESULT result = S_FALSE;
-//
-//	TexMetadata metadata{};
-//	ScratchImage scratchImg{};
-//
-//	string filepath = DIRECTORY_PATH + FILENAME;
-//
-//	// ユニコード文字列に変換する
-//	wchar_t wfilepath[128];
-//	int iBufferSize = MultiByteToWideChar(CP_ACP, 0, filepath.c_str(), -1, wfilepath, _countof(wfilepath));
-//
-//	// WICテクスチャのロード
-//	result = LoadFromWICFile(wfilepath, WIC_FLAGS_NONE, &metadata, scratchImg);
-//	assert(SUCCEEDED(result));
-//
-//	ScratchImage mipChain{};
-//	// ミップマップ生成
-//	result = GenerateMipMaps(
-//		scratchImg.GetImages(), scratchImg.GetImageCount(), scratchImg.GetMetadata(),
-//		TEX_FILTER_DEFAULT, 0, mipChain);
-//	if (SUCCEEDED(result)) {
-//		scratchImg = std::move(mipChain);
-//		metadata = scratchImg.GetMetadata();
-//	}
-//
-//	// 読み込んだディフューズテクスチャをSRGBとして扱う
-//	metadata.format = MakeSRGB(metadata.format);
-//
-//	// リソース設定
-//	CD3DX12_RESOURCE_DESC texresDesc = CD3DX12_RESOURCE_DESC::Tex2D(
-//		metadata.format, metadata.width, (UINT)metadata.height, (UINT16)metadata.arraySize,
-//		(UINT16)metadata.mipLevels);
-//
-//	// ヒーププロパティ
-//	CD3DX12_HEAP_PROPERTIES heapProps =
-//		CD3DX12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK, D3D12_MEMORY_POOL_L0);
-//
-//	ID3D12Device* device = DirectXCommon::GetInstance()->GetDevice();
-//	// テクスチャ用バッファの生成
-//	result = device->CreateCommittedResource(
-//		&heapProps, D3D12_HEAP_FLAG_NONE, &texresDesc,
-//		D3D12_RESOURCE_STATE_GENERIC_READ, // テクスチャ用指定
-//		nullptr, IID_PPV_ARGS(&texbuff));
-//	assert(SUCCEEDED(result));
-//
-//	// テクスチャバッファにデータ転送
-//	for (size_t i = 0; i < metadata.mipLevels; i++) {
-//		const Image* img = scratchImg.GetImage(i, 0, 0); // 生データ抽出
-//		result = texbuff->WriteToSubresource(
-//			(UINT)i,
-//			nullptr,              // 全領域へコピー
-//			img->pixels,          // 元データアドレス
-//			(UINT)img->rowPitch,  // 1ラインサイズ
-//			(UINT)img->slicePitch // 1枚サイズ
-//		);
-//		assert(SUCCEEDED(result));
-//	}
-//
-//	// シェーダリソースビュー作成
-//	cpuDescHandleSRV = CD3DX12_CPU_DESCRIPTOR_HANDLE(descHeap->GetCPUDescriptorHandleForHeapStart(), 0, descriptorHandleIncrementSize);
-//	gpuDescHandleSRV = CD3DX12_GPU_DESCRIPTOR_HANDLE(descHeap->GetGPUDescriptorHandleForHeapStart(), 0, descriptorHandleIncrementSize);
-//
-//	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{}; // 設定構造体
-//	D3D12_RESOURCE_DESC resDesc = texbuff->GetDesc();
-//
-//	srvDesc.Format = resDesc.Format;
-//	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-//	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
-//	srvDesc.Texture2D.MipLevels = 1;
-//
-//	device->CreateShaderResourceView(texbuff.Get(), //ビューと関連付けるバッファ
-//		&srvDesc, //テクスチャ設定情報
-//		cpuDescHandleSRV);
-//}
-//
 void LoadVector3Stream(istringstream& stream, XMFLOAT3& vec)
 {
 	stream >> vec.x;
@@ -141,7 +47,6 @@ void Model::LoadMaterial(const string& DIRECTORY_PATH, const string& FILENAME)
 
 void Model::CreateBuffers()
 {
-	VertexPosNormalUv* vertMap = nullptr;
 	UINT sizeVB = static_cast<UINT>(sizeof(VertexPosNormalUv) * vertices.size());
 	// 頂点バッファ生成
 	BufferMapping(&vertBuff, &vertMap, sizeVB);
@@ -152,6 +57,11 @@ void Model::CreateBuffers()
 	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
 	vbView.SizeInBytes = sizeVB;
 	vbView.StrideInBytes = sizeof(VertexPosNormalUv);
+
+	for (size_t i = 0; i < vertices.size(); i++)
+	{
+		vertMap[i].color = { 1,1,1,1 };
+	}
 
 	unsigned short* indexMap = nullptr;
 	UINT sizeIB = static_cast<UINT>(sizeof(unsigned short) * indices.size());
@@ -179,7 +89,6 @@ void Model::CreateBuffers()
 Model* Model::LoadFromOBJ(const std::string& modelName)
 {
 	Model* model = new Model();
-	//model->InitializeDescriptorHeap();
 	model->LoadFromOBJInternal(modelName);
 	model->CreateBuffers();
 
@@ -270,7 +179,7 @@ void Model::LoadFromOBJInternal(const std::string& modelName)
 	}
 	file.close();
 
-	sprite->SetColor({});
+	sprite->SetTextureLeftTop({ 200,200 });
 	sprite->Update();
 }
 

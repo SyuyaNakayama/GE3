@@ -30,6 +30,9 @@
     <Filter Include="ソース ファイル\3d">
       <UniqueIdentifier>{85553e27-2124-4c55-a457-e77338f24bda}</UniqueIdentifier>
     </Filter>
+    <Filter Include="シェーダー ファイル\object">
+      <UniqueIdentifier>{d2d4ee60-179d-48b7-a930-83415ab52e69}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli">
@@ -37,6 +40,9 @@
     </None>
     <None Include="Resources\shaders\Sprite.hlsli">
       <Filter>シェーダー ファイル\Sprite</Filter>
+    </None>
+    <None Include="Resources\shaders\OBJShaderHeader.hlsli">
+      <Filter>シェーダー ファイル\object</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -51,6 +57,12 @@
     </FxCompile>
     <FxCompile Include="Resources\shaders\SpriteVS.hlsl">
       <Filter>シェーダー ファイル\Sprite</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\OBJPixelShader.hlsl">
+      <Filter>シェーダー ファイル\object</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\OBJVertexShader.hlsl">
+      <Filter>シェーダー ファイル\object</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

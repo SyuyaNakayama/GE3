@@ -22,7 +22,6 @@ void Object3d::StaticInitialize()
 	assert(Object3d::device);
 
 	Vector2 winSize = WindowsAPI::GetInstance()->WIN_SIZE;
-	// カメラ初期化
 	InitializeGraphicsPipeline();
 }
 
@@ -43,7 +42,8 @@ void Object3d::InitializeGraphicsPipeline()
 	{
 		SetInputLayout("POSITION",DXGI_FORMAT_R32G32B32_FLOAT),
 		SetInputLayout("NORMAL",DXGI_FORMAT_R32G32B32_FLOAT),
-		SetInputLayout("TEXCOORD",DXGI_FORMAT_R32G32_FLOAT)
+		SetInputLayout("TEXCOORD",DXGI_FORMAT_R32G32_FLOAT),
+		SetInputLayout("COLOR",DXGI_FORMAT_R32G32B32A32_FLOAT)
 	};
 
 	// グラフィックスパイプラインの流れを設定
