@@ -6,7 +6,7 @@ void Framework::Initialize()
 	dxCommon->Initialize();
 	spriteCommon->Initialize();
 	input->Initialize();
-	sceneManager_ = SceneManager::GetInstance();
+	audio->Initialize();
 }
 
 void Framework::Finalize()

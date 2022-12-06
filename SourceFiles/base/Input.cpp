@@ -39,5 +39,7 @@ void Input::Update()
 }
 
 bool Input::IsInput(const int KEY) { return key[KEY]; }
+
 bool Input::IsTrigger(const int KEY) { return (!oldkey[KEY] && key[KEY]); }
+
 float Input::Move(const int KEY1, const int KEY2, const float spd) { return (IsInput(KEY1) - IsInput(KEY2)) * spd; }

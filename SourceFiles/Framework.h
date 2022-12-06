@@ -4,6 +4,7 @@
 #include "SpriteCommon.h"
 #include "Input.h"
 #include "scene/SceneManager.h"
+#include "Audio.h"
 
 class Framework
 {
@@ -16,7 +17,8 @@ protected:
 	SpriteCommon* spriteCommon = SpriteCommon::GetInstance();
 	// “ü—Í‚Ì‰Šú‰»ˆ—
 	Input* input = Input::GetInstance();
-	SceneManager* sceneManager_ = nullptr;
+	SceneManager* sceneManager_ = SceneManager::GetInstance();
+	Audio* audio = Audio::GetInatance();
 
 public:
 	virtual ~Framework() = default;

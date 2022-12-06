@@ -28,3 +28,8 @@ void ViewProjection::Update()
 		aspectRatio, nearZ, farZ));
 	matView = ChangeMat(XMMatrixLookAtLH(XMLoadFloat3(&ChangeVec(eye)), XMLoadFloat3(&ChangeVec(target)), XMLoadFloat3(&ChangeVec(up))));
 }
+
+void ViewProjection::CameraMove(const Vector3& move)
+{
+	eye += move; target += move;
+}

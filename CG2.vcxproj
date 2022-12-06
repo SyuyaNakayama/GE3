@@ -200,6 +200,7 @@
     <ClCompile Include="SourceFiles\3d\Model.cpp" />
     <ClCompile Include="SourceFiles\3d\ViewProjection.cpp" />
     <ClCompile Include="SourceFiles\3d\WorldTransform.cpp" />
+    <ClCompile Include="SourceFiles\base\Audio.cpp" />
     <ClCompile Include="SourceFiles\base\DirectXCommon.cpp" />
     <ClCompile Include="SourceFiles\base\Functions.cpp" />
     <ClCompile Include="SourceFiles\base\Input.cpp" />
@@ -221,10 +222,12 @@
     <ClInclude Include="SourceFiles\3d\Model.h" />
     <ClInclude Include="SourceFiles\3d\ViewProjection.h" />
     <ClInclude Include="SourceFiles\3d\WorldTransform.h" />
+    <ClInclude Include="SourceFiles\base\Audio.h" />
     <ClInclude Include="SourceFiles\base\DirectXCommon.h" />
     <ClInclude Include="SourceFiles\base\Functions.h" />
     <ClInclude Include="SourceFiles\base\Input.h" />
     <ClInclude Include="SourceFiles\base\WindowsAPI.h" />
+    <ClInclude Include="SourceFiles\base\XAudio2MFPlay.h" />
     <ClInclude Include="SourceFiles\Framework.h" />
     <ClInclude Include="SourceFiles\math\Matrix4.h" />
     <ClInclude Include="SourceFiles\math\Vector2.h" />

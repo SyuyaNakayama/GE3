@@ -19,5 +19,6 @@ public:
 	void Update();
 	bool IsInput(const int KEY);
 	bool IsTrigger(const int KEY);
+	// KEY1が押されてたらプラス、KEY2が押されてたらマイナス
 	float Move(const int KEY1, const int KEY2, const float spd);
 };

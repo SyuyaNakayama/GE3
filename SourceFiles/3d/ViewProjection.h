@@ -16,5 +16,6 @@ public:
 
 	void Initialize();
 	void Update();
+	void CameraMove(const Vector3& move);
 	const Matrix4& GetViewProjectionMatrix() const { return matView * matProjection; }
 };
