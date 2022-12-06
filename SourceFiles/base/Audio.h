@@ -7,6 +7,7 @@
 #include <mfreadwrite.h>
 #include <mfapi.h>
 #include <vector>
+#include <dshow.h>
 
 class Audio final
 {
@@ -42,14 +43,14 @@ private:
 		UINT bufferSize; // バッファのサイズ
 	};
 
-	HRESULT result=S_OK;
+	HRESULT result = S_OK;
 	ComPtr<IXAudio2> xAudio2;
 	SoundData soundData{};
-	IXAudio2MasteringVoice* masterVoice = nullptr;
-	IMFSourceReader* pMFSourceReader{ nullptr };
 	IMFMediaType* pMFMediaType{ nullptr };
-	WAVEFORMATEX* waveFormat{ nullptr };
 	std::vector<BYTE> mediaData;
+	IGraphBuilder* pGraphBuilder = nullptr;
+	IMediaControl* pMediaControl = nullptr;
+	IMediaPosition* pMediaPosition = nullptr;
 
 	Audio() = default;
 public:

@@ -188,8 +188,5 @@
     <ClInclude Include="SourceFiles\base\Audio.h">
       <Filter>ソース ファイル\base</Filter>
     </ClInclude>
-    <ClInclude Include="SourceFiles\base\XAudio2MFPlay.h">
-      <Filter>ソース ファイル\base</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

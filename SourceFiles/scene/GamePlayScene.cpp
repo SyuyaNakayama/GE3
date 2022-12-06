@@ -1,7 +1,6 @@
 #include "GamePlayScene.h"
 #include "SpriteCommon.h"
 #include "WindowsAPI.h"
-#include "XAudio2MFPlay.h"
 
 void GamePlayScene::Initialize()
 {
@@ -20,9 +19,7 @@ void GamePlayScene::Initialize()
 
 	audio = Audio::GetInatance();
 
-	//XAudio2MFSample::XAudio2MFPlay audio;
-	//audio.Play(L"Resources/yMikuzBeyond Dimensiony‰‰¹ƒ~ƒNz.mp3");
-	audio->LoadWave("Resources/yMikuzBeyond Dimensiony‰‰¹ƒ~ƒNz.mp3");
+	audio->LoadWave("Resources/Alarm01.wav");
 	audio->PlayWave();
 }
 
