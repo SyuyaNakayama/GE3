@@ -1,6 +1,8 @@
 #include "GamePlayScene.h"
 #include "SpriteCommon.h"
 #include "WindowsAPI.h"
+#include <fstream>
+#include <cassert>
 
 void GamePlayScene::Initialize()
 {
@@ -18,13 +20,14 @@ void GamePlayScene::Initialize()
 	viewProjection.Initialize();
 
 	audio = Audio::GetInatance();
-
-	audio->LoadWave("Resources/Alarm01.wav");
-	audio->PlayWave();
+	
+	audio->Load(L"Resources/スノーマンライオット_蟲の知らせ_feat_初音ミク.mp3");
+	audio->Play();
 }
 
 void GamePlayScene::Update()
 {
+
 	Vector3 moveSpd =
 	{
 		input->Move(DIK_RIGHT,DIK_LEFT,1.0f),
