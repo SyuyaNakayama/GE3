@@ -1,8 +1,6 @@
 #pragma once
 #include "WindowsAPI.h"
-#include "DirectXCommon.h"
 #include "SpriteCommon.h"
-#include "Input.h"
 #include "scene/SceneManager.h"
 #include "Audio.h"
 

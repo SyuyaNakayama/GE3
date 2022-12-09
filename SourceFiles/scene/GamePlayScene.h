@@ -1,19 +1,16 @@
 #pragma once
-#include <vector>
-#include "Sprite.h"
 #include "BaseScene.h"
-#include "WorldTransform.h"
-#include "ViewProjection.h"
 #include "Model.h"
 #include "Audio.h"
 
 class GamePlayScene : public BaseScene
 {
 private:
-	Model* model[2]{};
+	Model* model = nullptr;
+	Model* model2 = nullptr;
 	WorldTransform worldTransforms[3];
 	ViewProjection viewProjection;
-	Audio *audio;
+	Sprite::Color color;
 
 public:
 	void Initialize() override;

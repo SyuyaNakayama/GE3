@@ -119,7 +119,7 @@ void Model::InitializeGraphicsPipeline()
 
 Model* Model::LoadFromOBJ(const string& modelName)
 {
-	for (Model* model: models)
+	for (Model* model : models)
 	{
 		if (model->name == modelName) { return model; }
 	}
@@ -129,6 +129,29 @@ Model* Model::LoadFromOBJ(const string& modelName)
 	model->CreateBuffers();
 	models.push_back(model);
 	return model;
+}
+
+void Model::SetSprite(const Sprite& sprite_)
+{
+	Sprite s = sprite_;
+	sprite = &s;
+	isSpriteChange = true;
+}
+
+void Model::TextureUpdate()
+{
+	sprite->Update();
+	for (size_t i = 0; i < vertices.size(); i++)
+	{
+		Vector2 spriteUvLT = sprite->GetVerticesUv(Sprite::LT);
+		Vector2 spriteUvRB = sprite->GetVerticesUv(Sprite::RB);
+		Vector2 uv = vertices[i].uv;
+		uv.x *= spriteUvRB.x;
+		uv.y *= spriteUvRB.y;
+		uv += spriteUvLT;
+		vertMap[i].uv = uv;
+		vertMap[i].color = sprite->GetColor();
+	}
 }
 
 void Model::LoadFromOBJInternal(const std::string& modelName)
@@ -259,11 +282,6 @@ void Model::CreateBuffers()
 	vbView.SizeInBytes = sizeVB;
 	vbView.StrideInBytes = sizeof(VertexData);
 
-	for (size_t i = 0; i < vertices.size(); i++)
-	{
-		vertMap[i].color = { 1,1,1,1 };
-	}
-
 	unsigned short* indexMap = nullptr;
 	UINT sizeIB = static_cast<UINT>(sizeof(unsigned short) * indices.size());
 	// インデックスバッファ生成
@@ -302,11 +320,10 @@ void Model::PreDraw()
 
 void Model::Draw(const WorldTransform& worldTransform)
 {
-
 	ID3D12GraphicsCommandList* cmdList = DirectXCommon::GetInstance()->GetCommandList();
 
 	cmdList->SetGraphicsRootConstantBufferView(0, worldTransform.constBuffer->GetGPUVirtualAddress());
-	
+
 	// 頂点バッファの設定
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
 	// インデックスバッファの設定

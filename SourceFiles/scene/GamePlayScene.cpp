@@ -7,32 +7,33 @@
 void GamePlayScene::Initialize()
 {
 	WorldTransform::SetViewProjection(&viewProjection);
-	model[0] = Model::LoadFromOBJ("triangle_mat");
-	model[1] = Model::LoadFromOBJ("player");
+	model = Model::LoadFromOBJ("cube");
+	model2 = Model::LoadFromOBJ("cube");
 
 	for (WorldTransform& w : worldTransforms)
 	{
 		w.Initialize();
-		w.scale = { 20,20,20 };
+		w.scale = { 7,7,7 };
 	}
-	worldTransforms[1].translation = { +25,0,+25 };
-	worldTransforms[2].translation = { -25,0,-25 };
+	worldTransforms[1].translation.z = -20.0f;
 	viewProjection.Initialize();
-
-	audio = Audio::GetInatance();
-	
-	audio->Load(L"Resources/スノーマンライオット_蟲の知らせ_feat_初音ミク.mp3");
-	audio->Play();
 }
 
 void GamePlayScene::Update()
 {
-
 	Vector3 moveSpd =
 	{
 		input->Move(DIK_RIGHT,DIK_LEFT,1.0f),
 		input->Move(DIK_UP,DIK_DOWN,1.0f), 0
 	};
+
+	Sprite* modelSprite = model->GetSprite();
+
+	Sprite::Color color = modelSprite->GetColor();
+	color.a += 0.01f;
+
+	modelSprite->SetColor(color);
+	model->TextureUpdate();
 
 	viewProjection.CameraMove(moveSpd);
 
@@ -45,14 +46,15 @@ void GamePlayScene::Draw()
 {
 	Model::PreDraw();
 
-	for (size_t i = 0; i < 2; i++) { model[i]->Draw(worldTransforms[i]); }
-	model[1]->Draw(worldTransforms[2]);
+	model->Draw(worldTransforms[0]);
+	model2->Draw(worldTransforms[1]);
 
 	Model::PostDraw();
+
+	WindowsAPI::GetInstance()->MyPaint();
 }
 
 void GamePlayScene::Finalize()
 {
-	for (size_t i = 0; i < 2; i++) { delete model[i]; }
-	audio->Finalize();
+	delete model;
 }

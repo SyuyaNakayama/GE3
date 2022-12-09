@@ -9,11 +9,24 @@
 class Sprite
 {
 public:
-	struct Color { float r = 1, g = 1, b = 1, a = 1; };
-private:
-	struct Vertex { Vector2 pos, uv; };
-	struct ConstBufferDataMaterial { Color color; };
-	struct ConstBufferDataTransform { Matrix4 mat; };
+	struct Color
+	{
+	private:
+		class ColorClass
+		{
+		private:
+			float val_ = 1.0f;
+		public:
+			float operator=(float val);
+			void operator+=(float val) { operator=(val_ + val); }
+			void operator-=(float val) { operator=(val_ - val); }
+		};
+	public:
+		ColorClass r, g, b, a;
+		Color() {}
+		Color(float red, float green, float blue, float alpha = 1.0f) { r = red, g = green, b = blue, a = alpha; }
+	};
+
 	enum VertexNumber
 	{
 		LB, // ç∂â∫
@@ -21,10 +34,14 @@ private:
 		RB, // âEâ∫
 		RT  // âEè„
 	};
+private:
+	struct Vertex { Vector2 pos, uv; };
+	struct ConstBufferDataMaterial { Color color; };
+	struct ConstBufferDataTransform { Matrix4 mat; };
 
 	const static Matrix4 matProj;
-	
-	std::array<Vertex,4> vertices;
+
+	std::array<Vertex, 4> vertices;
 	D3D12_VERTEX_BUFFER_VIEW vbView{};
 	Microsoft::WRL::ComPtr<ID3D12Resource> constBuffMaterial, constBuffTransform;
 	ConstBufferDataTransform* constMapTransform = nullptr;
@@ -73,4 +90,5 @@ public:
 	uint32_t GetTextureIndex() const { return textureIndex_; }
 	const Vector2& GetTextureLeftTop() const { return textureLeftTop_; }
 	const Vector2& GetTextureSize() const { return textureSize_; }
+	const Vector2& GetVerticesUv(VertexNumber vNum) { return vertices[vNum].uv; }
 };

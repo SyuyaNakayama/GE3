@@ -20,4 +20,5 @@ public:
 	bool ProcessMessage();
 	void Initialize();
 	void Finalize();
+	void MyPaint();
 };

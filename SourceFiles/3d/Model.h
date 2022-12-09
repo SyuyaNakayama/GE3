@@ -1,6 +1,5 @@
 #pragma once
 #include <Windows.h>
-#include <wrl.h>
 #include <vector>
 #include "Sprite.h"
 #include "WorldTransform.h"
@@ -46,7 +45,9 @@ private:
 	};
 private:
 	VertexData* vertMap = nullptr;
+	// テクスチャ
 	Sprite* sprite = nullptr;
+	// モデル名
 	string name;
 	// 頂点バッファ
 	ComPtr<ID3D12Resource> vertBuff;
@@ -61,46 +62,35 @@ private:
 	// 頂点データ配列
 	vector<VertexData> vertices;
 	// 頂点インデックス配列
-	vector<unsigned short> indices;
+	vector<uint16_t> indices;
 	// マテリアル
 	Material material;
 	// パイプラインステートオブジェクト
 	static ComPtr<ID3D12PipelineState> pipelinestate;
 	// ルートシグネチャ
 	static ComPtr<ID3D12RootSignature> rootsignature;
+	// スプライト変更フラグ(スプライト変更を得る)
+	bool isSpriteChange = false;
 
 	void LoadFromOBJInternal(const string& modelName);
 
-	/// <summary>
-	/// マテリアル読み込み
-	/// </summary>
+	// マテリアル読み込み
 	void LoadMaterial(const string& DIRECTORY_PATH, const string& FILENAME);
 
 	void CreateBuffers();
 
 	static vector<Model*> models;
 public:
-	/// <summary>
-	/// グラフィックパイプライン生成
-	/// </summary>
-	/// <returns>成否</returns>
+	// グラフィックパイプライン生成
 	static void InitializeGraphicsPipeline();
-
-	/// <summary>
-	/// 描画前処理
-	/// </summary>
-	/// <param name="cmdList">描画コマンドリスト</param>
+	// 描画前処理
 	static void PreDraw();
-
-	/// <summary>
-	/// 描画後処理
-	/// </summary>
+	// 描画後処理
 	static void PostDraw() {}
-
-	/// <summary>
-	/// モデル作成
-	/// </summary>
+	// モデル作成
 	static Model* LoadFromOBJ(const string& modelName);
-
+	Sprite* GetSprite() { return sprite; }
+	void SetSprite(const Sprite& sprite_);
+	void TextureUpdate();
 	void Draw(const WorldTransform& worldTransform);
 };

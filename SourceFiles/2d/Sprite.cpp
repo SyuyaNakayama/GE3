@@ -113,3 +113,11 @@ void Sprite::Draw()
 	// 描画コマンド
 	cmdList->DrawInstanced((UINT)vertices.size(), 1, 0, 0); // 全ての頂点を使って描画
 }
+
+float Sprite::Color::ColorClass::operator=(float val)
+{
+	val_ = val;
+	if (val_ > 1.0f) { val_ -= (int)val_; }
+	if (val_ < 0.0f) { val_ += 1.0f + (int)val_; }
+	return val_;
+}

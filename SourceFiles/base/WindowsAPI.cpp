@@ -7,6 +7,9 @@ LRESULT WindowsAPI::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam
 	// メッセージに応じてゲーム固有の処理を行う
 	switch (msg)
 	{
+	case WM_PAINT:
+		//MyPaint();
+		break;
 		// ウィンドウが破棄された
 	case WM_DESTROY:
 		// OSに対して、アプリの終了を伝える
@@ -76,4 +79,18 @@ void WindowsAPI::Finalize()
 {
 	// ウィンドウクラスを登録解除
 	UnregisterClass(w.lpszClassName, w.hInstance);
+}
+
+void WindowsAPI::MyPaint()
+{
+	HDC hdc;
+	PAINTSTRUCT ps;
+
+	const char* szStr = "Hello, World!!";
+	hdc = BeginPaint(hwnd, &ps);
+
+	SetBkColor(hdc, RGB(10, 10, 10));  //文字の背景色を設定
+	SetTextColor(hdc, RGB(200, 200, 200));  //文字の色を設定
+	TextOutA(hdc, 10, 10, szStr, (int)strlen(szStr));//文字を書く
+	EndPaint(hwnd, &ps);
 }
