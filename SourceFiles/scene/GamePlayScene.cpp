@@ -50,8 +50,6 @@ void GamePlayScene::Draw()
 	model2->Draw(worldTransforms[1]);
 
 	Model::PostDraw();
-
-	WindowsAPI::GetInstance()->MyPaint();
 }
 
 void GamePlayScene::Finalize()
