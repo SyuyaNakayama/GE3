@@ -43,16 +43,10 @@ void GamePlayScene::Update()
 
 void GamePlayScene::Draw()
 {
-	//DirectXCommon::GetInstance()->SetViewport();
 	Model::PreDraw();
 	model->Draw(worldTransforms[0]);
 	model2->Draw(worldTransforms[1]);
 	Model::PostDraw();
-	//DirectXCommon::GetInstance()->SetViewport(WindowsAPI::WIN_SIZE / 2.0f, { WindowsAPI::WIN_SIZE.x / 2.0f,0 });
-	//Model::PreDraw();
-	//model->Draw(worldTransforms[0]);
-	//model2->Draw(worldTransforms[1]);
-	//Model::PostDraw();
 }
 
 void GamePlayScene::Finalize()

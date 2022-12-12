@@ -210,9 +210,7 @@
     <ClCompile Include="SourceFiles\Framework.cpp" />
     <ClCompile Include="SourceFiles\main.cpp" />
     <ClCompile Include="SourceFiles\math\Matrix4.cpp" />
-    <ClCompile Include="SourceFiles\math\Vector2.cpp" />
-    <ClCompile Include="SourceFiles\math\Vector3.cpp" />
-    <ClCompile Include="SourceFiles\math\VectorChange.cpp" />
+    <ClCompile Include="SourceFiles\math\Vector.cpp" />
     <ClCompile Include="SourceFiles\MyGame.cpp" />
     <ClCompile Include="SourceFiles\scene\FadeManager.cpp" />
     <ClCompile Include="SourceFiles\scene\GamePlayScene.cpp" />
@@ -232,9 +230,7 @@
     <ClInclude Include="SourceFiles\base\WindowsAPI.h" />
     <ClInclude Include="SourceFiles\Framework.h" />
     <ClInclude Include="SourceFiles\math\Matrix4.h" />
-    <ClInclude Include="SourceFiles\math\Vector2.h" />
-    <ClInclude Include="SourceFiles\math\Vector3.h" />
-    <ClInclude Include="SourceFiles\math\VectorChange.h" />
+    <ClInclude Include="SourceFiles\math\Vector.h" />
     <ClInclude Include="SourceFiles\MyGame.h" />
     <ClInclude Include="SourceFiles\scene\BaseScene.h" />
     <ClInclude Include="SourceFiles\scene\FadeManager.h" />

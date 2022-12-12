@@ -4,7 +4,7 @@
 #include <wrl.h>
 #include <vector>
 #include <chrono>
-#include "Vector2.h"
+#include "Vector.h"
 #include "WindowsAPI.h"
 
 class DirectXCommon final

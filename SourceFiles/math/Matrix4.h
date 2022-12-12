@@ -1,6 +1,5 @@
 #pragma once
-#include "Vector2.h"
-#include "Vector3.h"
+#include "Vector.h"
 
 struct Matrix4
 {
@@ -22,6 +21,5 @@ Matrix4 RotateY(float angle);
 Matrix4 RotateZ(float angle);
 Matrix4 Rotate(const Vector3& r);
 Matrix4 Translate(const Vector3& t);
-Matrix4 OrthoGraphic(const Vector2& windowSize);
 Matrix4 operator*(const Matrix4& m1, const Matrix4& m2);
 Vector3 operator*(const Vector3& v, const Matrix4& m);

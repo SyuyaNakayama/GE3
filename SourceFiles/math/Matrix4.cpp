@@ -122,17 +122,6 @@ Matrix4 Translate(const Vector3& t)
 	return result;
 }
 
-Matrix4 OrthoGraphic(const Vector2& windowSize)
-{
-	Matrix4 matProj;
-	// ïΩçsìäâeçsóÒÇÃê∂ê¨
-	matProj.m[0][0] = 2.0f / windowSize.x;
-	matProj.m[1][1] = -2.0f / windowSize.y;
-	matProj.m[3][0] = -1.0f;
-	matProj.m[3][1] = 1.0f;
-	return matProj;
-}
-
 Vector3 operator*(const Vector3& v, const Matrix4& m)
 {
 	float w = v.x * m.m[0][3] + v.y * m.m[1][3] + v.z * m.m[2][3] + v.x * m.m[3][3];

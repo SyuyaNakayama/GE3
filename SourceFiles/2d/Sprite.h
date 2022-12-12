@@ -3,7 +3,7 @@
 #include <wrl.h>
 #include <d3d12.h>
 #include "Matrix4.h"
-#include "VectorChange.h"
+#include "Vector.h"
 #include <string>
 
 class Sprite

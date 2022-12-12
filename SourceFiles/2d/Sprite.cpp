@@ -5,7 +5,18 @@
 #include "Functions.h"
 
 // 平行投影行列
-const Matrix4 Sprite::matProj = OrthoGraphic(WindowsAPI::GetInstance()->WIN_SIZE);
+Matrix4 OrthoGraphic(const Vector2& windowSize)
+{
+	Matrix4 matProj;
+	// 平行投影行列の生成
+	matProj.m[0][0] = 2.0f / windowSize.x;
+	matProj.m[1][1] = -2.0f / windowSize.y;
+	matProj.m[3][0] = -1.0f;
+	matProj.m[3][1] = 1.0f;
+	return matProj;
+}
+
+const Matrix4 Sprite::matProj = OrthoGraphic(WindowsAPI::WIN_SIZE);
 
 void Sprite::Initialize(uint32_t textureIndex)
 {
