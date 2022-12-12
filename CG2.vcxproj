@@ -214,6 +214,7 @@
     <ClCompile Include="SourceFiles\math\Vector3.cpp" />
     <ClCompile Include="SourceFiles\math\VectorChange.cpp" />
     <ClCompile Include="SourceFiles\MyGame.cpp" />
+    <ClCompile Include="SourceFiles\scene\FadeManager.cpp" />
     <ClCompile Include="SourceFiles\scene\GamePlayScene.cpp" />
     <ClCompile Include="SourceFiles\scene\SceneManager.cpp" />
     <ClCompile Include="SourceFiles\scene\TitleScene.cpp" />
@@ -236,6 +237,7 @@
     <ClInclude Include="SourceFiles\math\VectorChange.h" />
     <ClInclude Include="SourceFiles\MyGame.h" />
     <ClInclude Include="SourceFiles\scene\BaseScene.h" />
+    <ClInclude Include="SourceFiles\scene\FadeManager.h" />
     <ClInclude Include="SourceFiles\scene\GamePlayScene.h" />
     <ClInclude Include="SourceFiles\scene\SceneManager.h" />
     <ClInclude Include="SourceFiles\scene\TitleScene.h" />

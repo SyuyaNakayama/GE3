@@ -1,5 +1,6 @@
 #include "WindowsAPI.h"
 #pragma comment(lib,"winmm.lib")
+const Vector2 WindowsAPI::WIN_SIZE = { 1280.0f,720.0f };
 
 // ウィンドウプロシージャ
 LRESULT WindowsAPI::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)

@@ -8,11 +8,11 @@ private:
 	HWND hwnd;
 	WNDCLASSEX w{};
 	WindowsAPI() = default;
+	static LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 public:
 	// ウィンドウサイズ
-	const Vector2 WIN_SIZE = { 1280.0f,720.0f };
+	static const Vector2 WIN_SIZE;
 
-	static LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 	static WindowsAPI* GetInstance();
 	WindowsAPI(const WindowsAPI& obj) = delete;
 	HWND GetHwnd() { return hwnd; }

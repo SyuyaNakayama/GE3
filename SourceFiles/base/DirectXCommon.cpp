@@ -1,5 +1,4 @@
 #include "DirectXCommon.h"
-#include "WindowsAPI.h"
 #include <cassert>
 #include <vector>
 #include <thread>
@@ -7,6 +6,8 @@
 #pragma comment(lib, "dxgi.lib")
 using namespace std;
 using namespace std::chrono;
+
+const Vector2 WIN_SIZE = WindowsAPI::WIN_SIZE;
 
 DirectXCommon* DirectXCommon::GetInstance()
 {
@@ -23,6 +24,14 @@ void DirectXCommon::Initialize()
 	InitializeRenderTargetView();	// レンダーターゲットビューの初期化
 	InitializeDepthBuffer();		// 深度バッファの初期化
 	InitializeFence();				// フェンスの初期化
+
+	// ビューポート設定コマンド
+	viewport.Width = WIN_SIZE.x;
+	viewport.Height = WIN_SIZE.y;
+	viewport.TopLeftX = 0;
+	viewport.TopLeftY = 0;
+	viewport.MinDepth = 0.0f;
+	viewport.MaxDepth = 1.0f;
 }
 
 void DirectXCommon::InitializeDevice()
@@ -269,22 +278,13 @@ void DirectXCommon::PreDraw()
 	commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
-	D3D12_VIEWPORT viewport{};
 	D3D12_RECT scissorRect{};
-	Vector2 winSize = WindowsAPI::GetInstance()->WIN_SIZE;
 
-	// ビューポート設定コマンド
-	viewport.Width = winSize.x;
-	viewport.Height = winSize.y;
-	viewport.TopLeftX = 0;
-	viewport.TopLeftY = 0;
-	viewport.MinDepth = 0.0f;
-	viewport.MaxDepth = 1.0f;
 	// シザー矩形
 	scissorRect.left = 0; // 切り抜き座標左
-	scissorRect.right = scissorRect.left + (long)winSize.x; // 切り抜き座標右
+	scissorRect.right = scissorRect.left + (long)WIN_SIZE.x; // 切り抜き座標右
 	scissorRect.top = 0; // 切り抜き座標上
-	scissorRect.bottom = scissorRect.top + (long)winSize.y; // 切り抜き座標下
+	scissorRect.bottom = scissorRect.top + (long)WIN_SIZE.y; // 切り抜き座標下
 
 	commandList->RSSetScissorRects(1, &scissorRect); // シザー矩形設定コマンドを、コマンドリストに積む
 	commandList->RSSetViewports(1, &viewport); // ビューポート設定コマンドを、コマンドリストに積む
@@ -332,4 +332,12 @@ void DirectXCommon::PostDraw()
 	// 再びコマンドリストを貯める準備
 	result = commandList->Reset(commandAllocator.Get(), nullptr);
 	assert(SUCCEEDED(result));
+}
+
+void DirectXCommon::SetViewport(Vector2 viewportSize, Vector2 viewportLeftTop)
+{
+	viewport.Width = viewportSize.x;
+	viewport.Height = viewportSize.y;
+	viewport.TopLeftX = viewportLeftTop.x;
+	viewport.TopLeftY = viewportLeftTop.y;
 }
