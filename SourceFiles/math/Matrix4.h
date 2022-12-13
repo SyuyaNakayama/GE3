@@ -3,9 +3,6 @@
 
 class Matrix4
 {
-private:
-	struct float4 { float x = 0, y = 0, z = 0, w = 0; };
-
 public:
 	float m[4][4] =
 	{

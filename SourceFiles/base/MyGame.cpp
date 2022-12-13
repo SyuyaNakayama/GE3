@@ -6,7 +6,7 @@
 void MyGame::Initialize()
 {
 	Framework::Initialize();
-	BaseScene* scene = new TitleScene();
+	BaseScene* scene = new GamePlayScene();
 	sceneManager_->Initialize();
 	sceneManager_->SetNextScene(scene, false);
 	Model::InitializeGraphicsPipeline();
