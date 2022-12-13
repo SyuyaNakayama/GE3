@@ -1,7 +1,7 @@
 #pragma once
 #include "WindowsAPI.h"
 #include "SpriteCommon.h"
-#include "scene/SceneManager.h"
+#include "SceneManager.h"
 #include "Audio.h"
 
 class Framework

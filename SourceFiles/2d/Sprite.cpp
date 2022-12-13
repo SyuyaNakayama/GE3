@@ -97,8 +97,8 @@ void Sprite::Update()
 	vertices[RT].uv = { tex_right, tex_top };
 
 	Matrix4 matRot, matTrans;
-	matRot = RotateZ(rotation_);
-	matTrans = Translate(VectorChange(position_));
+	matRot = Matrix4::RotateZ(rotation_);
+	matTrans = Matrix4::Translate(VectorChange(position_));
 
 	matWorld = matRot * matTrans;
 

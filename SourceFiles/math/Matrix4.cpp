@@ -17,7 +17,7 @@ Matrix4 Matrix4::operator*=(const Matrix4& m2)
 	return *this;
 }
 
-Matrix4 Identity()
+Matrix4 Matrix4::Identity()
 {
 	Matrix4 result
 	{
@@ -30,7 +30,7 @@ Matrix4 Identity()
 	return result;
 }
 
-Matrix4 Zero()
+Matrix4 Matrix4::Zero()
 {
 	Matrix4 result
 	{
@@ -43,7 +43,7 @@ Matrix4 Zero()
 	return result;
 }
 
-Matrix4 Scale(const Vector3& s)
+Matrix4 Matrix4::Scale(const Vector3& s)
 {
 	Matrix4 result
 	{
@@ -56,7 +56,7 @@ Matrix4 Scale(const Vector3& s)
 	return result;
 }
 
-Matrix4 RotateX(float angle)
+Matrix4 Matrix4::RotateX(float angle)
 {
 	float sin = std::sin(angle);
 	float cos = std::cos(angle);
@@ -72,7 +72,7 @@ Matrix4 RotateX(float angle)
 	return result;
 }
 
-Matrix4 RotateY(float angle)
+Matrix4 Matrix4::RotateY(float angle)
 {
 	float sin = std::sin(angle);
 	float cos = std::cos(angle);
@@ -88,7 +88,7 @@ Matrix4 RotateY(float angle)
 	return result;
 }
 
-Matrix4 RotateZ(float angle)
+Matrix4 Matrix4::RotateZ(float angle)
 {
 	float sin = std::sin(angle);
 	float cos = std::cos(angle);
@@ -104,12 +104,12 @@ Matrix4 RotateZ(float angle)
 	return result;
 }
 
-Matrix4 Rotate(const Vector3& r)
+Matrix4 Matrix4::Rotate(const Vector3& r)
 {
 	return RotateZ(r.z) * RotateX(r.x) * RotateY(r.y);
 }
 
-Matrix4 Translate(const Vector3& t)
+Matrix4 Matrix4::Translate(const Vector3& t)
 {
 	Matrix4 result
 	{

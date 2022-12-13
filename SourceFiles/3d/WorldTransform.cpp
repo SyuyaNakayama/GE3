@@ -11,9 +11,9 @@ void WorldTransform::Update()
 {
 	assert(viewProjection_);
 	
-	Matrix4 matScale = Scale(scale);
-	Matrix4 matRot = Rotate(rotation);
-	Matrix4 matTrans = Translate(translation);
+	Matrix4 matScale = Matrix4::Scale(scale);
+	Matrix4 matRot = Matrix4::Rotate(rotation);
+	Matrix4 matTrans = Matrix4::Translate(translation);
 	matWorld = matScale * matRot * matTrans;
 	if (parent != nullptr) { matWorld *= parent->matWorld; }
 

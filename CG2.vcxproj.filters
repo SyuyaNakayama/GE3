@@ -105,23 +105,26 @@
     <ClCompile Include="SourceFiles\base\Audio.cpp">
       <Filter>ソース ファイル\base</Filter>
     </ClCompile>
-    <ClCompile Include="SourceFiles\Framework.cpp">
-      <Filter>ソース ファイル\base</Filter>
-    </ClCompile>
-    <ClCompile Include="SourceFiles\MyGame.cpp">
-      <Filter>ソース ファイル\base</Filter>
-    </ClCompile>
     <ClCompile Include="SourceFiles\scene\SceneManager.cpp">
       <Filter>ソース ファイル\scene</Filter>
     </ClCompile>
     <ClCompile Include="SourceFiles\scene\FadeManager.cpp">
       <Filter>ソース ファイル\scene</Filter>
     </ClCompile>
-    <ClCompile Include="SourceFiles\main.cpp">
-      <Filter>ソース ファイル\base</Filter>
-    </ClCompile>
     <ClCompile Include="SourceFiles\math\Vector.cpp">
       <Filter>ソース ファイル\math</Filter>
+    </ClCompile>
+    <ClCompile Include="SourceFiles\base\Framework.cpp">
+      <Filter>ソース ファイル\base</Filter>
+    </ClCompile>
+    <ClCompile Include="SourceFiles\base\main.cpp">
+      <Filter>ソース ファイル\base</Filter>
+    </ClCompile>
+    <ClCompile Include="SourceFiles\base\MyGame.cpp">
+      <Filter>ソース ファイル\base</Filter>
+    </ClCompile>
+    <ClCompile Include="SourceFiles\math\Quaternion.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -170,17 +173,18 @@
     <ClInclude Include="SourceFiles\base\Audio.h">
       <Filter>ソース ファイル\base</Filter>
     </ClInclude>
-    <ClInclude Include="SourceFiles\Framework.h">
-      <Filter>ソース ファイル\base</Filter>
-    </ClInclude>
-    <ClInclude Include="SourceFiles\MyGame.h">
-      <Filter>ソース ファイル\base</Filter>
-    </ClInclude>
     <ClInclude Include="SourceFiles\scene\FadeManager.h">
       <Filter>ソース ファイル\scene</Filter>
     </ClInclude>
     <ClInclude Include="SourceFiles\math\Vector.h">
       <Filter>ソース ファイル\math</Filter>
     </ClInclude>
+    <ClInclude Include="SourceFiles\base\Framework.h">
+      <Filter>ソース ファイル\base</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\base\MyGame.h">
+      <Filter>ソース ファイル\base</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\math\Quaternion.h" />
   </ItemGroup>
 </Project>

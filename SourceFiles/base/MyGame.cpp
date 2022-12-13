@@ -1,6 +1,6 @@
 ﻿#include "MyGame.h"
-#include "scene/GamePlayScene.h"
-#include "scene/TitleScene.h"
+#include "GamePlayScene.h"
+#include "TitleScene.h"
 #include "Model.h"
 
 void MyGame::Initialize()

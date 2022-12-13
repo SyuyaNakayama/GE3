@@ -5,7 +5,6 @@ class Vector2
 public:
 	float x = 0, y = 0;
 
-public:
 	float Length() const; // ƒmƒ‹ƒ€(’·‚³)
 	void Normalize(); // ³‹K‰»
 
@@ -24,7 +23,6 @@ class Vector3
 public:
 	float x = 0, y = 0, z = 0;
 
-public:
 	Vector3(float x_ = 0, float y_ = 0, float z_ = 0) { x = x_, y = y_, z = z_; }
 	Vector3(const Vector2& v, float z_ = 0) { x = v.x, y = v.y, z = z_; }
 

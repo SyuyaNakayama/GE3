@@ -117,10 +117,10 @@
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <ExceptionHandling>Sync</ExceptionHandling>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)SourceFiles\2d;$(ProjectDir)SourceFiles\base;$(ProjectDir)SourceFiles\math;$(ProjectDir)SourceFiles\3d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)SourceFiles\scene;$(ProjectDir)SourceFiles\2d;$(ProjectDir)SourceFiles\base;$(ProjectDir)SourceFiles\math;$(ProjectDir)SourceFiles\3d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -204,14 +204,15 @@
     <ClCompile Include="SourceFiles\3d\WorldTransform.cpp" />
     <ClCompile Include="SourceFiles\base\Audio.cpp" />
     <ClCompile Include="SourceFiles\base\DirectXCommon.cpp" />
+    <ClCompile Include="SourceFiles\base\Framework.cpp" />
     <ClCompile Include="SourceFiles\base\Functions.cpp" />
     <ClCompile Include="SourceFiles\base\Input.cpp" />
+    <ClCompile Include="SourceFiles\base\main.cpp" />
+    <ClCompile Include="SourceFiles\base\MyGame.cpp" />
     <ClCompile Include="SourceFiles\base\WindowsAPI.cpp" />
-    <ClCompile Include="SourceFiles\Framework.cpp" />
-    <ClCompile Include="SourceFiles\main.cpp" />
     <ClCompile Include="SourceFiles\math\Matrix4.cpp" />
+    <ClCompile Include="SourceFiles\math\Quaternion.cpp" />
     <ClCompile Include="SourceFiles\math\Vector.cpp" />
-    <ClCompile Include="SourceFiles\MyGame.cpp" />
     <ClCompile Include="SourceFiles\scene\FadeManager.cpp" />
     <ClCompile Include="SourceFiles\scene\GamePlayScene.cpp" />
     <ClCompile Include="SourceFiles\scene\SceneManager.cpp" />
@@ -225,13 +226,14 @@
     <ClInclude Include="SourceFiles\3d\WorldTransform.h" />
     <ClInclude Include="SourceFiles\base\Audio.h" />
     <ClInclude Include="SourceFiles\base\DirectXCommon.h" />
+    <ClInclude Include="SourceFiles\base\Framework.h" />
     <ClInclude Include="SourceFiles\base\Functions.h" />
     <ClInclude Include="SourceFiles\base\Input.h" />
+    <ClInclude Include="SourceFiles\base\MyGame.h" />
     <ClInclude Include="SourceFiles\base\WindowsAPI.h" />
-    <ClInclude Include="SourceFiles\Framework.h" />
     <ClInclude Include="SourceFiles\math\Matrix4.h" />
+    <ClInclude Include="SourceFiles\math\Quaternion.h" />
     <ClInclude Include="SourceFiles\math\Vector.h" />
-    <ClInclude Include="SourceFiles\MyGame.h" />
     <ClInclude Include="SourceFiles\scene\BaseScene.h" />
     <ClInclude Include="SourceFiles\scene\FadeManager.h" />
     <ClInclude Include="SourceFiles\scene\GamePlayScene.h" />

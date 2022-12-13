@@ -1,7 +1,7 @@
 #include "GamePlayScene.h"
 #include "SpriteCommon.h"
+#include "Quaternion.h"
 #include <fstream>
-#include <cassert>
 
 void GamePlayScene::Initialize()
 {

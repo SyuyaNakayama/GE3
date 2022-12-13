@@ -2,7 +2,7 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
-const XMFLOAT3& ChangeVec(const Vector3& v) { return XMFLOAT3(v.x, v.y, v.z); }
+XMFLOAT3 ChangeVec(const Vector3& v) { return XMFLOAT3(v.x, v.y, v.z); }
 Matrix4 ChangeMat(const XMMATRIX& m)
 {
 	Matrix4 mat;
