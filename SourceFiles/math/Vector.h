@@ -1,5 +1,7 @@
 #pragma once
 
+const float PI = 3.141592f;
+
 class Vector2
 {
 public:

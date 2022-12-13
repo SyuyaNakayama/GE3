@@ -1,8 +1,12 @@
 #pragma once
 #include "Vector.h"
 
-struct Matrix4
+class Matrix4
 {
+private:
+	struct float4 { float x = 0, y = 0, z = 0, w = 0; };
+
+public:
 	float m[4][4] =
 	{
 		1.0f,0.0f,0.0f,0.0f,

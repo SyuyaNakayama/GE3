@@ -124,7 +124,7 @@ Matrix4 Matrix4::Translate(const Vector3& t)
 
 Vector3 operator*(const Vector3& v, const Matrix4& m)
 {
-	float w = v.x * m.m[0][3] + v.y * m.m[1][3] + v.z * m.m[2][3] + v.x * m.m[3][3];
+	float w = v.x * m.m[0][3] + v.y * m.m[1][3] + v.z * m.m[2][3] + m.m[3][3];
 
 	Vector3 result
 	{

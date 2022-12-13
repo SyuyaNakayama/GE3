@@ -21,6 +21,8 @@ public:
 	void Normalize() { *this /= Norm(); }
 	// 逆Quaternionにする
 	void Inverse();
+	// 回転行列を求める
+	Matrix4 MakeRotateMatrix() const;
 
 	// 静的関数
 	// メンバ変数の値を変えたくない時はこっちを使う
@@ -30,7 +32,15 @@ public:
 	static float Norm(const Quaternion& q) { return q.Norm(); }
 	static Quaternion Normalize(const Quaternion& q);
 	static Quaternion Inverse(const Quaternion& q);
+
+	// 任意軸回転のQuaternion生成(axisは正規化されている必要がある)
+	static Quaternion MakeAxisAngle(const Vector3& axis, float angle);
+	// ベクトルをQuaternionで回転させる
+	static Vector3 RotateVector(const Vector3& v, const Quaternion& q);
+	// Quaternionから回転行列を求める
+	static Matrix4 MakeRotateMatrix(const Quaternion& q);
 };
 
-Quaternion operator*(const Quaternion& q1, const Quaternion& q2); // 積
-Quaternion operator/(const Quaternion& q1, float norm); // 積
+// 2項演算子オーバーロード
+Quaternion operator*(const Quaternion& q1, const Quaternion& q2);
+Quaternion operator/(const Quaternion& q1, float norm);
