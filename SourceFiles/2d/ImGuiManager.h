@@ -1,6 +1,8 @@
 #pragma once
 #include <wrl.h>
 #include <d3d12.h>
+#include "Vector.h"
+#include <string>
 
 class ImGuiManager final
 {
@@ -17,4 +19,8 @@ public:
 	void End();
 	void Draw();
 	void Finalize();
+	void PrintVector(std::string str, Vector2 vec);
+	void PrintVector(std::string str, Vector3 vec);
+	void SliderVector(std::string str, Vector2& vec);
+	void SliderVector(std::string str, Vector3& vec);
 };

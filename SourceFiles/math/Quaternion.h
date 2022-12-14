@@ -3,10 +3,10 @@
 
 class Quaternion
 {
-private:
+public:
 	float x = 0, y = 0, z = 0, // ‹••”
 		w = 0; // ŽÀ•”
-public:
+	
 	Quaternion(float w_, Vector3 iv) { x = iv.x, y = iv.y, z = iv.z, w = w_; }
 	Quaternion(float w_ = 0, float x_ = 0, float y_ = 0, float z_ = 0) { x = x_, y = y_, z = z_; w = w_; }
 	Vector3 GetImaginary() const { return { x,y,z }; }

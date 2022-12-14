@@ -5,6 +5,8 @@
 #include "DirectXCommon.h"
 #include <cassert>
 
+using namespace ImGui;
+
 ImGuiManager* ImGuiManager::GetInstance()
 {
 	static ImGuiManager instance;
@@ -18,9 +20,9 @@ void ImGuiManager::Initialize()
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
 
 	// ImGuiのコンテキストを生成
-	ImGui::CreateContext();
+	CreateContext();
 	// ImGuiのスタイルを設定
-	ImGui::StyleColorsDark();
+	StyleColorsDark();
 
 	ImGui_ImplWin32_Init(winApp->GetHwnd());
 
@@ -35,12 +37,12 @@ void ImGuiManager::Initialize()
 
 	ImGui_ImplDX12_Init(
 		dxCommon->GetDevice(), static_cast<int>(dxCommon->GetBackBufferCount()),
-		DXGI_FORMAT_B8G8R8A8_UNORM_SRGB, srvHeap_.Get(),
+		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, srvHeap_.Get(),
 		srvHeap_->GetCPUDescriptorHandleForHeapStart(),
 		srvHeap_->GetGPUDescriptorHandleForHeapStart()
 	);
 
-	ImGuiIO& io = ImGui::GetIO();
+	ImGuiIO& io = GetIO();
 	// 標準フォントを追加する
 	io.Fonts->AddFontDefault();
 }
@@ -50,12 +52,12 @@ void ImGuiManager::Begin()
 	// ImGuiフレーム開始
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
+	NewFrame();
 }
 
 void ImGuiManager::End()
 {
-	ImGui::Render();
+	Render();
 }
 
 void ImGuiManager::Draw()
@@ -64,15 +66,41 @@ void ImGuiManager::Draw()
 
 	ID3D12DescriptorHeap* ppHeaps[] = { srvHeap_.Get() };
 	cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
-	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), cmdList);
+	ImGui_ImplDX12_RenderDrawData(GetDrawData(), cmdList);
 }
 
 void ImGuiManager::Finalize()
 {
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();
-	ImGui::DestroyContext();
+	DestroyContext();
 
 	// デスクリプタヒープを解放
 	srvHeap_.Reset();
+}
+
+void ImGuiManager::PrintVector(std::string str, Vector2 vec)
+{
+	str += " = (%.3f, %.3f)";
+	Text(str.c_str(), vec.x, vec.y);
+}
+
+void ImGuiManager::PrintVector(std::string str, Vector3 vec)
+{
+	str += " = (%.3f, %.3f, %.3f)";
+	Text(str.c_str(), vec.x, vec.y, vec.z);
+}
+
+void ImGuiManager::SliderVector(std::string str, Vector2& vec)
+{
+	float num[2] = { vec.x,vec.y };
+	SliderFloat2(str.c_str(), num, 0, WindowsAPI::WIN_SIZE.x);
+	vec = { num[0],num[1] };
+}
+
+void ImGuiManager::SliderVector(std::string str, Vector3& vec)
+{
+	float num[3] = { vec.x,vec.y,vec.z };
+	SliderFloat2(str.c_str(), num, 0, WindowsAPI::WIN_SIZE.x);
+	vec = { num[0],num[1],num[2] };
 }

@@ -3,10 +3,15 @@
 #include "SceneManager.h"
 #include "GamePlayScene.h"
 #include "ImGuiManager.h"
+#include <imgui.h>
+#include "WindowsAPI.h"
+
+using namespace ImGui;
 
 void TitleScene::Initialize()
 {
 	sprites.push_back(Sprite::Create("Mario.jpg"));
+	sprites[0]->SetPosition({ 100,100 });
 }
 
 void TitleScene::Finalize()
@@ -23,9 +28,15 @@ void TitleScene::Update()
 		sceneManager_->SetNextScene(scene);
 	}
 
+	Vector2 xx = { 0,20 };
+
 	ImGuiManager* imguiManager = ImGuiManager::GetInstance();
 	imguiManager->Begin();
 
+	Vector2 pos = sprites[0]->GetPosition();
+	imguiManager->SliderVector("position", pos);
+	sprites[0]->SetPosition(pos);
+	
 	imguiManager->End();
 }
 
