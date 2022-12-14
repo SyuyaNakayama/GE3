@@ -78,10 +78,10 @@ void Sprite::Update()
 	if (isFlipX_) { left = -left; right = -right; }
 	if (isFlipY_) { top = -top; bottom = -bottom; }
 
-	vertices[LB].pos = { left, bottom };
-	vertices[LT].pos = { left, top };
-	vertices[RB].pos = { right, bottom };
-	vertices[RT].pos = { right, top };
+	vertices[(size_t)VertexNumber::LB].pos = { left, bottom };
+	vertices[(size_t)VertexNumber::LT].pos = { left, top };
+	vertices[(size_t)VertexNumber::RB].pos = { right, bottom };
+	vertices[(size_t)VertexNumber::RT].pos = { right, top };
 
 	ID3D12Resource* textureBuffer = SpriteCommon::GetInstance()->GetTextureBuffer(textureIndex_);
 	D3D12_RESOURCE_DESC resDesc = textureBuffer->GetDesc();
@@ -91,10 +91,10 @@ void Sprite::Update()
 	float tex_top = textureLeftTop_.y / resDesc.Height;
 	float tex_bottom = (textureLeftTop_.y + textureSize_.y) / resDesc.Height;
 
-	vertices[LB].uv = { tex_left, tex_bottom };
-	vertices[LT].uv = { tex_left, tex_top };
-	vertices[RB].uv = { tex_right, tex_bottom };
-	vertices[RT].uv = { tex_right, tex_top };
+	vertices[(size_t)VertexNumber::LB].uv = { tex_left, tex_bottom };
+	vertices[(size_t)VertexNumber::LT].uv = { tex_left, tex_top };
+	vertices[(size_t)VertexNumber::RB].uv = { tex_right, tex_bottom };
+	vertices[(size_t)VertexNumber::RT].uv = { tex_right, tex_top };
 
 	Matrix4 matRot, matTrans;
 	matRot = Matrix4::RotateZ(rotation_);
@@ -131,10 +131,4 @@ float Sprite::Color::ColorClass::operator=(float val)
 	if (val_ > 1.0f) { val_ -= (int)val_; }
 	if (val_ < 0.0f) { val_ += 1.0f + (int)val_; }
 	return val_;
-}
-
-std::array<float, 4> Sprite::Color::ChangeFloat4() const
-{
-	std::array<float, 4> arr = { r.GetVal(), g.GetVal(), b.GetVal(), a.GetVal() };
-	return arr;
 }

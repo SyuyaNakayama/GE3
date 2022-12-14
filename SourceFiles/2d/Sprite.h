@@ -27,10 +27,9 @@ public:
 		ColorClass r, g, b, a;
 		Color() {}
 		Color(float red, float green, float blue, float alpha = 1.0f) { r = red, g = green, b = blue, a = alpha; }
-		std::array<float, 4> ChangeFloat4() const;
 	};
 
-	enum VertexNumber
+	enum class VertexNumber
 	{
 		LB, // ç∂â∫
 		LT, // ç∂è„
@@ -93,5 +92,5 @@ public:
 	uint32_t GetTextureIndex() const { return textureIndex_; }
 	const Vector2& GetTextureLeftTop() const { return textureLeftTop_; }
 	const Vector2& GetTextureSize() const { return textureSize_; }
-	const Vector2& GetVerticesUv(VertexNumber vNum) { return vertices[vNum].uv; }
+	const Vector2& GetVerticesUv(VertexNumber vNum) { return vertices[(size_t)vNum].uv; }
 };

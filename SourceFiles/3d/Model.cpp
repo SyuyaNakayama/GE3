@@ -143,8 +143,8 @@ void Model::TextureUpdate()
 	sprite->Update();
 	for (size_t i = 0; i < vertices.size(); i++)
 	{
-		Vector2 spriteUvLT = sprite->GetVerticesUv(Sprite::LT);
-		Vector2 spriteUvRB = sprite->GetVerticesUv(Sprite::RB);
+		Vector2 spriteUvLT = sprite->GetVerticesUv(Sprite::VertexNumber::LT);
+		Vector2 spriteUvRB = sprite->GetVerticesUv(Sprite::VertexNumber::RB);
 		Vector2 uv = vertices[i].uv;
 		uv.x *= spriteUvRB.x;
 		uv.y *= spriteUvRB.y;
