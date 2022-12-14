@@ -122,12 +122,16 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)SourceFiles\scene;$(ProjectDir)SourceFiles\2d;$(ProjectDir)SourceFiles\base;$(ProjectDir)SourceFiles\math;$(ProjectDir)SourceFiles\3d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>strmiids.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -202,6 +206,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="SourceFiles\2d\ImGuiManager.cpp" />
     <ClCompile Include="SourceFiles\2d\Sprite.cpp" />
     <ClCompile Include="SourceFiles\2d\SpriteCommon.cpp" />
     <ClCompile Include="SourceFiles\3d\Model.cpp" />
@@ -224,6 +229,7 @@
     <ClCompile Include="SourceFiles\scene\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SourceFiles\2d\ImGuiManager.h" />
     <ClInclude Include="SourceFiles\2d\Sprite.h" />
     <ClInclude Include="SourceFiles\2d\SpriteCommon.h" />
     <ClInclude Include="SourceFiles\3d\Model.h" />

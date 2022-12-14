@@ -38,7 +38,10 @@ void GamePlayScene::Update()
 
 	WorldTransform::SetViewProjection(&viewProjection);
 	viewProjection.Update();
-	for (WorldTransform& w : worldTransforms) { w.Update(); }
+	for (size_t i = 0; i < 2; i++)
+	{
+		worldTransforms[i].Update();
+	}
 }
 
 void GamePlayScene::Draw()

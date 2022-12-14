@@ -7,10 +7,12 @@ void Framework::Initialize()
 	spriteCommon->Initialize();
 	input->Initialize();
 	audio->Initialize();
+	imguiManager->Initialize();
 }
 
 void Framework::Finalize()
 {
+	imguiManager->Finalize();
 	wAPI->Finalize();
 }
 

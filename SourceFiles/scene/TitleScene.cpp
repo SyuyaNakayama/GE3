@@ -2,6 +2,7 @@
 #include "SpriteCommon.h"
 #include "SceneManager.h"
 #include "GamePlayScene.h"
+#include "ImGuiManager.h"
 
 void TitleScene::Initialize()
 {
@@ -21,6 +22,11 @@ void TitleScene::Update()
 		BaseScene* scene = new GamePlayScene();
 		sceneManager_->SetNextScene(scene);
 	}
+
+	ImGuiManager* imguiManager = ImGuiManager::GetInstance();
+	imguiManager->Begin();
+
+	imguiManager->End();
 }
 
 void TitleScene::Draw()

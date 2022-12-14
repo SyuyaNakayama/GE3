@@ -6,15 +6,17 @@ class Vector2
 {
 public:
 	float x = 0, y = 0;
-	
+
+#ifdef NDEBUG
 	Vector2(float x_ = 0, float y_ = 0) { x = x_, y = y_; }
+#endif // NDEBUG
 
 	float Length() const; // ノルム(長さ)
 	void Normalize(); // 正規化
 
 	// 単項演算子オーバーロード
 	Vector2 operator-() const { return Vector2(-x, -y); }
-	
+
 	// 代入演算子オーバーロード
 	Vector2& operator+=(const Vector2& v);
 	Vector2& operator-=(const Vector2& v);
