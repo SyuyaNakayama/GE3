@@ -5,6 +5,7 @@
 #include "Matrix4.h"
 #include "Vector.h"
 #include <string>
+#include <array>
 
 class Sprite
 {
@@ -20,11 +21,13 @@ public:
 			float operator=(float val);
 			void operator+=(float val) { operator=(val_ + val); }
 			void operator-=(float val) { operator=(val_ - val); }
+			float GetVal() const { return val_; }
 		};
 	public:
 		ColorClass r, g, b, a;
 		Color() {}
 		Color(float red, float green, float blue, float alpha = 1.0f) { r = red, g = green, b = blue, a = alpha; }
+		std::array<float, 4> ChangeFloat4() const;
 	};
 
 	enum VertexNumber

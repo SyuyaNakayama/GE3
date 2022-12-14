@@ -6,10 +6,12 @@
 class SpriteCommon
 {
 private:
+	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+
 	struct TextureData
 	{
 		std::string fileName;
-		Microsoft::WRL::ComPtr<ID3D12Resource> buffer;
+		ComPtr<ID3D12Resource> buffer;
 		D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle;
 		D3D12_GPU_DESCRIPTOR_HANDLE	gpuHandle;
 	};
@@ -17,12 +19,12 @@ private:
 	static const size_t MAX_SRV_COUNT = 2056;
 	// デフォルトディレクトリ
 	static std::string DEFAULT_TEXTURE_DIRECTORY_PATH;
-	Microsoft::WRL::ComPtr<ID3D12Device> device = nullptr;
+	ID3D12Device* device = nullptr;
 	// ルートシグネチャ
-	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature;
+	ComPtr<ID3D12RootSignature> rootSignature;
 	// パイプランステート
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState;
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> srvHeap;
+	ComPtr<ID3D12PipelineState> pipelineState;
+	ComPtr<ID3D12DescriptorHeap> srvHeap;
 	std::array<TextureData, MAX_SRV_COUNT> textures_;
 	ID3D12GraphicsCommandList* cmdList = nullptr;
 	uint32_t textureIndex_ = 0;

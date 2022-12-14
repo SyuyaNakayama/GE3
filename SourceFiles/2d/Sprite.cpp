@@ -132,3 +132,9 @@ float Sprite::Color::ColorClass::operator=(float val)
 	if (val_ < 0.0f) { val_ += 1.0f + (int)val_; }
 	return val_;
 }
+
+std::array<float, 4> Sprite::Color::ChangeFloat4() const
+{
+	std::array<float, 4> arr = { r.GetVal(), g.GetVal(), b.GetVal(), a.GetVal() };
+	return arr;
+}

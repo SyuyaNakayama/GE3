@@ -28,15 +28,17 @@ void TitleScene::Update()
 		sceneManager_->SetNextScene(scene);
 	}
 
-	Vector2 xx = { 0,20 };
-
 	ImGuiManager* imguiManager = ImGuiManager::GetInstance();
 	imguiManager->Begin();
 
 	Vector2 pos = sprites[0]->GetPosition();
 	imguiManager->SliderVector("position", pos);
 	sprites[0]->SetPosition(pos);
-	
+	Sprite::Color color = sprites[0]->GetColor();
+	imguiManager->ColorEdit(color);
+	sprites[0]->SetColor(color);
+	ShowDemoWindow();
+
 	imguiManager->End();
 }
 

@@ -3,6 +3,7 @@
 #include <imgui_impl_dx12.h>
 #include "WindowsAPI.h"
 #include "DirectXCommon.h"
+#include "SpriteCommon.h"
 #include <cassert>
 
 using namespace ImGui;
@@ -26,14 +27,7 @@ void ImGuiManager::Initialize()
 
 	ImGui_ImplWin32_Init(winApp->GetHwnd());
 
-	// デスクリプタヒープ設定
-	D3D12_DESCRIPTOR_HEAP_DESC desc{};
-	desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	desc.NumDescriptors = 1;
-	desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	// デスクリプタヒープ生成
-	HRESULT result = dxCommon->GetDevice()->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&srvHeap_));
-	assert(SUCCEEDED(result));
+	srvHeap_ = SpriteCommon::GetInstance()->GetDescriptorHeap();
 
 	ImGui_ImplDX12_Init(
 		dxCommon->GetDevice(), static_cast<int>(dxCommon->GetBackBufferCount()),
@@ -103,4 +97,11 @@ void ImGuiManager::SliderVector(std::string str, Vector3& vec)
 	float num[3] = { vec.x,vec.y,vec.z };
 	SliderFloat2(str.c_str(), num, 0, WindowsAPI::WIN_SIZE.x);
 	vec = { num[0],num[1],num[2] };
+}
+
+void ImGuiManager::ColorEdit(Sprite::Color& color)
+{
+	float c[4] = { color.r.GetVal(),color.g.GetVal(),color.b.GetVal(),color.a.GetVal() };
+	ColorEdit4("Color", c);
+	color = { c[0],c[1],c[2],c[3] };
 }
