@@ -1,13 +1,28 @@
 #include "SceneFactory.h"
 #include "TitleScene.h"
 #include "GamePlayScene.h"
+#include <cassert>
 
-BaseScene* SceneFactory::CreateScene(const std::string& sceneName)
+SceneFactory* SceneFactory::GetInstance()
+{
+    static SceneFactory instance;
+    return &instance;
+}
+
+BaseScene* SceneFactory::CreateScene(Scene scene)
 {
     BaseScene* newScene = nullptr;
 
-    if (sceneName == "TITLE") { newScene = new TitleScene(); }
-    else if(sceneName == "GAMEPLAY") { newScene = new GamePlayScene(); }
-
+    switch (scene)
+    {
+    case Scene::Title:
+        newScene = new TitleScene();
+        break;
+    case Scene::Play:
+        newScene = new GamePlayScene();
+        break;
+    }
+    
+    assert(newScene);
     return newScene;
 }

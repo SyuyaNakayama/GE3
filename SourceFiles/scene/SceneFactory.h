@@ -3,6 +3,12 @@
 
 class SceneFactory : public AbstractSceneFactory
 {
+private:
+	SceneFactory() = default;
+
 public:
-	BaseScene* CreateScene(const std::string& sceneName) override;
+	SceneFactory(const SceneFactory& obj) = delete;
+	static SceneFactory* GetInstance();
+
+	BaseScene* CreateScene(Scene scene) override;
 };

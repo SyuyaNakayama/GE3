@@ -17,8 +17,7 @@ protected:
 	SpriteCommon* spriteCommon = SpriteCommon::GetInstance();
 	// “ü—Í‚Ì‰Šú‰»ˆ—
 	Input* input = Input::GetInstance();
-	SceneManager* sceneManager_ = nullptr;
-	AbstractSceneFactory* sceneFactory_ = nullptr;
+	SceneManager* sceneManager_ = SceneManager::GetInstance();
 
 public:
 	virtual ~Framework() = default;

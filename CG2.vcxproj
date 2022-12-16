@@ -121,6 +121,7 @@
       <ExceptionHandling>Sync</ExceptionHandling>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)SourceFiles\2d;$(ProjectDir)SourceFiles\base;$(ProjectDir)SourceFiles\math;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

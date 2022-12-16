@@ -1,7 +1,6 @@
 #include "TitleScene.h"
 #include "SpriteCommon.h"
 #include "SceneManager.h"
-#include "GamePlayScene.h"
 
 void TitleScene::Initialize()
 {
@@ -18,8 +17,7 @@ void TitleScene::Update()
 	for (Sprite*& sprite : sprites) { sprite->Update(); }
 	if (input->IsTrigger(DIK_RETURN))
 	{
-		BaseScene* scene = new GamePlayScene();
-		sceneManager_->SetNextScene(scene);
+		sceneManager_->SetNextScene(Scene::Play);
 	}
 }
 

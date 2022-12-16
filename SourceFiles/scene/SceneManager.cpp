@@ -8,7 +8,7 @@ SceneManager* SceneManager::GetInstance()
 
 void SceneManager::Update()
 {
-	if (nextScene_)
+	if (nextScene_ != Scene::Null)
 	{
 		if (scene_)
 		{
@@ -16,8 +16,8 @@ void SceneManager::Update()
 			delete scene_;
 		}
 
-		scene_ = nextScene_;
-		nextScene_ = nullptr;
+		scene_ = sceneFactory_->CreateScene(nextScene_);
+		nextScene_ = Scene::Null;
 		scene_->SetSceneManager(this);
 		scene_->Initialize();
 	}

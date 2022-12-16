@@ -1,12 +1,9 @@
 ﻿#include "MyGame.h"
-#include "scene/GamePlayScene.h"
-#include "scene/TitleScene.h"
 
 void MyGame::Initialize()
 {
 	Framework::Initialize();
-	BaseScene* scene = new TitleScene();
-	sceneManager_->SetNextScene(scene);
+	sceneManager_->SetNextScene(Scene::Title);
 }
 
 void MyGame::Finalize()

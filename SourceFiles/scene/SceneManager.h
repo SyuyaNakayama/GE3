@@ -1,12 +1,13 @@
 #pragma once
 #include "BaseScene.h"
-#include "AbstractSceneFactory.h"
+#include "SceneFactory.h"
 
 class SceneManager final
 {
 private:
-	BaseScene* scene_ = nullptr, * nextScene_ = nullptr;
-	AbstractSceneFactory* sceneFactory_ = nullptr;
+	BaseScene* scene_ = nullptr;
+	Scene nextScene_ = Scene::Null;
+	AbstractSceneFactory* sceneFactory_ = SceneFactory::GetInstance();
 
 	SceneManager() = default;
 public:
@@ -15,6 +16,5 @@ public:
 	~SceneManager() { scene_->Finalize(); delete scene_; }
 	void Update();
 	void Draw();
-	void SetNextScene(BaseScene* nextScene) { nextScene_ = nextScene; }
-	void SetSceneFactory(AbstractSceneFactory* sceneFactory) { sceneFactory_ = sceneFactory; }
+	void SetNextScene(Scene nextScene) { nextScene_ = nextScene; }
 };
