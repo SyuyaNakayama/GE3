@@ -30,7 +30,6 @@ private:
 	uint32_t textureIndex_ = 0;
 
 	SpriteCommon() = default;
-	size_t GetIncrementSize(uint32_t index);
 public:
 	static SpriteCommon* GetInstance();
 	void Initialize();
@@ -38,7 +37,9 @@ public:
 	void SetTextureCommands(uint32_t index);
 	void PreDraw();
 	void PostDraw() {};
+	void IncrementTextureIndex() { textureIndex_++; }
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGpuHandle(UINT index) { return textures_[index].gpuHandle; }
 	ID3D12DescriptorHeap* GetDescriptorHeap() { return srvHeap.Get(); }
+	size_t GetIncrementSize();
 	ID3D12Resource* GetTextureBuffer(uint32_t index) const { return textures_[index].buffer.Get(); }
 };

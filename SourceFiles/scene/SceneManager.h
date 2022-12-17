@@ -1,12 +1,15 @@
 #pragma once
 #include "BaseScene.h"
 #include "FadeManager.h"
+#include "SceneFactory.h"
 
 class SceneManager final
 {
 private:
-	BaseScene* scene_ = nullptr, * nextScene_ = nullptr;
+	BaseScene* scene_ = nullptr;
+	Scene nextScene_ = Scene::Null;
 	FadeManager fadeManager_;
+	SceneFactory* sceneFactory_ = SceneFactory::GetInstance();
 
 	SceneManager() = default;
 public:
@@ -16,5 +19,5 @@ public:
 	void Initialize();
 	void Update();
 	void Draw();
-	void SetNextScene(BaseScene* nextScene, bool isUseFade = true);
+	void SetNextScene(Scene nextScene, bool isUseFade = true);
 };

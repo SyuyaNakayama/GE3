@@ -134,14 +134,15 @@ void SpriteCommon::Initialize()
 	assert(SUCCEEDED(result));
 }
 
-size_t SpriteCommon::GetIncrementSize(uint32_t index)
+size_t SpriteCommon::GetIncrementSize()
 {
 	UINT incrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	return (size_t)incrementSize * index;
+	return (size_t)incrementSize * textureIndex_;
 }
 
 uint32_t SpriteCommon::LoadTexture(const std::string& FILE_NAME)
 {
+	// テクスチャの重複読み込みを検出
 	for (uint32_t i = 0; i < textureIndex_; i++)
 	{
 		if (textures_[i].fileName.find(FILE_NAME) == string::npos) { continue; }
@@ -203,7 +204,7 @@ uint32_t SpriteCommon::LoadTexture(const std::string& FILE_NAME)
 	}
 
 	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart();
-	srvHandle.ptr += GetIncrementSize(textureIndex_);
+	srvHandle.ptr += GetIncrementSize();
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format = textureResourceDesc.Format;
@@ -217,7 +218,7 @@ uint32_t SpriteCommon::LoadTexture(const std::string& FILE_NAME)
 	textures_[textureIndex_].cpuHandle = srvHandle;
 
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-	srvGpuHandle.ptr += GetIncrementSize(textureIndex_);
+	srvGpuHandle.ptr += GetIncrementSize();
 	textures_[textureIndex_].gpuHandle = srvGpuHandle;
 	return textureIndex_++;
 }

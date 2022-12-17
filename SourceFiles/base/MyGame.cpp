@@ -1,14 +1,11 @@
 ﻿#include "MyGame.h"
-#include "GamePlayScene.h"
-#include "TitleScene.h"
 #include "Model.h"
 
 void MyGame::Initialize()
 {
 	Framework::Initialize();
-	BaseScene* scene = new TitleScene();
 	sceneManager_->Initialize();
-	sceneManager_->SetNextScene(scene, false);
+	sceneManager_->SetNextScene(Scene::Title, false);
 	Model::InitializeGraphicsPipeline();
 }
 

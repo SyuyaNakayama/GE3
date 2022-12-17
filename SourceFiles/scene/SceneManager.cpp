@@ -17,7 +17,7 @@ void SceneManager::Update()
 	fadeManager_.Update();
 	if (fadeManager_.IsChange() || !scene_)
 	{
-		if (nextScene_)
+		if (nextScene_ != Scene::Null)
 		{
 			if (scene_)
 			{
@@ -25,8 +25,8 @@ void SceneManager::Update()
 				delete scene_;
 			}
 
-			scene_ = nextScene_;
-			nextScene_ = nullptr;
+			scene_ = sceneFactory_->CreateScene(nextScene_);
+			nextScene_ = Scene::Null;
 			scene_->SetSceneManager(this);
 			scene_->Initialize();
 		}
@@ -38,12 +38,13 @@ void SceneManager::Update()
 void SceneManager::Draw()
 {
 	scene_->Draw();
+	if (!fadeManager_.IsFade()) { return; }
 	SpriteCommon::GetInstance()->PreDraw();
 	fadeManager_.Draw();
 	SpriteCommon::GetInstance()->PostDraw();
 }
 
-void SceneManager::SetNextScene(BaseScene* nextScene, bool isUseFade)
+void SceneManager::SetNextScene(Scene nextScene, bool isUseFade)
 {
 	nextScene_ = nextScene;
 	if (isUseFade) { fadeManager_.FadeScene(); }

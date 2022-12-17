@@ -29,9 +29,9 @@ void GamePlayScene::Update()
 	Sprite* modelSprite = model->GetSprite();
 
 	Sprite::Color color = modelSprite->GetColor();
-	color.a += 0.01f;
 
 	modelSprite->SetColor(color);
+	color.a += 0.01f;
 	model->TextureUpdate();
 
 	viewProjection.CameraMove(moveSpd);

@@ -1,10 +1,7 @@
 #include "ImGuiManager.h"
 #include <imgui_impl_win32.h>
 #include <imgui_impl_dx12.h>
-#include "WindowsAPI.h"
-#include "DirectXCommon.h"
 #include "SpriteCommon.h"
-#include <cassert>
 
 using namespace ImGui;
 
@@ -27,14 +24,20 @@ void ImGuiManager::Initialize()
 
 	ImGui_ImplWin32_Init(winApp->GetHwnd());
 
-	srvHeap_ = SpriteCommon::GetInstance()->GetDescriptorHeap();
+	SpriteCommon* spCommon = SpriteCommon::GetInstance();
+	srvHeap_ = spCommon->GetDescriptorHeap();
 
-	ImGui_ImplDX12_Init(
-		dxCommon->GetDevice(), static_cast<int>(dxCommon->GetBackBufferCount()),
+	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle = srvHeap_->GetCPUDescriptorHandleForHeapStart();
+	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap_->GetGPUDescriptorHandleForHeapStart();
+	srvHandle.ptr += spCommon->GetIncrementSize();
+	srvGpuHandle.ptr += spCommon->GetIncrementSize();
+
+	ImGui_ImplDX12_Init(dxCommon->GetDevice(),
+		static_cast<int>(dxCommon->GetBackBufferCount()),
 		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, srvHeap_.Get(),
-		srvHeap_->GetCPUDescriptorHandleForHeapStart(),
-		srvHeap_->GetGPUDescriptorHandleForHeapStart()
-	);
+		srvHandle, srvGpuHandle);
+
+	spCommon->IncrementTextureIndex();
 
 	ImGuiIO& io = GetIO();
 	// 標準フォントを追加する
@@ -49,10 +52,7 @@ void ImGuiManager::Begin()
 	NewFrame();
 }
 
-void ImGuiManager::End()
-{
-	Render();
-}
+void ImGuiManager::End() { Render(); }
 
 void ImGuiManager::Draw()
 {
@@ -95,7 +95,7 @@ void ImGuiManager::SliderVector(std::string str, Vector2& vec)
 void ImGuiManager::SliderVector(std::string str, Vector3& vec)
 {
 	float num[3] = { vec.x,vec.y,vec.z };
-	SliderFloat2(str.c_str(), num, 0, WindowsAPI::WIN_SIZE.x);
+	SliderFloat3(str.c_str(), num, 0, WindowsAPI::WIN_SIZE.x);
 	vec = { num[0],num[1],num[2] };
 }
 
