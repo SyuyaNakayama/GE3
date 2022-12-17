@@ -1,5 +1,5 @@
 #pragma once
-#include <d3d12.h>
+#include <d3dx12.h>
 #include <dxgi1_6.h>
 #include <wrl.h>
 #include <vector>
@@ -23,7 +23,7 @@ private:
 	HRESULT result = S_OK;
 	DXGI_SWAP_CHAIN_DESC1 swapchainDesc{};
 	std::vector<ComPtr<ID3D12Resource>> backBuffers;
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle{};
+	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle{};
 	UINT64 fenceVal = 0;
 	std::chrono::steady_clock::time_point reference_;
 	D3D12_VIEWPORT viewport{};

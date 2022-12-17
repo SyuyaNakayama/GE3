@@ -203,23 +203,26 @@ uint32_t SpriteCommon::LoadTexture(const std::string& FILE_NAME)
 		assert(SUCCEEDED(result));
 	}
 
-	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart();
-	srvHandle.ptr += GetIncrementSize();
-
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format = textureResourceDesc.Format;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MipLevels = textureResourceDesc.MipLevels;
 
+	CD3DX12_CPU_DESCRIPTOR_HANDLE srvHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(
+		srvHeap->GetCPUDescriptorHandleForHeapStart(), textureIndex_,
+		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV));
+
 	device->CreateShaderResourceView(GetTextureBuffer(textureIndex_), &srvDesc, srvHandle);
 
 	textures_[textureIndex_].fileName = FILE_NAME;
+
 	textures_[textureIndex_].cpuHandle = srvHandle;
 
-	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-	srvGpuHandle.ptr += GetIncrementSize();
-	textures_[textureIndex_].gpuHandle = srvGpuHandle;
+	textures_[textureIndex_].gpuHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(
+		srvHeap->GetGPUDescriptorHandleForHeapStart(), textureIndex_,
+		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV));
+
 	return textureIndex_++;
 }
 
