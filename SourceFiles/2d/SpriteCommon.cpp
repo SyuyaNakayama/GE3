@@ -2,6 +2,7 @@
 #include "SpriteCommon.h"
 #include "Sprite.h"
 #include "Functions.h"
+#include <array>
 using namespace std;
 using namespace DirectX;
 
@@ -65,43 +66,22 @@ void SpriteCommon::Initialize()
 	descriptorRange.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
 	// ルートパラメータの設定
-	CD3DX12_ROOT_PARAMETER rootParams[3]{};
+	std::array<CD3DX12_ROOT_PARAMETER, 3> rootParams{};
 	rootParams[0].InitAsConstantBufferView(0);
-	//rootParams[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-	//rootParams[0].Descriptor.ShaderRegister = 0;
-	//rootParams[0].Descriptor.RegisterSpace = 0;
-	//rootParams[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-
 	rootParams[1].InitAsDescriptorTable(1, &descriptorRange);
-
 	rootParams[2].InitAsConstantBufferView(1);
-	//rootParams[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-	//rootParams[2].Descriptor.ShaderRegister = 1;
-	//rootParams[2].Descriptor.RegisterSpace = 0;
-	//rootParams[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
-	D3D12_STATIC_SAMPLER_DESC samplerDesc{};
-	samplerDesc.AddressU = samplerDesc.AddressV =
-		samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	samplerDesc.BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
-	samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
-	samplerDesc.MaxLOD = D3D12_FLOAT32_MAX;
-	samplerDesc.MinLOD = 0.0f;
-	samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
-	samplerDesc.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	CD3DX12_STATIC_SAMPLER_DESC samplerDesc = CD3DX12_STATIC_SAMPLER_DESC(0);
 
 	// ルートシグネチャの設定
-	D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
-	rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
-	rootSignatureDesc.pParameters = rootParams;
-	rootSignatureDesc.NumParameters = _countof(rootParams);
-	rootSignatureDesc.pStaticSamplers = &samplerDesc;
-	rootSignatureDesc.NumStaticSamplers = 1;
+	CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDesc{};
+	rootSignatureDesc.Init_1_0(rootParams.size(), rootParams.data(), 1, &samplerDesc,
+		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	// ルートシグネチャのシリアライズ
 	ID3DBlob* rootSigBlob = nullptr;
 	ID3DBlob* errorBlob = nullptr; // エラーオブジェクト
-	HRESULT result = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0,
+	HRESULT result = D3DX12SerializeVersionedRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0,
 		&rootSigBlob, &errorBlob);
 	assert(SUCCEEDED(result));
 
@@ -169,7 +149,7 @@ uint32_t SpriteCommon::LoadTexture(const std::string& FILE_NAME)
 	textureHeapProp.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
 	textureHeapProp.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
 
-	CD3DX12_RESOURCE_DESC textureResourceDesc= CD3DX12_RESOURCE_DESC::Tex2D(
+	CD3DX12_RESOURCE_DESC textureResourceDesc = CD3DX12_RESOURCE_DESC::Tex2D(
 		metadata.format, metadata.width, (UINT)metadata.height,
 		(UINT16)metadata.arraySize, (UINT16)metadata.mipLevels);
 
