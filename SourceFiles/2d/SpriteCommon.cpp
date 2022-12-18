@@ -33,16 +33,12 @@ void SpriteCommon::Initialize()
 	// グラフィックスパイプライン設定
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc{};
 	// シェーダーの設定
-	pipelineDesc.VS.pShaderBytecode = vsBlob->GetBufferPointer();
-	pipelineDesc.VS.BytecodeLength = vsBlob->GetBufferSize();
-	pipelineDesc.PS.pShaderBytecode = psBlob->GetBufferPointer();
-	pipelineDesc.PS.BytecodeLength = psBlob->GetBufferSize();
+	pipelineDesc.VS = CD3DX12_SHADER_BYTECODE(vsBlob);
+	pipelineDesc.PS = CD3DX12_SHADER_BYTECODE(psBlob);
 	// サンプルマスクの設定
 	pipelineDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // 標準設定
 	// ラスタライザの設定
-	pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE; // カリングしない
-	pipelineDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID; // ポリゴン内塗りつぶし
-	pipelineDesc.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
+	pipelineDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 	// 頂点レイアウトの設定
 	pipelineDesc.InputLayout.pInputElementDescs = inputLayout.data();
 	pipelineDesc.InputLayout.NumElements = (UINT)inputLayout.size();
@@ -65,28 +61,24 @@ void SpriteCommon::Initialize()
 	blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
 	blenddesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
 
-	D3D12_DESCRIPTOR_RANGE descriptorRange{};
-	descriptorRange.NumDescriptors = 1;
-	descriptorRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	descriptorRange.BaseShaderRegister = 0;
-	descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+	CD3DX12_DESCRIPTOR_RANGE descriptorRange{};
+	descriptorRange.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
 	// ルートパラメータの設定
-	D3D12_ROOT_PARAMETER rootParams[3]{};
-	rootParams[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-	rootParams[0].Descriptor.ShaderRegister = 0;
-	rootParams[0].Descriptor.RegisterSpace = 0;
-	rootParams[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	CD3DX12_ROOT_PARAMETER rootParams[3]{};
+	rootParams[0].InitAsConstantBufferView(0);
+	//rootParams[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	//rootParams[0].Descriptor.ShaderRegister = 0;
+	//rootParams[0].Descriptor.RegisterSpace = 0;
+	//rootParams[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
-	rootParams[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rootParams[1].DescriptorTable.pDescriptorRanges = &descriptorRange;
-	rootParams[1].DescriptorTable.NumDescriptorRanges = 1;
-	rootParams[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParams[1].InitAsDescriptorTable(1, &descriptorRange);
 
-	rootParams[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-	rootParams[2].Descriptor.ShaderRegister = 1;
-	rootParams[2].Descriptor.RegisterSpace = 0;
-	rootParams[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParams[2].InitAsConstantBufferView(1);
+	//rootParams[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	//rootParams[2].Descriptor.ShaderRegister = 1;
+	//rootParams[2].Descriptor.RegisterSpace = 0;
+	//rootParams[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
 	D3D12_STATIC_SAMPLER_DESC samplerDesc{};
 	samplerDesc.AddressU = samplerDesc.AddressV =
