@@ -26,12 +26,7 @@ void DirectXCommon::Initialize()
 	InitializeFence();				// フェンスの初期化
 
 	// ビューポート設定コマンド
-	viewport.Width = WIN_SIZE.x;
-	viewport.Height = WIN_SIZE.y;
-	viewport.TopLeftX = 0;
-	viewport.TopLeftY = 0;
-	viewport.MinDepth = 0.0f;
-	viewport.MaxDepth = 1.0f;
+	viewport = CD3DX12_VIEWPORT(0.0f, 0.0f, WIN_SIZE.x, WIN_SIZE.y);
 }
 
 void DirectXCommon::InitializeDevice()
@@ -254,11 +249,8 @@ void DirectXCommon::PreDraw()
 {
 	UINT bbIndex = swapchain->GetCurrentBackBufferIndex();
 
-	D3D12_RESOURCE_BARRIER barrierDesc{};
-	barrierDesc.Transition.pResource = backBuffers[bbIndex].Get();
-	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	commandList->ResourceBarrier(1, &barrierDesc);
+	commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
+		backBuffers[bbIndex].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
 	rtvHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(rtvHeap->GetCPUDescriptorHandleForHeapStart(),
 		(size_t)bbIndex, device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV));
@@ -278,7 +270,7 @@ void DirectXCommon::PreDraw()
 	scissorRect.top = 0; // 切り抜き座標上
 	scissorRect.bottom = scissorRect.top + (long)WIN_SIZE.y; // 切り抜き座標下
 
-	commandList->RSSetScissorRects(1, &scissorRect); // シザー矩形設定コマンドを、コマンドリストに積む
+	commandList->RSSetScissorRects(1, &CD3DX12_RECT(0, 0, WIN_SIZE.x, WIN_SIZE.y)); // シザー矩形設定コマンドを、コマンドリストに積む
 	commandList->RSSetViewports(1, &viewport); // ビューポート設定コマンドを、コマンドリストに積む
 }
 
@@ -286,11 +278,8 @@ void DirectXCommon::PostDraw()
 {
 	UINT bbIndex = swapchain->GetCurrentBackBufferIndex();
 
-	D3D12_RESOURCE_BARRIER barrierDesc{};
-	barrierDesc.Transition.pResource = backBuffers[bbIndex].Get();
-	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	commandList->ResourceBarrier(1, &barrierDesc);
+	commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
+		backBuffers[bbIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
 	// 命令のクローズ
 	result = commandList->Close();
@@ -328,8 +317,6 @@ void DirectXCommon::PostDraw()
 
 void DirectXCommon::SetViewport(Vector2 viewportSize, Vector2 viewportLeftTop)
 {
-	viewport.Width = viewportSize.x;
-	viewport.Height = viewportSize.y;
-	viewport.TopLeftX = viewportLeftTop.x;
-	viewport.TopLeftY = viewportLeftTop.y;
+	viewport = CD3DX12_VIEWPORT(viewportLeftTop.x, viewportLeftTop.y, 
+		viewportSize.x, viewportSize.y);
 }
