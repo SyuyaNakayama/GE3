@@ -1,47 +1,38 @@
 #include "GamePlayScene.h"
 #include "SpriteCommon.h"
-#include "Quaternion.h"
 #include <fstream>
 
 void GamePlayScene::Initialize()
 {
 	WorldTransform::SetViewProjection(&viewProjection);
-	model = Model::Create("cube");
-
-	for (WorldTransform& w : worldTransforms)
-	{
-		w.Initialize();
-		w.scale = { 7,7,7 };
-	}
-	worldTransforms[1].translation.z = -20.0f;
 	viewProjection.Initialize();
+	viewProjection.eye = { -50,20,-70 };
 	skydome.Initialize();
-	sprite = Sprite::Create("mario.jpg");
+	player.Initialize();
+	enemyManager.Initialize();
 }
 
 void GamePlayScene::Update()
 {
-	Vector3 moveSpd =
+	player.Update();
+	enemyManager.Update();
+
+	Vector3 cameraMoveSpd =
 	{
 		input->Move(DIK_RIGHT,DIK_LEFT,1.0f),
-		input->Move(DIK_UP,DIK_DOWN,1.0f), 0
+		0,input->Move(DIK_UP,DIK_DOWN,1.0f)
 	};
 
-	viewProjection.CameraMove(moveSpd);
-
+	viewProjection.CameraMove(cameraMoveSpd);
 	WorldTransform::SetViewProjection(&viewProjection);
 	viewProjection.Update();
-	for (size_t i = 0; i < 2; i++)
-	{
-		worldTransforms[i].Update();
-	}
 }
 
 void GamePlayScene::Draw()
 {
 	Model::PreDraw();
-	model->Draw(worldTransforms[0]);
-	model->Draw(worldTransforms[1], sprite.get());
 	skydome.Draw();
+	player.Draw();
+	enemyManager.Draw();
 	Model::PostDraw();
 }

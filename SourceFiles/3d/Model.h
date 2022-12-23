@@ -69,8 +69,6 @@ private:
 	static ComPtr<ID3D12PipelineState> pipelinestate;
 	// ルートシグネチャ
 	static ComPtr<ID3D12RootSignature> rootsignature;
-	// スプライト変更フラグ(スプライト変更を得る)
-	bool isSpriteChange = false;
 
 	void LoadFromOBJInternal(const string& modelName);
 

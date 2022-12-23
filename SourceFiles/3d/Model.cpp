@@ -138,14 +138,11 @@ std::unique_ptr<Model> Model::Create(const string& modelName)
 
 void Model::SetSprite(Sprite* sprite_)
 {
-	isSpriteChange = sprite.get() != sprite_;
-	if (isSpriteChange)
-		sprite.reset(sprite_);
+	sprite.reset(sprite_);
 }
 
 void Model::TextureUpdate()
 {
-	if (!isSpriteChange) { return; }
 	sprite->Update();
 	for (size_t i = 0; i < vertices.size(); i++)
 	{

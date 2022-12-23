@@ -3,16 +3,17 @@
 #include "Model.h"
 #include "Audio.h"
 #include "Skydome.h"
+#include "Player.h"
+#include "EnemyManager.h"
 
 class GamePlayScene : public BaseScene
 {
 private:
-	std::unique_ptr<Model> model;
-	WorldTransform worldTransforms[3];
 	ViewProjection viewProjection;
-	Color color;
 	Skydome skydome;
-	std::unique_ptr<Sprite> sprite;
+	Player player;
+	EnemyManager enemyManager;
+
 public:
 	void Initialize() override;
 	void Finalize() {};

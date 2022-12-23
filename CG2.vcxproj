@@ -122,7 +122,7 @@
       <ConformanceMode>false</ConformanceMode>
       <ExceptionHandling>Sync</ExceptionHandling>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)SourceFiles\scene;$(ProjectDir)SourceFiles\2d;$(ProjectDir)SourceFiles\base;$(ProjectDir)SourceFiles\math;$(ProjectDir)SourceFiles\3d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)SourceFiles\scene;$(ProjectDir)SourceFiles\2d;$(ProjectDir)SourceFiles\base;$(ProjectDir)SourceFiles\math;$(ProjectDir)SourceFiles\3d;%(AdditionalIncludeDirectories);$(SolutionDir)SourceFiles\scene\objects\collider;$(SolutionDir)SourceFiles\scene\objects</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
@@ -145,7 +145,7 @@
       <ConformanceMode>false</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <AdditionalIncludeDirectories>$(ProjectDir)SourceFiles\2d;$(ProjectDir)SourceFiles\scene;$(ProjectDir)SourceFiles\base;$(ProjectDir)SourceFiles\math;$(ProjectDir)SourceFiles\3d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)SourceFiles\2d;$(ProjectDir)SourceFiles\scene;$(ProjectDir)SourceFiles\base;$(ProjectDir)SourceFiles\math;$(ProjectDir)SourceFiles\3d;%(AdditionalIncludeDirectories);$(SolutionDir)SourceFiles\scene\objects\collider;$(SolutionDir)SourceFiles\scene\objects</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -228,10 +228,12 @@
     <ClCompile Include="SourceFiles\scene\FadeManager.cpp" />
     <ClCompile Include="SourceFiles\scene\GamePlayScene.cpp" />
     <ClCompile Include="SourceFiles\scene\objects\Collider\CollisionManager.cpp" />
+    <ClCompile Include="SourceFiles\scene\objects\Enemy.cpp" />
+    <ClCompile Include="SourceFiles\scene\objects\EnemyManager.cpp" />
     <ClCompile Include="SourceFiles\scene\objects\Player.cpp" />
+    <ClCompile Include="SourceFiles\scene\objects\Skydome.cpp" />
     <ClCompile Include="SourceFiles\scene\SceneFactory.cpp" />
     <ClCompile Include="SourceFiles\scene\SceneManager.cpp" />
-    <ClCompile Include="SourceFiles\scene\Skydome.cpp" />
     <ClCompile Include="SourceFiles\scene\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -257,10 +259,12 @@
     <ClInclude Include="SourceFiles\scene\GamePlayScene.h" />
     <ClInclude Include="SourceFiles\scene\objects\Collider\Collider.h" />
     <ClInclude Include="SourceFiles\scene\objects\Collider\CollisionManager.h" />
+    <ClInclude Include="SourceFiles\scene\objects\Enemy.h" />
+    <ClInclude Include="SourceFiles\scene\objects\EnemyManager.h" />
     <ClInclude Include="SourceFiles\scene\objects\Player.h" />
+    <ClInclude Include="SourceFiles\scene\objects\Skydome.h" />
     <ClInclude Include="SourceFiles\scene\SceneFactory.h" />
     <ClInclude Include="SourceFiles\scene\SceneManager.h" />
-    <ClInclude Include="SourceFiles\scene\Skydome.h" />
     <ClInclude Include="SourceFiles\scene\TitleScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

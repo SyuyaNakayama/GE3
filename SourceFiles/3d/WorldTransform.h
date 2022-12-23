@@ -1,5 +1,4 @@
 #pragma once
-#include "Matrix4.h"
 #include <d3dx12.h>
 #include <wrl.h>
 #include "ViewProjection.h"
@@ -26,4 +25,5 @@ public:
 	void Update();
 	const Vector3& GetWorldPosition() { return { matWorld.m[3][0],matWorld.m[3][1],matWorld.m[3][2] }; }
 	static void SetViewProjection(ViewProjection* viewProjection) { viewProjection_ = viewProjection; }
+	static ViewProjection* GetViewProjection() { return viewProjection_; }
 };

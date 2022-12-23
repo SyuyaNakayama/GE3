@@ -5,7 +5,7 @@
 class Player : public Collider
 {
 private:
-	//Model* model;
+	std::unique_ptr<Model> model;
 
 public:
 	void Initialize();
