@@ -7,7 +7,7 @@
 class GamePlayScene : public BaseScene
 {
 private:
-	Model* model = nullptr;
+	std::unique_ptr<Model> model;
 	WorldTransform worldTransforms[3];
 	ViewProjection viewProjection;
 	Color color;
@@ -15,7 +15,7 @@ private:
 	std::unique_ptr<Sprite> sprite;
 public:
 	void Initialize() override;
-	void Finalize() override;
+	void Finalize() {};
 	void Update() override;
 	void Draw() override;
 };

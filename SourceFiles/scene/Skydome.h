@@ -5,11 +5,10 @@ class Skydome
 {
 private:
 	WorldTransform worldTransform;
-	Model* model = nullptr;
+	std::unique_ptr<Model> model;
 	float size = 100.0f;
 
 public:
 	void Initialize();
 	void Draw();
-	~Skydome() { delete model; }
 };

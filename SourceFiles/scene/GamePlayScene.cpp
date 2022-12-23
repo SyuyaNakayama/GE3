@@ -6,7 +6,7 @@
 void GamePlayScene::Initialize()
 {
 	WorldTransform::SetViewProjection(&viewProjection);
-	model = Model::LoadFromOBJ("cube");
+	model = Model::Create("cube");
 
 	for (WorldTransform& w : worldTransforms)
 	{
@@ -44,9 +44,4 @@ void GamePlayScene::Draw()
 	model->Draw(worldTransforms[1], sprite.get());
 	skydome.Draw();
 	Model::PostDraw();
-}
-
-void GamePlayScene::Finalize()
-{
-	delete model;
 }

@@ -5,7 +5,7 @@ void Skydome::Initialize()
 	worldTransform.Initialize();
 	worldTransform.scale = { size, size, size };
 	worldTransform.Update();
-	model = Model::LoadFromOBJ("skydome");
+	model = Model::Create("skydome");
 }
 
 void Skydome::Draw()

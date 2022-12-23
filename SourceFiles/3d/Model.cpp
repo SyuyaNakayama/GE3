@@ -14,7 +14,7 @@ using namespace std;
 /// </summary>
 ComPtr<ID3D12PipelineState> Model::pipelinestate = nullptr;
 ComPtr<ID3D12RootSignature> Model::rootsignature = nullptr;
-vector<Model*> Model::models = {};
+vector<Model*> Model::models;
 
 void LoadVector3Stream(istringstream& stream, Vector3& vec)
 {
@@ -117,25 +117,30 @@ void Model::InitializeGraphicsPipeline()
 	assert(SUCCEEDED(result));
 }
 
-Model* Model::LoadFromOBJ(const string& modelName)
+std::unique_ptr<Model> Model::Create(const string& modelName)
 {
 	for (Model* model : models)
 	{
-		if (model->name == modelName) { return model; }
+		if (model->name == modelName)
+		{
+			unique_ptr<Model> modelUp = make_unique<Model>();
+			modelUp.reset(model);
+			return modelUp;
+		}
 	}
 
-	Model* model = new Model();
+	unique_ptr<Model> model = make_unique<Model>();
 	model->LoadFromOBJInternal(modelName);
 	model->CreateBuffers();
-	models.push_back(model);
+	models.push_back(model.get());
 	return model;
 }
 
 void Model::SetSprite(Sprite* sprite_)
 {
 	isSpriteChange = sprite.get() != sprite_;
-	if(isSpriteChange)
-	sprite.reset(sprite_);
+	if (isSpriteChange)
+		sprite.reset(sprite_);
 }
 
 void Model::TextureUpdate()

@@ -88,7 +88,7 @@ public:
 	// •`‰æŒãˆ—
 	static void PostDraw() {}
 	// ƒ‚ƒfƒ‹ì¬
-	static Model* LoadFromOBJ(const string& modelName);
+	static std::unique_ptr<Model> Create(const string& modelName);
 	Sprite* GetSprite() { return sprite.get(); }
 	void SetSprite(Sprite* sprite_);
 	void TextureUpdate();
