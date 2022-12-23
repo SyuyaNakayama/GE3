@@ -2,6 +2,7 @@
 #include "BaseScene.h"
 #include "Model.h"
 #include "Audio.h"
+#include "Skydome.h"
 
 class GamePlayScene : public BaseScene
 {
@@ -11,7 +12,8 @@ private:
 	WorldTransform worldTransforms[3];
 	ViewProjection viewProjection;
 	Sprite::Color color;
-
+	Skydome skydome;
+	Sprite* sprite = nullptr;
 public:
 	void Initialize() override;
 	void Finalize() override;

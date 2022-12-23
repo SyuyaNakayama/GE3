@@ -19,7 +19,9 @@ void Framework::Finalize()
 void Framework::Update()
 {
 	input->Update();
+	imguiManager->Begin();
 	sceneManager_->Update();
+	imguiManager->End();
 }
 
 bool Framework::IsEndRequest()

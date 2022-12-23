@@ -90,7 +90,8 @@ public:
 	// モデル作成
 	static Model* LoadFromOBJ(const string& modelName);
 	Sprite* GetSprite() { return sprite; }
-	void SetSprite(const Sprite& sprite_);
+	void SetSprite(Sprite* sprite_);
 	void TextureUpdate();
 	void Draw(const WorldTransform& worldTransform);
+	void Draw(const WorldTransform& worldTransform, Sprite* sprite); // テクスチャの変更
 };

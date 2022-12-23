@@ -131,15 +131,15 @@ Model* Model::LoadFromOBJ(const string& modelName)
 	return model;
 }
 
-void Model::SetSprite(const Sprite& sprite_)
+void Model::SetSprite(Sprite* sprite_)
 {
-	Sprite s = sprite_;
-	sprite = &s;
-	isSpriteChange = true;
+	isSpriteChange = sprite != sprite_;
+	sprite = sprite_;
 }
 
 void Model::TextureUpdate()
 {
+	if (!isSpriteChange) { return; }
 	sprite->Update();
 	for (size_t i = 0; i < vertices.size(); i++)
 	{
@@ -159,7 +159,7 @@ void Model::LoadFromOBJInternal(const std::string& modelName)
 	ifstream file;
 	name = modelName;
 	const string FILENAME = modelName + ".obj",
-		DIRECTORY_PATH = "Resources/" + modelName + "/";
+		DIRECTORY_PATH = "Resources/models/" + modelName + "/";
 	file.open(DIRECTORY_PATH + FILENAME);
 	assert(!file.fail());
 
@@ -294,14 +294,14 @@ void Model::CreateBuffers()
 	ibView.Format = DXGI_FORMAT_R16_UINT;
 	ibView.SizeInBytes = sizeIB;
 
-	ConstBufferData* constMap1 = nullptr;
+	ConstBufferData* constMap = nullptr;
 	// 定数バッファ生成
-	BufferMapping(&constBuffer, &constMap1, (sizeof(ConstBufferData) + 0xff) & ~0xff);
+	BufferMapping(&constBuffer, &constMap, (sizeof(ConstBufferData) + 0xff) & ~0xff);
 
-	constMap1->ambient = material.ambient;
-	constMap1->diffuse = material.diffuse;
-	constMap1->specular = material.specular;
-	constMap1->alpha = material.alpha;
+	constMap->ambient = material.ambient;
+	constMap->diffuse = material.diffuse;
+	constMap->specular = material.specular;
+	constMap->alpha = material.alpha;
 	constBuffer->Unmap(0, nullptr);
 }
 
@@ -319,6 +319,11 @@ void Model::PreDraw()
 }
 
 void Model::Draw(const WorldTransform& worldTransform)
+{
+	Draw(worldTransform, sprite);
+}
+
+void Model::Draw(const WorldTransform& worldTransform, Sprite* sprite)
 {
 	ID3D12GraphicsCommandList* cmdList = DirectXCommon::GetInstance()->GetCommandList();
 

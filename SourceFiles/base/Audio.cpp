@@ -22,12 +22,12 @@ void Audio::Initialize()
 		IID_IGraphBuilder,
 		(LPVOID*)&pGraphBuilder);
 	assert(SUCCEEDED(result));
-	
+
 	// MediaControlインターフェース取得
 	result = pGraphBuilder->QueryInterface(IID_IMediaControl,
 		(LPVOID*)&pMediaControl);
 	assert(SUCCEEDED(result));
-	
+
 	result = pGraphBuilder->QueryInterface(IID_IMediaPosition,
 		(LPVOID*)&pMediaPosition);
 	assert(SUCCEEDED(result));
@@ -35,8 +35,9 @@ void Audio::Initialize()
 
 void Audio::Load(const wstring& fileName)
 {
+	wstring fullpath = L"Resources/audios/" + fileName;
 	// Graphを生成
-	result = pMediaControl->RenderFile((wchar_t*)fileName.c_str());
+	result = pMediaControl->RenderFile((BSTR)fullpath.c_str());
 	assert(SUCCEEDED(result));
 }
 

@@ -33,6 +33,9 @@
     <Filter Include="シェーダー ファイル\object">
       <UniqueIdentifier>{d2d4ee60-179d-48b7-a930-83415ab52e69}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\scene\objects">
+      <UniqueIdentifier>{93d52b3d-d172-4ae0-a414-ff5de841ae01}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli">
@@ -132,6 +135,15 @@
     <ClCompile Include="SourceFiles\scene\SceneFactory.cpp">
       <Filter>ソース ファイル\scene</Filter>
     </ClCompile>
+    <ClCompile Include="SourceFiles\scene\Skydome.cpp">
+      <Filter>ソース ファイル\scene\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="SourceFiles\scene\objects\Player.cpp">
+      <Filter>ソース ファイル\scene\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="SourceFiles\scene\objects\Collider\CollisionManager.cpp">
+      <Filter>ソース ファイル\scene\objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SourceFiles\base\DirectXCommon.h">
@@ -202,6 +214,18 @@
     </ClInclude>
     <ClInclude Include="SourceFiles\scene\SceneFactory.h">
       <Filter>ソース ファイル\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\scene\Skydome.h">
+      <Filter>ソース ファイル\scene\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\scene\objects\Player.h">
+      <Filter>ソース ファイル\scene\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\scene\objects\Collider\Collider.h">
+      <Filter>ソース ファイル\scene\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\scene\objects\Collider\CollisionManager.h">
+      <Filter>ソース ファイル\scene\objects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

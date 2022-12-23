@@ -72,6 +72,17 @@ Vector3 Vector3::Normalize()
 	return *this;
 }
 
+Vector3 Vector3::abs()
+{
+	Vector3 ans = *this;
+
+	ans.x = fabsf(ans.x);
+	ans.y = fabsf(ans.y);
+	ans.z = fabsf(ans.z);
+
+	return ans;
+}
+
 Vector3& Vector3::operator+=(const Vector3& v)
 {
 	x += v.x;
@@ -102,6 +113,36 @@ Vector3& Vector3::operator/=(float s)
 	y /= s;
 	z /= s;
 	return *this;
+}
+
+bool Vector3::operator<=(Vector3 vec)
+{
+	if (x <= vec.x && y <= vec.y && z <= vec.z) { return true; }
+	return false;
+}
+
+bool Vector3::operator>=(Vector3 vec)
+{
+	if (x >= vec.x && y >= vec.y && z >= vec.z) { return true; }
+	return false;
+}
+
+bool Vector3::operator<(Vector3 vec)
+{
+	if (x < vec.x && y < vec.y && z < vec.z) { return true; }
+	return false;
+}
+
+bool Vector3::operator>(Vector3 vec)
+{
+	if (x > vec.x && y > vec.y && z > vec.z) { return true; }
+	return false;
+}
+
+bool Vector3::operator==(Vector3 vec)
+{
+	if (x == vec.x && y == vec.y && z == vec.z) { return true; }
+	return false;
 }
 
 const Vector3 operator+(const Vector3& v1, const Vector3& v2)

@@ -24,6 +24,6 @@ public:
 
 	void Initialize();
 	void Update();
-	const Vector3& GetWorldTransration() { return { matWorld.m[3][0],matWorld.m[3][1],matWorld.m[3][2] }; }
+	const Vector3& GetWorldPosition() { return { matWorld.m[3][0],matWorld.m[3][1],matWorld.m[3][2] }; }
 	static void SetViewProjection(ViewProjection* viewProjection) { viewProjection_ = viewProjection; }
 };

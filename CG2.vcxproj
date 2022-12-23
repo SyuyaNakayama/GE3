@@ -72,17 +72,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)SourceFiles\scene\objects;$(SolutionDir)SourceFiles\scene\objects\Collider;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)SourceFiles\scene\objects;$(SolutionDir)SourceFiles\scene\objects\Collider;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)DirectXTex;$(SolutionDir)imgui;$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)DirectXTex;$(SolutionDir)imgui;$(WindowsSDK_IncludePath);$(SolutionDir)SourceFiles\scene\objects\Collider;$(SolutionDir)SourceFiles\scene\objects</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)DirectXTex;$(SolutionDir)imgui;$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)DirectXTex;$(SolutionDir)imgui;$(WindowsSDK_IncludePath);$(SolutionDir)SourceFiles\scene\objects\Collider;$(SolutionDir)SourceFiles\scene\objects</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -225,8 +227,11 @@
     <ClCompile Include="SourceFiles\math\Vector.cpp" />
     <ClCompile Include="SourceFiles\scene\FadeManager.cpp" />
     <ClCompile Include="SourceFiles\scene\GamePlayScene.cpp" />
+    <ClCompile Include="SourceFiles\scene\objects\Collider\CollisionManager.cpp" />
+    <ClCompile Include="SourceFiles\scene\objects\Player.cpp" />
     <ClCompile Include="SourceFiles\scene\SceneFactory.cpp" />
     <ClCompile Include="SourceFiles\scene\SceneManager.cpp" />
+    <ClCompile Include="SourceFiles\scene\Skydome.cpp" />
     <ClCompile Include="SourceFiles\scene\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -250,8 +255,12 @@
     <ClInclude Include="SourceFiles\scene\BaseScene.h" />
     <ClInclude Include="SourceFiles\scene\FadeManager.h" />
     <ClInclude Include="SourceFiles\scene\GamePlayScene.h" />
+    <ClInclude Include="SourceFiles\scene\objects\Collider\Collider.h" />
+    <ClInclude Include="SourceFiles\scene\objects\Collider\CollisionManager.h" />
+    <ClInclude Include="SourceFiles\scene\objects\Player.h" />
     <ClInclude Include="SourceFiles\scene\SceneFactory.h" />
     <ClInclude Include="SourceFiles\scene\SceneManager.h" />
+    <ClInclude Include="SourceFiles\scene\Skydome.h" />
     <ClInclude Include="SourceFiles\scene\TitleScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

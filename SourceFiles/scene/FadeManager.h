@@ -18,4 +18,5 @@ public:
 	bool IsChange() { return isChange; }
 	bool IsFade() { return isFade; }
 	void FadeScene() { isFade = true; }
+	~FadeManager() { delete sprite; }
 };

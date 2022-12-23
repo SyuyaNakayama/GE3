@@ -16,6 +16,8 @@ void GamePlayScene::Initialize()
 	}
 	worldTransforms[1].translation.z = -20.0f;
 	viewProjection.Initialize();
+	skydome.Initialize();
+	sprite = Sprite::Create("mario.jpg");
 }
 
 void GamePlayScene::Update()
@@ -26,13 +28,8 @@ void GamePlayScene::Update()
 		input->Move(DIK_UP,DIK_DOWN,1.0f), 0
 	};
 
-	Sprite* modelSprite = model->GetSprite();
-
-	Sprite::Color color = modelSprite->GetColor();
-
-	modelSprite->SetColor(color);
-	color.a += 0.01f;
-	model->TextureUpdate();
+	//model->SetSprite(sprite);
+	//model->TextureUpdate();
 
 	viewProjection.CameraMove(moveSpd);
 
@@ -48,11 +45,13 @@ void GamePlayScene::Draw()
 {
 	Model::PreDraw();
 	model->Draw(worldTransforms[0]);
-	model2->Draw(worldTransforms[1]);
+	model2->Draw(worldTransforms[1],sprite);
+	skydome.Draw();
 	Model::PostDraw();
 }
 
 void GamePlayScene::Finalize()
 {
+	delete sprite;
 	delete model;
 }

@@ -34,6 +34,7 @@ public:
 
 	float Length() const; // ノルム(長さ)
 	Vector3 Normalize(); // 正規化
+	Vector3 abs();
 
 	// 単項演算子オーバーロード
 	Vector3 operator-() const { return Vector3(-x, -y, -z); }
@@ -43,6 +44,12 @@ public:
 	Vector3& operator-=(const Vector3& v);
 	Vector3& operator*=(float s);
 	Vector3& operator/=(float s);
+
+	bool operator<=(Vector3);
+	bool operator>=(Vector3);
+	bool operator<(Vector3);
+	bool operator>(Vector3);
+	bool operator==(Vector3);
 };
 
 // 2項演算子オーバーロード

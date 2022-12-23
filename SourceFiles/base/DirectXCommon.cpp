@@ -262,14 +262,6 @@ void DirectXCommon::PreDraw()
 	commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
-	D3D12_RECT scissorRect{};
-
-	// シザー矩形
-	scissorRect.left = 0; // 切り抜き座標左
-	scissorRect.right = scissorRect.left + (long)WIN_SIZE.x; // 切り抜き座標右
-	scissorRect.top = 0; // 切り抜き座標上
-	scissorRect.bottom = scissorRect.top + (long)WIN_SIZE.y; // 切り抜き座標下
-
 	commandList->RSSetScissorRects(1, &CD3DX12_RECT(0, 0, WIN_SIZE.x, WIN_SIZE.y)); // シザー矩形設定コマンドを、コマンドリストに積む
 	commandList->RSSetViewports(1, &viewport); // ビューポート設定コマンドを、コマンドリストに積む
 }
