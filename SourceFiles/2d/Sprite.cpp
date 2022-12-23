@@ -50,9 +50,9 @@ void Sprite::Initialize(uint32_t textureIndex)
 	size_ = textureSize_;
 }
 
-Sprite* Sprite::Create(const std::string& FILE_NAME)
+std::unique_ptr<Sprite> Sprite::Create(const std::string& FILE_NAME)
 {
-	Sprite* sprite = new Sprite;
+	std::unique_ptr<Sprite> sprite = std::make_unique<Sprite>();
 	sprite->Initialize(SpriteCommon::GetInstance()->LoadTexture(FILE_NAME));
 	return sprite;
 }
@@ -125,7 +125,7 @@ void Sprite::Draw()
 	cmdList->DrawInstanced((UINT)vertices.size(), 1, 0, 0); // ‘S‚Ä‚Ì’¸“_‚ðŽg‚Á‚Ä•`‰æ
 }
 
-float Sprite::Color::ColorClass::operator=(float val)
+float Color::ColorClass::operator=(float val)
 {
 	val_ = val;
 	if (val_ > 1.0f) { val_ -= (int)val_; }

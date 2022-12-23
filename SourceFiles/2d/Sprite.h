@@ -6,29 +6,30 @@
 #include "Vector.h"
 #include <string>
 #include <array>
+#include <memory>
+
+struct Color
+{
+private:
+	class ColorClass
+	{
+	private:
+		float val_ = 1.0f;
+	public:
+		float operator=(float val);
+		void operator+=(float val) { operator=(val_ + val); }
+		void operator-=(float val) { operator=(val_ - val); }
+		float GetVal() const { return val_; }
+	};
+public:
+	ColorClass r, g, b, a;
+	Color() {}
+	Color(float red, float green, float blue, float alpha = 1.0f) { r = red, g = green, b = blue, a = alpha; }
+};
 
 class Sprite
 {
 public:
-	struct Color
-	{
-	private:
-		class ColorClass
-		{
-		private:
-			float val_ = 1.0f;
-		public:
-			float operator=(float val);
-			void operator+=(float val) { operator=(val_ + val); }
-			void operator-=(float val) { operator=(val_ - val); }
-			float GetVal() const { return val_; }
-		};
-	public:
-		ColorClass r, g, b, a;
-		Color() {}
-		Color(float red, float green, float blue, float alpha = 1.0f) { r = red, g = green, b = blue, a = alpha; }
-	};
-
 	enum class VertexNumber
 	{
 		LB, // ç∂â∫
@@ -64,7 +65,7 @@ private:
 
 	void AdjustTextureSize();
 public:
-	static Sprite* Create(const std::string& FILE_NAME);
+	static std::unique_ptr<Sprite> Create(const std::string& FILE_NAME);
 	void Initialize(uint32_t textureIndex);
 	void Update();
 	void Draw();

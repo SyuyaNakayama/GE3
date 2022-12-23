@@ -24,5 +24,5 @@ public:
 	void PrintVector(std::string str, Vector3 vec);
 	void SliderVector(std::string str, Vector2& vec);
 	void SliderVector(std::string str, Vector3& vec);
-	void ColorEdit(Sprite::Color& color);
+	void ColorEdit(Color& color);
 };

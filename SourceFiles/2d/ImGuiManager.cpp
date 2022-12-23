@@ -99,7 +99,7 @@ void ImGuiManager::SliderVector(std::string str, Vector3& vec)
 	vec = { num[0],num[1],num[2] };
 }
 
-void ImGuiManager::ColorEdit(Sprite::Color& color)
+void ImGuiManager::ColorEdit(Color& color)
 {
 	float c[4] = { color.r.GetVal(),color.g.GetVal(),color.b.GetVal(),color.a.GetVal() };
 	ColorEdit4("Color", c);

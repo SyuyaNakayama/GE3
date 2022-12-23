@@ -133,8 +133,9 @@ Model* Model::LoadFromOBJ(const string& modelName)
 
 void Model::SetSprite(Sprite* sprite_)
 {
-	isSpriteChange = sprite != sprite_;
-	sprite = sprite_;
+	isSpriteChange = sprite.get() != sprite_;
+	if(isSpriteChange)
+	sprite.reset(sprite_);
 }
 
 void Model::TextureUpdate()
@@ -320,7 +321,7 @@ void Model::PreDraw()
 
 void Model::Draw(const WorldTransform& worldTransform)
 {
-	Draw(worldTransform, sprite);
+	Draw(worldTransform, sprite.get());
 }
 
 void Model::Draw(const WorldTransform& worldTransform, Sprite* sprite)

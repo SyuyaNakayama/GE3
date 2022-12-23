@@ -20,7 +20,7 @@ private:
 		Vector3 pos; // xyz座標
 		Vector3 normal; // 法線ベクトル
 		Vector2 uv;  // uv座標
-		Sprite::Color color; // 色
+		Color color; // 色
 	};
 
 	// マテリアル
@@ -46,7 +46,7 @@ private:
 private:
 	VertexData* vertMap = nullptr;
 	// テクスチャ
-	Sprite* sprite = nullptr;
+	std::unique_ptr<Sprite> sprite;
 	// モデル名
 	string name;
 	// 頂点バッファ
@@ -89,7 +89,7 @@ public:
 	static void PostDraw() {}
 	// モデル作成
 	static Model* LoadFromOBJ(const string& modelName);
-	Sprite* GetSprite() { return sprite; }
+	Sprite* GetSprite() { return sprite.get(); }
 	void SetSprite(Sprite* sprite_);
 	void TextureUpdate();
 	void Draw(const WorldTransform& worldTransform);

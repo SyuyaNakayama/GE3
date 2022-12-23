@@ -6,11 +6,11 @@
 class TitleScene : public BaseScene
 {
 private:
-	std::vector<Sprite*> sprites{};
+	std::unique_ptr<Sprite> sprite;
 
 public:
 	void Initialize() override;
-	void Finalize() override;
+	void Finalize() {};
 	void Update() override;
 	void Draw() override;
 };
