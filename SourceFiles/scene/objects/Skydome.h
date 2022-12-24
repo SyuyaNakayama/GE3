@@ -5,7 +5,7 @@ class Skydome
 {
 private:
 	WorldTransform worldTransform;
-	std::unique_ptr<Model> model;
+	Model* model;
 	const float SIZE = 200.0f;
 
 public:

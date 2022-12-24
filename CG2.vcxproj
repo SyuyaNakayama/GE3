@@ -221,6 +221,7 @@
     <ClCompile Include="SourceFiles\base\Input.cpp" />
     <ClCompile Include="SourceFiles\base\main.cpp" />
     <ClCompile Include="SourceFiles\base\MyGame.cpp" />
+    <ClCompile Include="SourceFiles\base\Timer.cpp" />
     <ClCompile Include="SourceFiles\base\WindowsAPI.cpp" />
     <ClCompile Include="SourceFiles\math\Matrix4.cpp" />
     <ClCompile Include="SourceFiles\math\Quaternion.cpp" />
@@ -231,6 +232,7 @@
     <ClCompile Include="SourceFiles\scene\objects\Enemy.cpp" />
     <ClCompile Include="SourceFiles\scene\objects\EnemyManager.cpp" />
     <ClCompile Include="SourceFiles\scene\objects\Player.cpp" />
+    <ClCompile Include="SourceFiles\scene\objects\PlayerBullet.cpp" />
     <ClCompile Include="SourceFiles\scene\objects\Skydome.cpp" />
     <ClCompile Include="SourceFiles\scene\SceneFactory.cpp" />
     <ClCompile Include="SourceFiles\scene\SceneManager.cpp" />
@@ -249,6 +251,7 @@
     <ClInclude Include="SourceFiles\base\Functions.h" />
     <ClInclude Include="SourceFiles\base\Input.h" />
     <ClInclude Include="SourceFiles\base\MyGame.h" />
+    <ClInclude Include="SourceFiles\base\Timer.h" />
     <ClInclude Include="SourceFiles\base\WindowsAPI.h" />
     <ClInclude Include="SourceFiles\math\Matrix4.h" />
     <ClInclude Include="SourceFiles\math\Quaternion.h" />
@@ -262,6 +265,7 @@
     <ClInclude Include="SourceFiles\scene\objects\Enemy.h" />
     <ClInclude Include="SourceFiles\scene\objects\EnemyManager.h" />
     <ClInclude Include="SourceFiles\scene\objects\Player.h" />
+    <ClInclude Include="SourceFiles\scene\objects\PlayerBullet.h" />
     <ClInclude Include="SourceFiles\scene\objects\Skydome.h" />
     <ClInclude Include="SourceFiles\scene\SceneFactory.h" />
     <ClInclude Include="SourceFiles\scene\SceneManager.h" />

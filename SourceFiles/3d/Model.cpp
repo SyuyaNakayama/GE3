@@ -117,22 +117,17 @@ void Model::InitializeGraphicsPipeline()
 	assert(SUCCEEDED(result));
 }
 
-std::unique_ptr<Model> Model::Create(const string& modelName)
+Model* Model::Create(const string& modelName)
 {
 	for (Model* model : models)
 	{
-		if (model->name == modelName)
-		{
-			unique_ptr<Model> modelUp = make_unique<Model>();
-			modelUp.reset(model);
-			return modelUp;
-		}
+		if (model->name == modelName) { return model; }
 	}
 
-	unique_ptr<Model> model = make_unique<Model>();
+	Model* model = new Model;
 	model->LoadFromOBJInternal(modelName);
 	model->CreateBuffers();
-	models.push_back(model.get());
+	models.push_back(model);
 	return model;
 }
 
@@ -142,6 +137,12 @@ void Model::SetSprite(Sprite* sprite_)
 }
 
 void Model::TextureUpdate()
+{
+	assert(sprite);
+	TextureUpdate(sprite.get());
+}
+
+void Model::TextureUpdate(Sprite* sprite)
 {
 	sprite->Update();
 	for (size_t i = 0; i < vertices.size(); i++)
@@ -343,7 +344,7 @@ void Model::Draw(const WorldTransform& worldTransform, Sprite* sprite)
 	ID3D12DescriptorHeap* ppHeaps[] = { spCommon->GetDescriptorHeap() };
 	cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 
-	if (!material.textureFilename.empty())
+	if (sprite)
 	{
 		// シェーダリソースビューをセット
 		cmdList->SetGraphicsRootDescriptorTable(2, spCommon->GetGpuHandle(sprite->GetTextureIndex()));

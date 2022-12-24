@@ -1,17 +1,18 @@
 #pragma once
 #include "Collider.h"
 #include "Model.h"
+#include "Timer.h"
 
-class Enemy : public Collider
+class PlayerBullet : public Collider
 {
 private:
 	static Model* model;
-	Sprite* sprite;
-	bool isDead = true;
-	Vector3 moveSpd;
+	Vector3 pos, spd;
+	bool isDead;
+	Timer deathTimer = 180;
 
 public:
-	void Initialize(Vector3 moveSpd_,Sprite* sprite_);
+	void Initialize(Vector3 pos_,Vector3 spd_);
 	void Update();
 	void Draw();
 	bool IsDead() { return isDead; };

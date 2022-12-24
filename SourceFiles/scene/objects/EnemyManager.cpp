@@ -5,7 +5,9 @@ void EnemyManager::Initialize()
 {
 	unique_ptr<Enemy> newEnemy = make_unique<Enemy>();
 	enemySprites[0] = Sprite::Create("enemy.png");
+	enemySprites[0]->SetTextureSize(enemySprites[0]->GetTextureSize() - Vector2(48, 0));
 	newEnemy->Initialize({}, enemySprites[0].get());
+	
 	enemies[0].push_back(move(newEnemy));
 }
 

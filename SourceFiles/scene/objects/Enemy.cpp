@@ -1,22 +1,26 @@
 #include "Enemy.h"
 
+Model* Enemy::model = nullptr;
+
 void Enemy::Initialize(Vector3 moveSpd_, Sprite* sprite_)
 {
-	model = Model::Create("cube");
-	sprite.reset(sprite_);
+	if (!model) { model = Model::Create("cube"); }
+	sprite = sprite_;
 	moveSpd = moveSpd_;
 	isDead = false;
 	worldTransform.Initialize();
-	sprite->Update();
+	worldTransform.scale = { 2,2,2 };
+	worldTransform.translation.x = -50;
 }
 
 void Enemy::Update()
 {
 	worldTransform.translation += moveSpd;
+	model->TextureUpdate(sprite);
 	worldTransform.Update();
 }
 
 void Enemy::Draw()
 {
-	model->Draw(worldTransform, sprite.get());
+	model->Draw(worldTransform, sprite);
 }

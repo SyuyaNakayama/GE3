@@ -156,6 +156,12 @@
     <ClCompile Include="SourceFiles\scene\objects\EnemyManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="SourceFiles\scene\objects\PlayerBullet.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SourceFiles\base\Timer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SourceFiles\base\DirectXCommon.h">
@@ -241,5 +247,7 @@
     </ClInclude>
     <ClInclude Include="SourceFiles\scene\objects\Enemy.h" />
     <ClInclude Include="SourceFiles\scene\objects\EnemyManager.h" />
+    <ClInclude Include="SourceFiles\scene\objects\PlayerBullet.h" />
+    <ClInclude Include="SourceFiles\base\Timer.h" />
   </ItemGroup>
 </Project>

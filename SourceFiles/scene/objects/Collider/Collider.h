@@ -21,11 +21,14 @@ class Collider
 private:
 	CollisionAttribute collisionAttribute_ = CollisionAttribute::All;
 	CollisionMask collisionMask_ = CollisionMask::All;
+	Collider* p = nullptr;
 
 protected:
 	WorldTransform worldTransform;
 
 public:
+	Collider() { p = this; }
+
 	virtual void OnCollision(Collider* collider) {};
 	virtual Vector3 GetWorldPosition() { return worldTransform.GetWorldPosition(); };
 	virtual Vector3 GetRadius() { return worldTransform.scale; };

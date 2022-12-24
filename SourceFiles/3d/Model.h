@@ -86,10 +86,11 @@ public:
 	// 描画後処理
 	static void PostDraw() {}
 	// モデル作成
-	static std::unique_ptr<Model> Create(const string& modelName);
+	static Model* Create(const string& modelName);
 	Sprite* GetSprite() { return sprite.get(); }
 	void SetSprite(Sprite* sprite_);
 	void TextureUpdate();
+	void TextureUpdate(Sprite* sprite);
 	void Draw(const WorldTransform& worldTransform);
 	void Draw(const WorldTransform& worldTransform, Sprite* sprite); // テクスチャの変更
 };
