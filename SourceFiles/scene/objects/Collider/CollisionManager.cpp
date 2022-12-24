@@ -1,5 +1,5 @@
 #include "CollisionManager.h"
-#include <list>
+#include <imgui.h>
 
 using namespace std;
 
@@ -18,9 +18,15 @@ bool CollisionManager::CheckBoxCollisionPair(Collider* colliderA, Collider* coll
 	return vecAB <= radAB;
 }
 
+CollisionManager* CollisionManager::GetInstance()
+{
+	static CollisionManager instance;
+	return &instance;
+}
+
 void CollisionManager::CheckAllCollisions()
 {
-	list<Collider*> colliders_;
+	ImGui::Text("colliders_.size() = %d", colliders_.size());
 
 	list<Collider*>::iterator itrA = colliders_.begin();
 

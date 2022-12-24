@@ -228,6 +228,7 @@
     <ClCompile Include="SourceFiles\math\Vector.cpp" />
     <ClCompile Include="SourceFiles\scene\FadeManager.cpp" />
     <ClCompile Include="SourceFiles\scene\GamePlayScene.cpp" />
+    <ClCompile Include="SourceFiles\scene\objects\collider\Collider.cpp" />
     <ClCompile Include="SourceFiles\scene\objects\Collider\CollisionManager.cpp" />
     <ClCompile Include="SourceFiles\scene\objects\Enemy.cpp" />
     <ClCompile Include="SourceFiles\scene\objects\EnemyManager.cpp" />

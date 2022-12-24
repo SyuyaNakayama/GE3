@@ -1,6 +1,6 @@
 #include "GamePlayScene.h"
 #include "SpriteCommon.h"
-#include <fstream>
+#include "CollisionManager.h"
 
 void GamePlayScene::Initialize()
 {
@@ -10,6 +10,10 @@ void GamePlayScene::Initialize()
 	skydome.Initialize();
 	player.Initialize();
 	enemyManager.Initialize();
+}
+
+void GamePlayScene::Finalize()
+{
 }
 
 void GamePlayScene::Update()
@@ -25,6 +29,8 @@ void GamePlayScene::Update()
 
 	viewProjection.CameraMove(cameraMoveSpd);
 	viewProjection.Update();
+
+	CollisionManager::GetInstance()->CheckAllCollisions();
 }
 
 void GamePlayScene::Draw()

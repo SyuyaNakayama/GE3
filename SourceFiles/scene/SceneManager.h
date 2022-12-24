@@ -15,8 +15,8 @@ private:
 public:
 	static SceneManager* GetInstance();
 	SceneManager(const SceneManager& obj) = delete;
-	~SceneManager() { scene_->Finalize(); delete scene_; }
 	void Initialize();
+	void Finalize() { scene_->Finalize(); delete scene_; }
 	void Update();
 	void Draw();
 	void SetNextScene(Scene nextScene, bool isUseFade = true);

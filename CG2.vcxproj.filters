@@ -108,9 +108,6 @@
     <ClCompile Include="SourceFiles\base\Audio.cpp">
       <Filter>ソース ファイル\base</Filter>
     </ClCompile>
-    <ClCompile Include="SourceFiles\scene\FadeManager.cpp">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClCompile>
     <ClCompile Include="SourceFiles\math\Vector.cpp">
       <Filter>ソース ファイル\math</Filter>
     </ClCompile>
@@ -150,17 +147,23 @@
     <ClCompile Include="SourceFiles\scene\objects\Skydome.cpp">
       <Filter>ソース ファイル\scene\objects</Filter>
     </ClCompile>
+    <ClCompile Include="SourceFiles\base\Timer.cpp">
+      <Filter>ソース ファイル\base</Filter>
+    </ClCompile>
     <ClCompile Include="SourceFiles\scene\objects\Enemy.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\scene\objects</Filter>
     </ClCompile>
     <ClCompile Include="SourceFiles\scene\objects\EnemyManager.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\scene\objects</Filter>
     </ClCompile>
     <ClCompile Include="SourceFiles\scene\objects\PlayerBullet.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\scene\objects</Filter>
     </ClCompile>
-    <ClCompile Include="SourceFiles\base\Timer.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="SourceFiles\scene\FadeManager.cpp">
+      <Filter>ソース ファイル\scene\others</Filter>
+    </ClCompile>
+    <ClCompile Include="SourceFiles\scene\objects\collider\Collider.cpp">
+      <Filter>ソース ファイル\scene\objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -196,9 +199,6 @@
     </ClInclude>
     <ClInclude Include="SourceFiles\base\Audio.h">
       <Filter>ソース ファイル\base</Filter>
-    </ClInclude>
-    <ClInclude Include="SourceFiles\scene\FadeManager.h">
-      <Filter>ソース ファイル\scene</Filter>
     </ClInclude>
     <ClInclude Include="SourceFiles\math\Vector.h">
       <Filter>ソース ファイル\math</Filter>
@@ -245,9 +245,20 @@
     <ClInclude Include="SourceFiles\scene\objects\Skydome.h">
       <Filter>ソース ファイル\scene\objects</Filter>
     </ClInclude>
-    <ClInclude Include="SourceFiles\scene\objects\Enemy.h" />
-    <ClInclude Include="SourceFiles\scene\objects\EnemyManager.h" />
-    <ClInclude Include="SourceFiles\scene\objects\PlayerBullet.h" />
-    <ClInclude Include="SourceFiles\base\Timer.h" />
+    <ClInclude Include="SourceFiles\base\Timer.h">
+      <Filter>ソース ファイル\base</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\scene\objects\Enemy.h">
+      <Filter>ソース ファイル\scene\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\scene\objects\EnemyManager.h">
+      <Filter>ソース ファイル\scene\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\scene\objects\PlayerBullet.h">
+      <Filter>ソース ファイル\scene\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\scene\FadeManager.h">
+      <Filter>ソース ファイル\scene\others</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

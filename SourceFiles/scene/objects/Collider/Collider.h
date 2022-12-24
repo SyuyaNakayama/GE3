@@ -1,5 +1,4 @@
 #pragma once
-#include "Vector.h"
 #include "WorldTransform.h"
 
 enum class CollisionAttribute
@@ -21,13 +20,13 @@ class Collider
 private:
 	CollisionAttribute collisionAttribute_ = CollisionAttribute::All;
 	CollisionMask collisionMask_ = CollisionMask::All;
-	Collider* p = nullptr;
 
 protected:
 	WorldTransform worldTransform;
 
 public:
-	Collider() { p = this; }
+	Collider();
+	~Collider();
 
 	virtual void OnCollision(Collider* collider) {};
 	virtual Vector3 GetWorldPosition() { return worldTransform.GetWorldPosition(); };

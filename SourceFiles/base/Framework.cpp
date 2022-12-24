@@ -6,12 +6,15 @@ void Framework::Initialize()
 	dxCommon->Initialize();
 	spriteCommon->Initialize();
 	input->Initialize();
-	audio->Initialize();
 	imguiManager->Initialize();
+	audio->Initialize();
+	sceneManager_->Initialize();
 }
 
 void Framework::Finalize()
 {
+	sceneManager_->Finalize();
+	audio->Finalize();
 	imguiManager->Finalize();
 	wAPI->Finalize();
 }
