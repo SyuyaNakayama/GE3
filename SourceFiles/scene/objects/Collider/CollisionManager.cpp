@@ -1,5 +1,4 @@
 #include "CollisionManager.h"
-#include <imgui.h>
 
 using namespace std;
 
@@ -26,21 +25,21 @@ CollisionManager* CollisionManager::GetInstance()
 
 void CollisionManager::CheckAllCollisions()
 {
-	ImGui::Text("colliders_.size() = %d", colliders_.size());
-
 	list<Collider*>::iterator itrA = colliders_.begin();
-
-	Collider* colliderA = *colliders_.begin();
-	list<Collider*>::iterator itrB = itrA;
-	itrB++;
-
-	for (; itrB != colliders_.end(); ++itrB)
+	for (; itrA != colliders_.end(); ++itrA)
 	{
-		Collider* colliderB = *itrB;
-		if (CheckBoxCollisionPair(colliderA, colliderB))
+		Collider* colliderA = *itrA;
+		list<Collider*>::iterator itrB = itrA;
+		itrB++;
+
+		for (; itrB != colliders_.end(); ++itrB)
 		{
-			colliderA->OnCollision(colliderB);
-			colliderB->OnCollision(colliderA);
+			Collider* colliderB = *itrB;
+			if (CheckBoxCollisionPair(colliderA, colliderB))
+			{
+				colliderA->OnCollision(colliderB);
+				colliderB->OnCollision(colliderA);
+			}
 		}
 	}
 }

@@ -5,9 +5,11 @@
 class EnemyManager
 {
 private:
-	std::array<std::list<std::unique_ptr<Enemy>>, 4> enemies;
+	std::list<std::unique_ptr<Enemy>> enemies;
 	std::array<std::unique_ptr<Sprite>, 4> enemySprites;
+	UINT wave = 0;
 
+	void NewWave();
 public:
 	void Initialize();
 	void Update();

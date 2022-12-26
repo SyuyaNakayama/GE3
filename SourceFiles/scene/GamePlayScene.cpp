@@ -6,14 +6,10 @@ void GamePlayScene::Initialize()
 {
 	WorldTransform::SetViewProjection(&viewProjection);
 	viewProjection.Initialize();
-	viewProjection.eye = { -50,20,-80 };
+	viewProjection.eye = { 0,20,-30 };
 	skydome.Initialize();
 	player.Initialize();
 	enemyManager.Initialize();
-}
-
-void GamePlayScene::Finalize()
-{
 }
 
 void GamePlayScene::Update()

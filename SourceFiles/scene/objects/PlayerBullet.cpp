@@ -8,6 +8,8 @@ void PlayerBullet::Initialize(Vector3 pos, Vector3 spd_)
 	worldTransform.translation = pos;
 	spd = spd_;
 	worldTransform.Initialize();
+	SetCollisionAttribute(CollisionAttribute::PlayerBullet);
+	SetCollisionMask(CollisionMask::Player);
 }
 
 void PlayerBullet::Update()

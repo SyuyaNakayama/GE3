@@ -16,7 +16,7 @@ private:
 
 public:
 	void Initialize() override;
-	void Finalize();
+	void Finalize() {};
 	void Update() override;
 	void Draw() override;
 };

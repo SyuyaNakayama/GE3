@@ -1,6 +1,4 @@
 #pragma once
-#include <d3dcompiler.h>
-#include <d3d12.h>
 #include <string>
 #include <cassert>
 #include "DirectXCommon.h"

@@ -13,13 +13,7 @@ public:
 	static CollisionManager* GetInstance();
 	CollisionManager(const CollisionManager& obj) = delete;
 
-	void PushCollider(Collider* collider)
-	{
-		colliders_.push_back(collider); 
-	}
-	void PopCollider(Collider* collider) 
-	{
-		if (!colliders_.empty()) { colliders_.remove(collider); }
-	}
+	void PushCollider(Collider* collider) { colliders_.push_back(collider); }
+	void PopCollider(Collider* collider) { colliders_.remove(collider); }
 	void CheckAllCollisions();
 };

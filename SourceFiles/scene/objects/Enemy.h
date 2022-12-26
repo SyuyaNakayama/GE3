@@ -11,9 +11,10 @@ private:
 	Vector3 moveSpd;
 
 public:
-	void Initialize(Vector3 moveSpd_,Sprite* sprite_);
+	void Initialize(Vector3 pos, Vector3 moveSpd_, Sprite* sprite_);
 	void Update();
 	void Draw();
 	bool IsDead() { return isDead; };
+	void OnCollision(Collider* collider) { isDead = true; }
 };
 

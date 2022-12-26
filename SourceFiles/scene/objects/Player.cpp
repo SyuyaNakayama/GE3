@@ -7,11 +7,11 @@ using namespace std;
 void Player::Initialize()
 {
 	worldTransform.Initialize();
-	SetCollisionAttribute(CollisionAttribute::Player);
 	model = Model::Create("player");
-	worldTransform.translation = { -50,0,-50 };
 	WorldTransform::GetViewProjection()->target =
 		worldTransform.translation + Vector3(0, 0, 20);
+	SetCollisionAttribute(CollisionAttribute::Player);
+	SetCollisionMask(CollisionMask::Player);
 }
 
 void Player::Move()
@@ -21,12 +21,10 @@ void Player::Move()
 	Vector3 moveVel =
 	{
 		input->Move(DIK_RIGHT,DIK_LEFT,moveSpd),
-		input->Move(DIK_UP,DIK_DOWN,moveSpd),moveSpd / 12.0f
+		input->Move(DIK_UP,DIK_DOWN,moveSpd)
 	};
 
 	worldTransform.translation += moveVel;
-	ViewProjection* v = WorldTransform::GetViewProjection();
-	v->CameraMove(Vector3(0, 0, moveVel.z));
 }
 
 void Player::Shot()
@@ -36,7 +34,7 @@ void Player::Shot()
 	if (input->IsTrigger(DIK_SPACE))
 	{
 		unique_ptr<PlayerBullet> newBullet = make_unique<PlayerBullet>();
-		newBullet->Initialize(worldTransform.translation, Vector3(0, 0, 1));
+		newBullet->Initialize(worldTransform.translation, Vector3(0, 0, 1.5f));
 		bullets.push_back(move(newBullet));
 	}
 
@@ -63,4 +61,9 @@ void Player::Draw()
 	{
 		bullet->Draw();
 	}
+}
+
+void Player::OnCollision(Collider* collider)
+{
+	ImGui::Text("Hit!");
 }

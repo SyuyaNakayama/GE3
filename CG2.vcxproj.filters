@@ -9,9 +9,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="シェーダー ファイル\Basic">
-      <UniqueIdentifier>{ce1f1f43-3c4e-4637-b37f-18ac4bfc433b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="シェーダー ファイル\Sprite">
       <UniqueIdentifier>{334c1d61-d821-4703-b572-92fc31f59c7f}</UniqueIdentifier>
     </Filter>
@@ -44,9 +41,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\shaders\Basic.hlsli">
-      <Filter>シェーダー ファイル\Basic</Filter>
-    </None>
     <None Include="Resources\shaders\Sprite.hlsli">
       <Filter>シェーダー ファイル\Sprite</Filter>
     </None>
@@ -55,12 +49,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Resources\shaders\BasicVS.hlsl">
-      <Filter>シェーダー ファイル\Basic</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\BasicPS.hlsl">
-      <Filter>シェーダー ファイル\Basic</Filter>
-    </FxCompile>
     <FxCompile Include="Resources\shaders\SpritePS.hlsl">
       <Filter>シェーダー ファイル\Sprite</Filter>
     </FxCompile>

@@ -2,7 +2,7 @@
 
 Model* Enemy::model = nullptr;
 
-void Enemy::Initialize(Vector3 moveSpd_, Sprite* sprite_)
+void Enemy::Initialize(Vector3 pos, Vector3 moveSpd_, Sprite* sprite_)
 {
 	if (!model) { model = Model::Create("cube"); }
 	sprite = sprite_;
@@ -10,7 +10,7 @@ void Enemy::Initialize(Vector3 moveSpd_, Sprite* sprite_)
 	isDead = false;
 	worldTransform.Initialize();
 	worldTransform.scale = { 2,2,2 };
-	worldTransform.translation.x = -50;
+	worldTransform.translation = pos;
 }
 
 void Enemy::Update()

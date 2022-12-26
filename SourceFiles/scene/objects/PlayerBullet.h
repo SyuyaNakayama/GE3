@@ -16,5 +16,6 @@ public:
 	void Update();
 	void Draw();
 	bool IsDead() { return isDead; };
+	void OnCollision(Collider* collider) { isDead = true; }
 };
 
