@@ -6,7 +6,7 @@
 class PlayerBullet : public Collider
 {
 private:
-	static Model* model;
+	static std::unique_ptr<Model> model;
 	Vector3 spd;
 	bool isDead;
 	Timer deathTimer = 180;

@@ -7,7 +7,7 @@
 class Enemy : public Collider
 {
 private:
-	static Model* model;
+	static std::unique_ptr<Model> model;
 	static std::array<std::unique_ptr<Sprite>, 4> enemySprites;
 	Sprite* sprite;
 	bool isDead = true;

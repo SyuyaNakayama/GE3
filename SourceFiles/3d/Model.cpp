@@ -117,13 +117,14 @@ void Model::InitializeGraphicsPipeline()
 	assert(SUCCEEDED(result));
 }
 
-Model* Model::Create(const string& modelName)
+std::unique_ptr<Model> Model::Create(const string& modelName)
 {
+	unique_ptr<Model> newModel = make_unique<Model>();
+	
 	for (Model* model : models)
 	{
 		if (model->name == modelName)
 		{
-			Model* newModel = new Model;
 			newModel->name = model->name;
 			newModel->vertices = model->vertices;
 			newModel->indices = model->indices;
@@ -132,11 +133,10 @@ Model* Model::Create(const string& modelName)
 		}
 	}
 
-	Model* model = new Model;
-	model->LoadFromOBJInternal(modelName);
-	model->CreateBuffers();
-	models.push_back(model);
-	return model;
+	newModel->LoadFromOBJInternal(modelName);
+	newModel->CreateBuffers();
+	models.push_back(newModel.get());
+	return newModel;
 }
 
 void Model::SetSprite(Sprite* sprite_)

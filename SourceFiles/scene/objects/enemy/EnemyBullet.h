@@ -8,7 +8,7 @@ enum class EnemyType { Green, Red, Yellow, Purple };
 class EnemyBullet : public Collider
 {
 private:
-	static Model* model;
+	static std::unique_ptr<Model> model;
 	Vector3 spd;
 	bool isDead;
 	Timer deathTimer = 180;

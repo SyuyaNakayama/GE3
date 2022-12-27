@@ -1,7 +1,7 @@
 #include "EnemyBullet.h"
 #include <cassert>
 
-Model* EnemyBullet::model = nullptr;
+std::unique_ptr<Model> EnemyBullet::model;
 std::array<std::unique_ptr<Sprite>, 3> EnemyBullet::shotSprites{};
 
 void EnemyBullet::StaticInitialize()

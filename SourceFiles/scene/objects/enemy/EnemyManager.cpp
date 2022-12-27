@@ -23,7 +23,7 @@ void EnemyManager::NewWave()
 		//CreateEnemy({ 0,0,150 }, { 0,0,-0.5f }, EnemyType::Yellow);
 		//CreateEnemy({ 0,0,150 }, { 0,0,-0.5f }, EnemyType::Purple);
 		//CreateEnemy({ 20,0,150 }, { 0,0,-0.5f }, EnemyType::Green);
-		//CreateEnemy({ -20,0,150 }, { 0,0,-0.5f }, EnemyType::Green);
+		CreateEnemy({ -20,0,150 }, { 0,0,-0.5f }, EnemyType::Green);
 		break;
 	case 2:
 		CreateEnemy({ 0,0,150 }, { 0.1f,0,-0.5 }, EnemyType::Green);

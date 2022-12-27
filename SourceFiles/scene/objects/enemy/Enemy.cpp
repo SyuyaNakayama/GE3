@@ -1,7 +1,7 @@
 #include "Enemy.h"
 using namespace std;
 
-Model* Enemy::model = nullptr;
+std::unique_ptr<Model> Enemy::model;
 std::array<std::unique_ptr<Sprite>, 4> Enemy::enemySprites{};
 
 void Enemy::StaticInitialize()

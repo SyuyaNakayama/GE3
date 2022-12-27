@@ -1,6 +1,6 @@
 #include "PlayerBullet.h"
 
-Model* PlayerBullet::model = nullptr;
+std::unique_ptr<Model> PlayerBullet::model;
 
 void PlayerBullet::Initialize(Vector3 pos, Vector3 spd_)
 {
