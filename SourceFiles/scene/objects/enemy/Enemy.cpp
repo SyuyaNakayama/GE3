@@ -1,12 +1,11 @@
 #include "Enemy.h"
+#include <assert.h>
 using namespace std;
 
-std::unique_ptr<Model> Enemy::model;
 std::array<std::unique_ptr<Sprite>, 4> Enemy::enemySprites{};
 
 void Enemy::StaticInitialize()
 {
-	model = Model::Create("cube");
 	for (size_t i = 0; i < enemySprites.size(); i++)
 	{
 		enemySprites[i] = Sprite::Create("enemy.png");
@@ -21,6 +20,8 @@ void Enemy::Initialize(Vector3 pos, Vector3 moveSpd_, EnemyType enemyType)
 	SetCollisionAttribute(CollisionAttribute::Enemy);
 	SetCollisionMask(CollisionMask::Enemy);
 	sprite = enemySprites[(size_t)enemyType].get();
+	model = Model::Create("cube");
+	model->SetSprite(sprite);
 	moveSpd = moveSpd_;
 	isDead = false;
 	worldTransform.Initialize();
@@ -67,6 +68,6 @@ void Enemy::Update()
 
 void Enemy::Draw()
 {
-	model->Draw(worldTransform, sprite);
+	model->Draw(worldTransform);
 	for (std::unique_ptr<EnemyBullet>& bullet : bullets) { bullet->Draw(); }
 }

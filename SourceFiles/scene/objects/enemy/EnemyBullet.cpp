@@ -1,12 +1,10 @@
 #include "EnemyBullet.h"
 #include <cassert>
 
-std::unique_ptr<Model> EnemyBullet::model;
 std::array<std::unique_ptr<Sprite>, 3> EnemyBullet::shotSprites{};
 
 void EnemyBullet::StaticInitialize()
 {
-	model = Model::Create("cube");
 	for (size_t i = 0; i < shotSprites.size(); i++)
 	{
 		shotSprites[i] = Sprite::Create("enemyShot.png");
@@ -17,7 +15,13 @@ void EnemyBullet::StaticInitialize()
 
 void EnemyBullet::Initialize(Vector3 pos, Vector3 spd_, EnemyType enemyType)
 {
-	if (enemyType != EnemyType::Green) { sprite = shotSprites[(size_t)enemyType - 1].get(); }
+	if (enemyType != EnemyType::Green)
+	{
+		sprite = shotSprites[(size_t)enemyType - 1].get();
+	}
+	model = Model::Create("cube");
+	model->SetSprite(sprite);
+	model->TextureUpdate();
 	worldTransform.translation = pos;
 	spd = spd_;
 	worldTransform.Initialize();
@@ -37,7 +41,6 @@ void EnemyBullet::Draw()
 {
 	if (sprite)
 	{
-		model->TextureUpdate(sprite);
-		model->Draw(worldTransform, sprite);
+		model->Draw(worldTransform);
 	}
 }
