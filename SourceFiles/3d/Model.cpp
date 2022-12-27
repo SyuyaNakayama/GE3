@@ -121,7 +121,15 @@ Model* Model::Create(const string& modelName)
 {
 	for (Model* model : models)
 	{
-		if (model->name == modelName) { return model; }
+		if (model->name == modelName)
+		{
+			Model* newModel = new Model;
+			newModel->name = model->name;
+			newModel->vertices = model->vertices;
+			newModel->indices = model->indices;
+			newModel->CreateBuffers();
+			return newModel;
+		}
 	}
 
 	Model* model = new Model;
@@ -145,14 +153,18 @@ void Model::TextureUpdate()
 void Model::TextureUpdate(Sprite* sprite)
 {
 	sprite->Update();
+	Vector2 spriteSizeRate =
+	{
+		sprite->GetTextureSize().x / sprite->GetSize().x,
+		sprite->GetTextureSize().y / sprite->GetSize().y
+	};
+
 	for (size_t i = 0; i < vertices.size(); i++)
 	{
-		Vector2 spriteUvLT = sprite->GetVerticesUv(Sprite::VertexNumber::LT);
-		Vector2 spriteUvRB = sprite->GetVerticesUv(Sprite::VertexNumber::RB);
 		Vector2 uv = vertices[i].uv;
-		uv.x *= spriteUvRB.x;
-		uv.y *= spriteUvRB.y;
-		uv += spriteUvLT;
+		uv.x *= spriteSizeRate.x;
+		uv.y *= spriteSizeRate.y;
+		uv += sprite->GetVerticesUv(Sprite::VertexNumber::LT);
 		vertMap[i].uv = uv;
 		vertMap[i].color = sprite->GetColor();
 	}
