@@ -1,23 +1,13 @@
 #include "EnemyBullet.h"
 #include <cassert>
 
-std::array<std::unique_ptr<Sprite>, 3> EnemyBullet::shotSprites{};
-
-void EnemyBullet::StaticInitialize()
-{
-	for (size_t i = 0; i < shotSprites.size(); i++)
-	{
-		shotSprites[i] = Sprite::Create("enemyShot.png");
-		shotSprites[i]->SetTextureLeftTop(shotSprites[i]->GetTextureLeftTop() + Vector2(i * 16, 0));
-		shotSprites[i]->SetTextureSize({ 16,16 });
-	}
-}
-
 void EnemyBullet::Initialize(Vector3 pos, Vector3 spd_, EnemyType enemyType)
 {
 	if (enemyType != EnemyType::Green)
 	{
-		sprite = shotSprites[(size_t)enemyType - 1].get();
+		sprite = Sprite::CreatePointer("enemyShot.png");
+		sprite->SetTextureLeftTop(sprite->GetTextureLeftTop() + Vector2(((size_t)enemyType - 1) * 16, 0));
+		sprite->SetTextureSize({ 16,16 });
 	}
 	model = Model::Create("cube");
 	model->SetSprite(sprite);

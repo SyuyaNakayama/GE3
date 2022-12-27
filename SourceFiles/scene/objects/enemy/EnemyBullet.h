@@ -16,8 +16,6 @@ private:
 	Sprite* sprite;
 
 public:
-	static std::array<std::unique_ptr<Sprite>, 3> shotSprites;
-	static void StaticInitialize();
 	void Initialize(Vector3 pos, Vector3 spd_, EnemyType enemyType);
 	void Update();
 	void Draw();

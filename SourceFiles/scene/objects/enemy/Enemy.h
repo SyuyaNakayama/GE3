@@ -8,7 +8,6 @@ class Enemy : public Collider
 {
 private:
 	std::unique_ptr<Model> model;
-	static std::array<std::unique_ptr<Sprite>, 4> enemySprites;
 	Sprite* sprite;
 	bool isDead = true;
 	Vector3 moveSpd;
@@ -21,7 +20,6 @@ private:
 	void CreateShot(Vector3 pos, Vector3 moveSpd, EnemyType enemyType);
 	void Shot();
 public:
-	static void StaticInitialize();
 	void Initialize(Vector3 pos, Vector3 moveSpd_, EnemyType enemyType);
 	void Update();
 	void Draw();

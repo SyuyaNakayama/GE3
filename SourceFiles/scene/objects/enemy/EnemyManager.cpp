@@ -3,7 +3,6 @@ using namespace std;
 
 void EnemyManager::Initialize()
 {
-	Enemy::StaticInitialize();
 	NewWave();
 }
 
@@ -26,11 +25,11 @@ void EnemyManager::NewWave()
 		//CreateEnemy({ 20,0,150 }, { 0,0,-0.5f }, EnemyType::Green);
 		break;
 	case 2:
-		CreateEnemy({ 0,0,150 }, { 0.1f,0,-0.5 }, EnemyType::Green);
-		CreateEnemy({ 0,0,150 }, { -0.1f,0,-0.5 }, EnemyType::Green);
-		CreateEnemy({ 0,0,150 }, { 0,0,-0.5 }, EnemyType::Green);
-		CreateEnemy({ 0,0,150 }, { 0.1f,0.05f,-0.5 }, EnemyType::Green);
-		CreateEnemy({ 0,0,150 }, { -0.1f,0.05f,-0.5 }, EnemyType::Green);
+		//CreateEnemy({ 0,0,150 }, { 0.1f,0,-0.5 }, EnemyType::Green);
+		//CreateEnemy({ 0,0,150 }, { -0.1f,0,-0.5 }, EnemyType::Green);
+		//CreateEnemy({ 0,0,150 }, { 0,0,-0.5 }, EnemyType::Green);
+		//CreateEnemy({ 0,0,150 }, { 0.1f,0.05f,-0.5 }, EnemyType::Green);
+		//CreateEnemy({ 0,0,150 }, { -0.1f,0.05f,-0.5 }, EnemyType::Green);
 		break;
 	}
 }

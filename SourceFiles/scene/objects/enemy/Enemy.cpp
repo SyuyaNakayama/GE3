@@ -2,24 +2,13 @@
 #include <assert.h>
 using namespace std;
 
-std::array<std::unique_ptr<Sprite>, 4> Enemy::enemySprites{};
-
-void Enemy::StaticInitialize()
-{
-	for (size_t i = 0; i < enemySprites.size(); i++)
-	{
-		enemySprites[i] = Sprite::Create("enemy.png");
-		enemySprites[i]->SetTextureLeftTop(enemySprites[i]->GetTextureLeftTop() + Vector2(i * 16, 0));
-		enemySprites[i]->SetTextureSize({ 16,16 });
-	}
-	EnemyBullet::StaticInitialize();
-}
-
 void Enemy::Initialize(Vector3 pos, Vector3 moveSpd_, EnemyType enemyType)
 {
 	SetCollisionAttribute(CollisionAttribute::Enemy);
 	SetCollisionMask(CollisionMask::Enemy);
-	sprite = enemySprites[(size_t)enemyType].get();
+	sprite = Sprite::CreatePointer("enemy.png");
+	sprite->SetTextureLeftTop(sprite->GetTextureLeftTop() + Vector2(((size_t)enemyType) * 16, 0));
+	sprite->SetTextureSize({ 16,16 });
 	model = Model::Create("cube");
 	model->SetSprite(sprite);
 	moveSpd = moveSpd_;
