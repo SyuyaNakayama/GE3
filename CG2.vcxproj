@@ -121,10 +121,10 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)SourceFiles\scene\objects\enemy;$(ProjectDir)SourceFiles\scene;$(ProjectDir)SourceFiles\2d;$(ProjectDir)SourceFiles\base;$(ProjectDir)SourceFiles\math;$(ProjectDir)SourceFiles\3d;%(AdditionalIncludeDirectories);$(SolutionDir)SourceFiles\scene\objects\collider;$(SolutionDir)SourceFiles\scene\objects;$(SolutionDir)SourceFiles\scene\objects\player;$(SolutionDir)SourceFiles\functions</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -147,7 +147,6 @@
       <ExceptionHandling>Sync</ExceptionHandling>
       <AdditionalIncludeDirectories>$(SolutionDir)SourceFiles\scene\objects\enemy;$(ProjectDir)SourceFiles\2d;$(ProjectDir)SourceFiles\scene;$(ProjectDir)SourceFiles\base;$(ProjectDir)SourceFiles\math;$(ProjectDir)SourceFiles\3d;%(AdditionalIncludeDirectories);$(SolutionDir)SourceFiles\scene\objects\collider;$(SolutionDir)SourceFiles\scene\objects;$(SolutionDir)SourceFiles\scene\objects\player;$(SolutionDir)SourceFiles\functions</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -210,6 +209,7 @@
     <ClCompile Include="SourceFiles\base\MyGame.cpp" />
     <ClCompile Include="SourceFiles\base\WindowsAPI.cpp" />
     <ClCompile Include="SourceFiles\functions\Functions.cpp" />
+    <ClCompile Include="SourceFiles\functions\SharePtr.cpp" />
     <ClCompile Include="SourceFiles\functions\Timer.cpp" />
     <ClCompile Include="SourceFiles\math\Matrix4.cpp" />
     <ClCompile Include="SourceFiles\math\Quaternion.cpp" />

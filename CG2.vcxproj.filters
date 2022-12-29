@@ -168,6 +168,9 @@
     <ClCompile Include="SourceFiles\functions\Timer.cpp">
       <Filter>ソース ファイル\functions</Filter>
     </ClCompile>
+    <ClCompile Include="SourceFiles\functions\SharePtr.cpp">
+      <Filter>ソース ファイル\functions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SourceFiles\base\DirectXCommon.h">
