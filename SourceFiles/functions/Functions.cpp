@@ -42,3 +42,9 @@ void LoadShader(ID3DBlob** shaderBlob, wstring shaderName, LPCSTR target)
 		assert(0);
 	}
 }
+
+void Clamp(float& num, float min, float max)
+{
+	if (num < min) { num = min; }
+	if (num > max) { num = max; }
+}

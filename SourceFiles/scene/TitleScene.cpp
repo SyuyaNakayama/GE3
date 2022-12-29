@@ -4,8 +4,7 @@
 
 void TitleScene::Initialize()
 {
-	sprite = Sprite::Create("Mario.jpg");
-	sprite->SetPosition({ 100,100 });
+	sprite = Sprite::Create("sceneSprites/Title.png");
 }
 
 void TitleScene::Update()

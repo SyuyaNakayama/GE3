@@ -48,6 +48,9 @@
     <Filter Include="ソース ファイル\scene\objects\enemy">
       <UniqueIdentifier>{f8b6d73e-7f0e-4dce-8c8f-0d5ae280e87d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\functions">
+      <UniqueIdentifier>{823e7a3e-f66c-4d55-a1f7-a5ed16915fdf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Sprite.hlsli">
@@ -93,9 +96,6 @@
     <ClCompile Include="SourceFiles\3d\Model.cpp">
       <Filter>ソース ファイル\3d</Filter>
     </ClCompile>
-    <ClCompile Include="SourceFiles\base\Functions.cpp">
-      <Filter>ソース ファイル\base</Filter>
-    </ClCompile>
     <ClCompile Include="SourceFiles\3d\WorldTransform.cpp">
       <Filter>ソース ファイル\3d</Filter>
     </ClCompile>
@@ -138,9 +138,6 @@
     <ClCompile Include="SourceFiles\scene\objects\Skydome.cpp">
       <Filter>ソース ファイル\scene\objects</Filter>
     </ClCompile>
-    <ClCompile Include="SourceFiles\base\Timer.cpp">
-      <Filter>ソース ファイル\base</Filter>
-    </ClCompile>
     <ClCompile Include="SourceFiles\scene\FadeManager.cpp">
       <Filter>ソース ファイル\scene\others</Filter>
     </ClCompile>
@@ -165,6 +162,12 @@
     <ClCompile Include="SourceFiles\scene\objects\enemy\EnemyBullet.cpp">
       <Filter>ソース ファイル\scene\objects\enemy</Filter>
     </ClCompile>
+    <ClCompile Include="SourceFiles\functions\Functions.cpp">
+      <Filter>ソース ファイル\functions</Filter>
+    </ClCompile>
+    <ClCompile Include="SourceFiles\functions\Timer.cpp">
+      <Filter>ソース ファイル\functions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SourceFiles\base\DirectXCommon.h">
@@ -187,9 +190,6 @@
     </ClInclude>
     <ClInclude Include="SourceFiles\3d\Model.h">
       <Filter>ソース ファイル\3d</Filter>
-    </ClInclude>
-    <ClInclude Include="SourceFiles\base\Functions.h">
-      <Filter>ソース ファイル\base</Filter>
     </ClInclude>
     <ClInclude Include="SourceFiles\3d\WorldTransform.h">
       <Filter>ソース ファイル\3d</Filter>
@@ -236,9 +236,6 @@
     <ClInclude Include="SourceFiles\scene\objects\Skydome.h">
       <Filter>ソース ファイル\scene\objects</Filter>
     </ClInclude>
-    <ClInclude Include="SourceFiles\base\Timer.h">
-      <Filter>ソース ファイル\base</Filter>
-    </ClInclude>
     <ClInclude Include="SourceFiles\scene\FadeManager.h">
       <Filter>ソース ファイル\scene\others</Filter>
     </ClInclude>
@@ -262,6 +259,15 @@
     </ClInclude>
     <ClInclude Include="SourceFiles\scene\objects\enemy\EnemyBullet.h">
       <Filter>ソース ファイル\scene\objects\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\functions\Functions.h">
+      <Filter>ソース ファイル\functions</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\functions\Timer.h">
+      <Filter>ソース ファイル\functions</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\functions\SharePtr.h">
+      <Filter>ソース ファイル\functions</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

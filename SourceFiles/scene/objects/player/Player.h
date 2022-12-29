@@ -11,6 +11,7 @@ private:
 	const Vector2 LIMIT_POS = { 20,18 };
 	std::list <std::unique_ptr<PlayerBullet>> bullets;
 	Input* input = Input::GetInstance();
+	int hp = 30;
 
 	void Move();
 	void Shot();

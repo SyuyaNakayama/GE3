@@ -17,7 +17,6 @@ void EnemyBullet::Initialize(Vector3 pos, Vector3 spd_, EnemyType enemyType)
 	worldTransform.Initialize();
 	SetCollisionAttribute(CollisionAttribute::EnemyBullet);
 	SetCollisionMask(CollisionMask::Enemy);
-	type = enemyType;
 }
 
 void EnemyBullet::Update()
@@ -29,8 +28,5 @@ void EnemyBullet::Update()
 
 void EnemyBullet::Draw()
 {
-	if (sprite)
-	{
-		model->Draw(worldTransform);
-	}
+	model->Draw(worldTransform);
 }

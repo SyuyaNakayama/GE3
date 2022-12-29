@@ -7,6 +7,7 @@ class TitleScene : public BaseScene
 {
 private:
 	std::unique_ptr<Sprite> sprite;
+	//Sprite* sprite;
 
 public:
 	void Initialize() override;

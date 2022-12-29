@@ -21,3 +21,4 @@ template<class T> void BufferMapping(ID3D12Resource** buff, T** map, UINT64 widt
 
 D3D12_INPUT_ELEMENT_DESC SetInputLayout(LPCSTR semanticName, DXGI_FORMAT format);
 void LoadShader(ID3DBlob** shaderBlob, std::wstring shaderName, LPCSTR target);
+void Clamp(float& num, float min, float max);

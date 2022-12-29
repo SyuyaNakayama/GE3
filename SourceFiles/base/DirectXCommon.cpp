@@ -164,7 +164,7 @@ void DirectXCommon::InitializeRenderTargetView()
 
 	backBuffers.resize(swapchainDesc.BufferCount);
 
-	for (size_t i = 0; i < backBuffers.size(); i++)
+	for (int i = 0; i < backBuffers.size(); i++)
 	{
 		swapchain->GetBuffer((UINT)i, IID_PPV_ARGS(&backBuffers[i]));
 		rtvHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(rtvHeap->GetCPUDescriptorHandleForHeapStart(),
@@ -262,7 +262,7 @@ void DirectXCommon::PreDraw()
 	commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
-	commandList->RSSetScissorRects(1, &CD3DX12_RECT(0, 0, WIN_SIZE.x, WIN_SIZE.y)); // シザー矩形設定コマンドを、コマンドリストに積む
+	commandList->RSSetScissorRects(1, &CD3DX12_RECT(0, 0, (LONG)WIN_SIZE.x, (LONG)WIN_SIZE.y)); // シザー矩形設定コマンドを、コマンドリストに積む
 	commandList->RSSetViewports(1, &viewport); // ビューポート設定コマンドを、コマンドリストに積む
 }
 

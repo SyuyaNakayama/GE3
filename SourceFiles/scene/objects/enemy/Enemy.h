@@ -1,7 +1,4 @@
 #pragma once
-#include "Collider.h"
-#include "Model.h"
-#include "Timer.h"
 #include "EnemyBullet.h"
 
 class Enemy : public Collider
@@ -15,9 +12,9 @@ private:
 	bool isMove = true;
 	EnemyType type;
 	std::list<std::unique_ptr<EnemyBullet>> bullets;
-	Timer shotIntervel = 90;
+	Timer shotIntervel = 80;
 
-	void CreateShot(Vector3 pos, Vector3 moveSpd, EnemyType enemyType);
+	void CreateShot(Vector3 moveSpd);
 	void Shot();
 public:
 	void Initialize(Vector3 pos, Vector3 moveSpd_, EnemyType enemyType);

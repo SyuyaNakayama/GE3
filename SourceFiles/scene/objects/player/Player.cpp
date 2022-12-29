@@ -1,5 +1,7 @@
 #include "Player.h"
 #include "ImGuiManager.h"
+#include "Functions.h"
+#include "SharePtr.h"
 #include <imgui.h>
 
 using namespace std;
@@ -12,6 +14,7 @@ void Player::Initialize()
 		worldTransform.translation + Vector3(0, 0, 20);
 	SetCollisionAttribute(CollisionAttribute::Player);
 	SetCollisionMask(CollisionMask::Player);
+	SharePtr::SetPlayer(this);
 }
 
 void Player::Move()
@@ -25,6 +28,8 @@ void Player::Move()
 	};
 
 	worldTransform.translation += moveVel;
+	Clamp(worldTransform.translation.x, -LIMIT_POS.x, LIMIT_POS.x);
+	Clamp(worldTransform.translation.y, -2.0f, LIMIT_POS.y);
 }
 
 void Player::Shot()
@@ -65,5 +70,6 @@ void Player::Draw()
 
 void Player::OnCollision(Collider* collider)
 {
+	hp--;
 	ImGui::Text("Hit!");
 }

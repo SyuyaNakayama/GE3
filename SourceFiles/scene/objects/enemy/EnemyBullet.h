@@ -10,10 +10,9 @@ class EnemyBullet : public Collider
 private:
 	std::unique_ptr<Model> model;
 	Vector3 spd;
-	bool isDead;
+	bool isDead = false;
 	Timer deathTimer = 180;
-	EnemyType type;
-	Sprite* sprite;
+	Sprite* sprite = nullptr;
 
 public:
 	void Initialize(Vector3 pos, Vector3 spd_, EnemyType enemyType);
