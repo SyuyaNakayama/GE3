@@ -2,7 +2,7 @@
 #include "BaseScene.h"
 #include <string>
 
-enum class Scene { Null, Title, Play };
+enum class Scene { Null, Title, Play, GameOver, Clear };
 
 class AbstractSceneFactory
 {

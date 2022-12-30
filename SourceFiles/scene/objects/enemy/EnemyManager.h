@@ -1,6 +1,5 @@
 #pragma once
 #include "Enemy.h"
-#include <array>
 
 class EnemyManager
 {
@@ -14,4 +13,5 @@ public:
 	void Initialize();
 	void Update();
 	void Draw();
+	bool IsGameClear() { return wave >= 15; }
 };

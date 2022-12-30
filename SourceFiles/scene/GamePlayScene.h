@@ -13,6 +13,7 @@ private:
 	Skydome skydome;
 	Player player;
 	EnemyManager enemyManager;
+	std::unique_ptr<Sprite> playerLifeHeart, playerLifeGuage;
 
 public:
 	void Initialize() override;

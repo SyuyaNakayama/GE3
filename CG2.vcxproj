@@ -224,6 +224,7 @@
     <ClCompile Include="SourceFiles\scene\objects\player\Player.cpp" />
     <ClCompile Include="SourceFiles\scene\objects\player\PlayerBullet.cpp" />
     <ClCompile Include="SourceFiles\scene\objects\Skydome.cpp" />
+    <ClCompile Include="SourceFiles\scene\ResultScene.cpp" />
     <ClCompile Include="SourceFiles\scene\SceneFactory.cpp" />
     <ClCompile Include="SourceFiles\scene\SceneManager.cpp" />
     <ClCompile Include="SourceFiles\scene\TitleScene.cpp" />
@@ -259,6 +260,7 @@
     <ClInclude Include="SourceFiles\scene\objects\player\Player.h" />
     <ClInclude Include="SourceFiles\scene\objects\player\PlayerBullet.h" />
     <ClInclude Include="SourceFiles\scene\objects\Skydome.h" />
+    <ClInclude Include="SourceFiles\scene\ResultScene.h" />
     <ClInclude Include="SourceFiles\scene\SceneFactory.h" />
     <ClInclude Include="SourceFiles\scene\SceneManager.h" />
     <ClInclude Include="SourceFiles\scene\TitleScene.h" />

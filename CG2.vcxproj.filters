@@ -171,6 +171,9 @@
     <ClCompile Include="SourceFiles\functions\SharePtr.cpp">
       <Filter>ソース ファイル\functions</Filter>
     </ClCompile>
+    <ClCompile Include="SourceFiles\scene\ResultScene.cpp">
+      <Filter>ソース ファイル\scene\game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SourceFiles\base\DirectXCommon.h">
@@ -271,6 +274,9 @@
     </ClInclude>
     <ClInclude Include="SourceFiles\functions\SharePtr.h">
       <Filter>ソース ファイル\functions</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\scene\ResultScene.h">
+      <Filter>ソース ファイル\scene\game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
