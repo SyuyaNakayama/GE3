@@ -22,5 +22,6 @@ public:
 	void Draw();
 	bool IsDead() { return isDead; };
 	void OnCollision(Collider* collider) { isDead = true; }
+	void SetSprite(Sprite* sprite) { model->SetSprite(sprite); }
 };
 

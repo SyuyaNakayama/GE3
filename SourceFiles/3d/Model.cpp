@@ -127,6 +127,7 @@ std::unique_ptr<Model> Model::Create(const string& modelName)
 		{
 			newModel->name = model->name;
 			newModel->vertices = model->vertices;
+			newModel->material = model->material;
 			newModel->indices = model->indices;
 			newModel->CreateBuffers();
 			return newModel;

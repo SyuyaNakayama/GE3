@@ -93,7 +93,7 @@ void EnemyManager::NewWave()
 			CreateEnemy({ 0,6,150 + 4 * (float)z }, { 0,0,-0.5f }, EnemyType::Red);
 		}
 		break;
-	case 14:
+	case 13:
 		for (size_t y = 0; y < 2; y++) {
 			for (size_t x = 0; x < 3; x++)
 			{
