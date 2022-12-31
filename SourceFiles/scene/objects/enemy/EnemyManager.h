@@ -10,7 +10,6 @@ private:
 	void CreateEnemy(Vector3 pos, Vector3 moveSpd, EnemyType enemyType);
 	void NewWave();
 public:
-	void Initialize();
 	void Update();
 	void Draw();
 	bool IsGameClear() { return wave >= 15; }

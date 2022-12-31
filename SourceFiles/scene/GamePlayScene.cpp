@@ -10,7 +10,6 @@ void GamePlayScene::Initialize()
 	viewProjection.eye = { 0,20,-30 };
 	skydome.Initialize();
 	player.Initialize();
-	enemyManager.Initialize();
 	
 	playerLifeGuage = Sprite::Create("white1x1.png");
 	playerLifeGuage->SetPosition({ 320,650 });

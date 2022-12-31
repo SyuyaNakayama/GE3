@@ -1,10 +1,6 @@
 #include "EnemyManager.h"
 using namespace std;
 
-void EnemyManager::Initialize()
-{
-}
-
 void EnemyManager::CreateEnemy(Vector3 pos, Vector3 moveSpd, EnemyType enemyType)
 {
 	unique_ptr<Enemy> newEnemy = make_unique<Enemy>();
@@ -98,10 +94,10 @@ void EnemyManager::NewWave()
 		}
 		break;
 	case 14:
-		for (size_t y = 0; y < 3; y++) {
-			for (size_t x = 0; x < 5; x++)
+		for (size_t y = 0; y < 2; y++) {
+			for (size_t x = 0; x < 3; x++)
 			{
-				CreateEnemy({ (float)x * 10.0f - 20.0f,(float)y * 10.0f - 2.0f,150 }, { 0,0,-0.5f }, EnemyType::Purple);
+				CreateEnemy({ (float)x * 20.0f - 20.0f,(float)y * 15.0f - 2.0f,150 }, { 0,0,-0.5f }, EnemyType::Purple);
 			}
 		}
 		break;
