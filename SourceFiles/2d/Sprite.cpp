@@ -57,13 +57,6 @@ std::unique_ptr<Sprite> Sprite::Create(const std::string& FILE_NAME)
 	return sprite;
 }
 
-Sprite* Sprite::CreatePointer(const std::string& FILE_NAME)
-{
-	Sprite* sprite = new Sprite;
-	sprite->Initialize(SpriteCommon::GetInstance()->LoadTexture(FILE_NAME));
-	return sprite;
-}
-
 void Sprite::AdjustTextureSize()
 {
 	ID3D12Resource* textureBuffer = SpriteCommon::GetInstance()->GetTextureBuffer(textureIndex_);

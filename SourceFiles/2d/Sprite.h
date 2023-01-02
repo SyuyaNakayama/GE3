@@ -66,7 +66,6 @@ private:
 	void AdjustTextureSize();
 public:
 	static std::unique_ptr<Sprite> Create(const std::string& FILE_NAME);
-	static Sprite* CreatePointer(const std::string& FILE_NAME);
 	void Initialize(uint32_t textureIndex);
 	void Update();
 	void Draw();

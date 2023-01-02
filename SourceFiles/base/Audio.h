@@ -12,7 +12,13 @@
 class Audio final
 {
 private:
-	HRESULT result = S_OK;
+	struct Data
+	{
+		std::wstring fileName;
+		IMediaControl* pMediaControl = nullptr;
+		IMediaPosition* pMediaPosition = nullptr;
+	};
+
 	IGraphBuilder* pGraphBuilder = nullptr;
 	IMediaControl* pMediaControl = nullptr;
 	IMediaPosition* pMediaPosition = nullptr;

@@ -108,7 +108,6 @@ void EnemyManager::Update()
 {
 	enemies.remove_if([](unique_ptr<Enemy>& enemy) { return enemy->IsDead(); });
 	if (enemies.empty()) { NewWave(); }
-
 	for (unique_ptr<Enemy>& enemy : enemies) { enemy->Update(); }
 }
 

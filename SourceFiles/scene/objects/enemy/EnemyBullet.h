@@ -9,12 +9,13 @@ class EnemyBullet : public Collider
 {
 private:
 	std::unique_ptr<Model> model;
+	std::unique_ptr<Sprite> sprite;
 	Vector3 spd;
 	bool isDead = false;
 	Timer deathTimer = 180;
-	Sprite* sprite = nullptr;
 
 public:
+	~EnemyBullet() { sprite.release(); };
 	void Initialize(Vector3 pos, Vector3 spd_, EnemyType enemyType);
 	void Update();
 	void Draw();

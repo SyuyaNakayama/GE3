@@ -5,12 +5,12 @@ void EnemyBullet::Initialize(Vector3 pos, Vector3 spd_, EnemyType enemyType)
 {
 	if (enemyType != EnemyType::Green)
 	{
-		sprite = Sprite::CreatePointer("enemyShot.png");
+		sprite = Sprite::Create("enemyShot.png");
 		sprite->SetTextureLeftTop(sprite->GetTextureLeftTop() + Vector2(((size_t)enemyType - 1) * 16, 0));
 		sprite->SetTextureSize({ 16,16 });
 	}
 	model = Model::Create("cube");
-	model->SetSprite(sprite);
+	model->SetSprite(sprite.get());
 	model->TextureUpdate();
 	worldTransform.translation = pos;
 	spd = spd_;

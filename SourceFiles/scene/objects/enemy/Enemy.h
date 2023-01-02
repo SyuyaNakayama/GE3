@@ -5,7 +5,7 @@ class Enemy : public Collider
 {
 private:
 	std::unique_ptr<Model> model;
-	Sprite* sprite;
+	std::unique_ptr<Sprite> sprite;
 	bool isDead = true;
 	Vector3 moveSpd;
 	Timer moveTimer = 200;
@@ -17,6 +17,7 @@ private:
 	void CreateShot(Vector3 moveSpd);
 	void Shot();
 public:
+	~Enemy() { sprite.release(); };
 	void Initialize(Vector3 pos, Vector3 moveSpd_, EnemyType enemyType);
 	void Update();
 	void Draw();

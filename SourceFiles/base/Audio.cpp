@@ -12,13 +12,12 @@ Audio* Audio::GetInatance()
 void Audio::Initialize()
 {
 	// COM‚ð‰Šú‰»
-	result = CoInitialize(NULL);
+	HRESULT result = CoInitialize(NULL);
 	assert(SUCCEEDED(result));
 
 	// FilterGraph‚ð¶¬
 	result = CoCreateInstance(CLSID_FilterGraph,
-		NULL,
-		CLSCTX_INPROC,
+		NULL, CLSCTX_INPROC,
 		IID_IGraphBuilder,
 		(LPVOID*)&pGraphBuilder);
 	assert(SUCCEEDED(result));
@@ -37,7 +36,7 @@ void Audio::Load(const wstring& fileName)
 {
 	wstring fullpath = L"Resources/audios/" + fileName;
 	// Graph‚ð¶¬
-	result = pMediaControl->RenderFile((BSTR)fullpath.c_str());
+	HRESULT result = pMediaControl->RenderFile((BSTR)fullpath.c_str());
 	assert(SUCCEEDED(result));
 }
 

@@ -147,6 +147,7 @@
       <ExceptionHandling>Sync</ExceptionHandling>
       <AdditionalIncludeDirectories>$(SolutionDir)SourceFiles\scene\objects\enemy;$(ProjectDir)SourceFiles\2d;$(ProjectDir)SourceFiles\scene;$(ProjectDir)SourceFiles\base;$(ProjectDir)SourceFiles\math;$(ProjectDir)SourceFiles\3d;%(AdditionalIncludeDirectories);$(SolutionDir)SourceFiles\scene\objects\collider;$(SolutionDir)SourceFiles\scene\objects;$(SolutionDir)SourceFiles\scene\objects\player;$(SolutionDir)SourceFiles\functions</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

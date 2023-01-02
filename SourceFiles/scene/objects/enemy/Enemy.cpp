@@ -8,11 +8,11 @@ void Enemy::Initialize(Vector3 pos, Vector3 moveSpd_, EnemyType enemyType)
 {
 	SetCollisionAttribute(CollisionAttribute::Enemy);
 	SetCollisionMask(CollisionMask::Enemy);
-	sprite = Sprite::CreatePointer("enemy.png");
+	sprite = Sprite::Create("enemy.png");
 	sprite->SetTextureLeftTop({ (float)enemyType * 16, 0 });
 	sprite->SetTextureSize({ 16,16 });
 	model = Model::Create("cube");
-	model->SetSprite(sprite);
+	model->SetSprite(sprite.get());
 	model->TextureUpdate();
 	moveSpd = moveSpd_;
 	isDead = false;

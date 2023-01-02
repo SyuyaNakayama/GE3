@@ -1,6 +1,7 @@
 #pragma once
 #include "Input.h"
 #include "ImGuiManager.h"
+#include "Audio.h"
 class SceneManager;
 
 class BaseScene
@@ -9,6 +10,7 @@ protected:
 	SceneManager* sceneManager_ = nullptr;
 	Input* input = Input::GetInstance();
 	ImGuiManager* imguiManager = ImGuiManager::GetInstance();
+	Audio* audio = Audio::GetInatance();
 
 public:
 	virtual ~BaseScene() = default;
