@@ -15,6 +15,7 @@ void Player::Initialize()
 	SetCollisionAttribute(CollisionAttribute::Player);
 	SetCollisionMask(CollisionMask::Player);
 	SharePtr::SetPlayer(this);
+	shotSE = Audio::Create(L"shotSE.mp3");
 }
 
 void Player::Move()
@@ -41,6 +42,7 @@ void Player::Shot()
 		unique_ptr<PlayerBullet> newBullet = make_unique<PlayerBullet>();
 		newBullet->Initialize(worldTransform.translation, Vector3(0, 0, 1.5f));
 		bullets.push_back(move(newBullet));
+		shotSE->Play();
 	}
 
 	for (const unique_ptr<PlayerBullet>& bullet : bullets)

@@ -10,13 +10,16 @@ void GamePlayScene::Initialize()
 	viewProjection.eye = { 0,20,-30 };
 	skydome.Initialize();
 	player.Initialize();
-	
+
 	playerLifeGuage = Sprite::Create("white1x1.png");
 	playerLifeGuage->SetPosition({ 320,650 });
 	playerLifeHeart = Sprite::Create("ui/playerLifeHeart.png");
 	playerLifeHeart->SetSize(playerLifeHeart->GetSize() * 2.0f);
 	playerLifeHeart->SetPosition({ 240,650 });
 	playerLifeHeart->Update();
+
+	bgm = Audio::Create(L"playBGM.mp3");
+	bgm->Play();
 }
 
 void GamePlayScene::Update()

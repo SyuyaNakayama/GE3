@@ -3,6 +3,7 @@
 #include "Model.h"
 #include "PlayerBullet.h"
 #include "Input.h"
+#include "Audio.h"
 
 class Player : public Collider
 {
@@ -12,6 +13,7 @@ private:
 	std::list <std::unique_ptr<PlayerBullet>> bullets;
 	Input* input = Input::GetInstance();
 	int hp = MAX_HP;
+	std::unique_ptr<Audio> shotSE;
 
 	void Move();
 	void Shot();

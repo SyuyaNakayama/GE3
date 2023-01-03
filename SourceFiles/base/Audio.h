@@ -1,36 +1,27 @@
 #pragma once
-#include <xaudio2.h>
 #include <string>
 #include <wrl.h>
-#include <array>
 #include <mfidl.h>
 #include <mfreadwrite.h>
 #include <mfapi.h>
 #include <vector>
 #include <dshow.h>
+#include <memory>
+#include <wrl.h>
 
 class Audio final
 {
 private:
-	struct Data
-	{
-		std::wstring fileName;
-		IMediaControl* pMediaControl = nullptr;
-		IMediaPosition* pMediaPosition = nullptr;
-	};
-
-	IGraphBuilder* pGraphBuilder = nullptr;
-	IMediaControl* pMediaControl = nullptr;
-	IMediaPosition* pMediaPosition = nullptr;
-	Audio() = default;
+	Microsoft::WRL::ComPtr<IGraphBuilder> pGraphBuilder;
+	std::wstring fileName;
+	Microsoft::WRL::ComPtr<IMediaControl> pMediaControl;
+	Microsoft::WRL::ComPtr<IMediaPosition> pMediaPosition;
 public:
-	static Audio* GetInatance();
-	Audio(const Audio& obj) = delete;
-
-	void Initialize();
-	void Load(const std::wstring& fileName);
-	void Play();
+	static void StaticInitialize();
+	static std::unique_ptr<Audio> Create(const std::wstring& fileName);
+	void Play() { pMediaControl->Run(); }
+	void Stop() { pMediaControl->Stop(); }
 	void SetSpeed(double playSpd) { pMediaPosition->put_Rate(playSpd); }
 	void SetPlayPosition(double playPosition) { pMediaPosition->put_CurrentPosition(playPosition); }
-	void Finalize();
+	static void Finalize();
 };

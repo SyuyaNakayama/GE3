@@ -14,10 +14,11 @@ private:
 	Player player;
 	EnemyManager enemyManager;
 	std::unique_ptr<Sprite> playerLifeHeart, playerLifeGuage;
+	std::unique_ptr<Audio> bgm;
 
 public:
 	void Initialize() override;
-	void Finalize() {};
+	void Finalize() { bgm->Stop(); bgm.release(); };
 	void Update() override;
 	void Draw() override;
 };

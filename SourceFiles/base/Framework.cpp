@@ -1,4 +1,5 @@
 ﻿#include "Framework.h"
+#include "Audio.h"
 
 void Framework::Initialize()
 {
@@ -7,14 +8,14 @@ void Framework::Initialize()
 	spriteCommon->Initialize();
 	input->Initialize();
 	imguiManager->Initialize();
-	audio->Initialize();
+	Audio::StaticInitialize();
 	sceneManager_->Initialize();
 }
 
 void Framework::Finalize()
 {
 	sceneManager_->Finalize();
-	audio->Finalize();
+	Audio::Finalize();
 	imguiManager->Finalize();
 	wAPI->Finalize();
 }

@@ -2,7 +2,6 @@
 #include "WindowsAPI.h"
 #include "SpriteCommon.h"
 #include "SceneManager.h"
-#include "Audio.h"
 #include "ImGuiManager.h"
 
 class Framework
@@ -17,7 +16,6 @@ protected:
 	// “ü—Í‚Ì‰Šú‰»ˆ—
 	Input* input = Input::GetInstance();
 	SceneManager* sceneManager_ = SceneManager::GetInstance();
-	Audio* audio = Audio::GetInatance();
 	ImGuiManager* imguiManager = ImGuiManager::GetInstance();
 
 public:

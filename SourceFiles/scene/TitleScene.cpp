@@ -12,14 +12,12 @@ void TitleScene::Initialize()
 	spaceKeyUI->SetPosition({ 740,520 });
 	spaceKeyUI->SetTextureSize({ 128,64 });
 	spaceKeyUI->SetSize({ 256,128 });
-	audio->Load(L"playBGM.mp3");
-	audio->Play();
-	//audio->Load(L"shotSE.mp3");
+	bgm = Audio::Create(L"titleBGM.mp3");
+	bgm->Play();
 }
 
 void TitleScene::Update()
 {
-	audio->Play();
 	if (skuAnimeTimer.CountDown())
 	{
 		++animeFrame %= 2;
