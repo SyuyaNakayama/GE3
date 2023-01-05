@@ -12,9 +12,13 @@ void ResultScene::Initialize()
 	switch (scene)
 	{
 	case Scene::GameOver:
-		textSprite = Sprite::Create("sceneSprites/GameOver.png");	break;
+		textSprite = Sprite::Create("sceneSprites/GameOver.png");
+		bgm = Audio::Create(L"gameoverBGM.mp3");
+		break;
 	case Scene::Clear:
-		textSprite = Sprite::Create("sceneSprites/GameClear.png");	break;
+		textSprite = Sprite::Create("sceneSprites/GameClear.png");
+		bgm = Audio::Create(L"clearBGM.mp3");
+		break;
 	}
 	textSprite->SetAnchorPoint({ 0.5f,0.5f });
 	textSprite->SetPosition(WindowsAPI::WIN_SIZE / 2.0f - Vector2(0, 150.0f));
@@ -25,6 +29,8 @@ void ResultScene::Initialize()
 	spaceKeyUI->SetPosition(WindowsAPI::WIN_SIZE / 2.0f + Vector2(0, 150.0f));
 	spaceKeyUI->SetTextureSize({ 128,64 });
 	spaceKeyUI->SetSize({ 256,128 });
+
+	bgm->Play();
 }
 
 void ResultScene::Update()

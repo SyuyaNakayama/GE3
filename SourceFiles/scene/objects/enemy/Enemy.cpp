@@ -1,5 +1,4 @@
 #include "Enemy.h"
-#include "ImGuiManager.h"
 #include "SharePtr.h"
 #include <assert.h>
 using namespace std;
@@ -20,6 +19,7 @@ void Enemy::Initialize(Vector3 pos, Vector3 moveSpd_, EnemyType enemyType)
 	worldTransform.scale = { 2,2,2 };
 	worldTransform.translation = pos;
 	type = enemyType;
+	deadSE = Audio::Create(L"killedSE.mp3");
 }
 
 void Enemy::CreateShot(Vector3 spd)

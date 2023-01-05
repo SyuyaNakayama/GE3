@@ -1,9 +1,6 @@
 #include "Player.h"
-#include "ImGuiManager.h"
 #include "Functions.h"
 #include "SharePtr.h"
-#include <imgui.h>
-
 using namespace std;
 
 void Player::Initialize()
@@ -16,6 +13,7 @@ void Player::Initialize()
 	SetCollisionMask(CollisionMask::Player);
 	SharePtr::SetPlayer(this);
 	shotSE = Audio::Create(L"shotSE.mp3");
+	damageSE = Audio::Create(L"playerDamage.mp3");
 }
 
 void Player::Move()
@@ -49,9 +47,6 @@ void Player::Shot()
 	{
 		bullet->Update();
 	}
-
-	ImGuiManager* imguiManager = ImGuiManager::GetInstance();
-	//ImGui::Text("bulletNum = %d", bullets.size());
 }
 
 void Player::Update()
@@ -68,10 +63,4 @@ void Player::Draw()
 	{
 		bullet->Draw();
 	}
-}
-
-void Player::OnCollision(Collider* collider)
-{
-	hp--;
-	ImGui::Text("Hit!");
 }

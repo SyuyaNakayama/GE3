@@ -13,13 +13,12 @@ class Audio final
 {
 private:
 	Microsoft::WRL::ComPtr<IGraphBuilder> pGraphBuilder;
-	std::wstring fileName;
 	Microsoft::WRL::ComPtr<IMediaControl> pMediaControl;
 	Microsoft::WRL::ComPtr<IMediaPosition> pMediaPosition;
 public:
 	static void StaticInitialize();
 	static std::unique_ptr<Audio> Create(const std::wstring& fileName);
-	void Play() { pMediaControl->Run(); }
+	void Play() { pMediaControl->Run(); SetPlayPosition(0); }
 	void Stop() { pMediaControl->Stop(); }
 	void SetSpeed(double playSpd) { pMediaPosition->put_Rate(playSpd); }
 	void SetPlayPosition(double playPosition) { pMediaPosition->put_CurrentPosition(playPosition); }

@@ -4,7 +4,7 @@
 void MyGame::Initialize()
 {
 	Framework::Initialize();
-	sceneManager_->SetNextScene(Scene::Title, false);
+	sceneManager_->SetNextScene(Scene::GameOver, false);
 	Model::InitializeGraphicsPipeline();
 }
 

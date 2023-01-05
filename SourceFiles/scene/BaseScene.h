@@ -1,6 +1,6 @@
 #pragma once
 #include "Input.h"
-#include "ImGuiManager.h"
+#include "Sprite.h"
 class SceneManager;
 
 class BaseScene
@@ -8,7 +8,6 @@ class BaseScene
 protected:
 	SceneManager* sceneManager_ = nullptr;
 	Input* input = Input::GetInstance();
-	ImGuiManager* imguiManager = ImGuiManager::GetInstance();
 
 public:
 	virtual ~BaseScene() = default;

@@ -14,6 +14,7 @@ private:
 	Input* input = Input::GetInstance();
 	int hp = MAX_HP;
 	std::unique_ptr<Audio> shotSE;
+	std::unique_ptr<Audio> damageSE;
 
 	void Move();
 	void Shot();
@@ -23,7 +24,7 @@ public:
 	void Initialize();
 	void Update();
 	void Draw();
-	void OnCollision(Collider* collider);
+	void OnCollision(Collider* collider) { hp--; damageSE->Play(); }
 	int GetHp() { return hp; }
 	Vector3 GetRadius() { return Vector3(worldTransform.scale.x * 3.0f, worldTransform.scale.y, worldTransform.scale.z * 3.0f); }
 };

@@ -1,7 +1,6 @@
 #include "TitleScene.h"
 #include "SpriteCommon.h"
 #include "SceneManager.h"
-#include "ImGuiManager.h"
 
 void TitleScene::Initialize()
 {
