@@ -111,6 +111,8 @@ private:// 静的メンバ関数
 	ParticleManager() = default;
 public: // メンバ関数
 	static ParticleManager* GetInstance();
+	ParticleManager(const ParticleManager& obj) = delete;
+
 	void Initialize();
 
 	/// <summary>
@@ -130,6 +132,7 @@ public: // メンバ関数
 
 private: // メンバ変数
 	ComPtr<ID3D12Resource> constBuff; // 定数バッファ
+	ConstBufferData* constMap = nullptr;
 	// パーティクル配列
 	std::forward_list<Particle> particles;
 	// ビュープロジェクション

@@ -49,7 +49,7 @@ void ParticleManager::StaticInitialize(ViewProjection* viewProjection)
 
 void ParticleManager::InitializeDescriptorHeap()
 {
-	HRESULT result = S_FALSE;
+	Result result;
 
 	// デスクリプタヒープを生成	
 	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
@@ -57,9 +57,6 @@ void ParticleManager::InitializeDescriptorHeap()
 	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダから見えるように
 	descHeapDesc.NumDescriptors = 1; // シェーダーリソースビュー1つ
 	result = device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&descHeap));//生成
-	if (FAILED(result)) {
-		assert(0);
-	}
 
 	// デスクリプタサイズを取得
 	descriptorHandleIncrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
@@ -67,7 +64,7 @@ void ParticleManager::InitializeDescriptorHeap()
 
 void ParticleManager::InitializeGraphicsPipeline()
 {
-	HRESULT result = S_FALSE;
+	Result result;
 	ComPtr<ID3DBlob> vsBlob;	// 頂点シェーダオブジェクト
 	ComPtr<ID3DBlob> gsBlob;	// ジオメトリシェーダオブジェクト
 	ComPtr<ID3DBlob> psBlob;	// ピクセルシェーダオブジェクト
@@ -136,7 +133,7 @@ void ParticleManager::InitializeGraphicsPipeline()
 	gpipeline.SampleDesc.Count = 1; // 1ピクセルにつき1回サンプリング
 
 	// デスクリプタレンジ
-	CD3DX12_DESCRIPTOR_RANGE descRangeSRV;
+	CD3DX12_DESCRIPTOR_RANGE descRangeSRV{};
 	descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // t0 レジスタ
 
 	// ルートパラメータ
@@ -148,7 +145,7 @@ void ParticleManager::InitializeGraphicsPipeline()
 	CD3DX12_STATIC_SAMPLER_DESC samplerDesc = CD3DX12_STATIC_SAMPLER_DESC(0);
 
 	// ルートシグネチャの設定
-	CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDesc;
+	CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDesc{};
 	rootSignatureDesc.Init_1_0(_countof(rootparams), rootparams, 1, &samplerDesc, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	ComPtr<ID3DBlob> rootSigBlob;
@@ -156,14 +153,11 @@ void ParticleManager::InitializeGraphicsPipeline()
 	result = D3DX12SerializeVersionedRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0, &rootSigBlob, &errorBlob);
 	// ルートシグネチャの生成
 	result = device->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&rootsignature));
-	assert(SUCCEEDED(result));
 
 	gpipeline.pRootSignature = rootsignature.Get();
 
 	// グラフィックスパイプラインの生成
 	result = device->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelinestate));
-	assert(SUCCEEDED(result));
-
 }
 
 void ParticleManager::LoadTexture()
@@ -240,25 +234,9 @@ void ParticleManager::LoadTexture()
 
 void ParticleManager::CreateModel()
 {
-	HRESULT result = S_FALSE;
-
-	// ヒーププロパティ
-	CD3DX12_HEAP_PROPERTIES heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
-	// リソース設定
-	CD3DX12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(vertexCount);
-
-	// 頂点バッファ生成
-	result = device->CreateCommittedResource(
-		&heapProps, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
-		IID_PPV_ARGS(&vertBuff));
-	assert(SUCCEEDED(result));
-
-	// 頂点バッファへのデータ転送
 	VertexPos* vertMap = nullptr;
-	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
-	if (SUCCEEDED(result)) {
-		vertBuff->Unmap(0, nullptr);
-	}
+	BufferMapping(&vertBuff, &vertMap, vertexCount);
+	vertBuff->Unmap(0, nullptr);
 
 	// 頂点バッファビューの作成
 	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
@@ -277,10 +255,9 @@ void Vector3ToArray(Vector3 vec, float* array)
 void ParticleManager::UpdateViewMatrix()
 {
 	Vector3 cameraAxisZ = viewProjection->target - viewProjection->eye;
-	Vector3 n = cameraAxisZ == Vector3(0, 0, 0);
 	// 0ベクトルの時
-	//assert();
-	//assert(!Vector3Equal(viewProjection->up, Vector3Zero()));
+	assert(!(cameraAxisZ == Vector3(0, 0, 0)));
+	assert(!(viewProjection->up == Vector3(0, 0, 0)));
 
 	cameraAxisZ.Normalize();
 
@@ -301,25 +278,8 @@ void ParticleManager::UpdateViewMatrix()
 
 void ParticleManager::Initialize()
 {
-	// nullptrチェック
-	assert(device);
-
 	if (!particles.empty()) { particles.clear(); }
-
-	// ヒーププロパティ
-	CD3DX12_HEAP_PROPERTIES heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
-	// リソース設定
-	CD3DX12_RESOURCE_DESC resourceDesc =
-		CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferData) + 0xff) & ~0xff);
-
-	HRESULT result;
-
-	// 定数バッファの生成
-	result = device->CreateCommittedResource(
-		&heapProps, // アップロード可能
-		D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
-		IID_PPV_ARGS(&constBuff));
-	assert(SUCCEEDED(result));
+	BufferMapping(&constBuff, &constMap, (sizeof(ConstBufferData) + 0xff) & ~0xff);
 }
 
 ParticleManager* ParticleManager::GetInstance()
@@ -363,11 +323,8 @@ void ParticleManager::Update()
 	UpdateViewMatrix();
 
 	// 定数バッファへデータ転送
-	ConstBufferData* constMap = nullptr;
-	result = constBuff->Map(0, nullptr, (void**)&constMap);
 	constMap->mat = viewProjection->GetViewProjectionMatrix();	// 行列の合成
 	constMap->matBillboard = matBillboard;
-	constBuff->Unmap(0, nullptr);
 }
 
 void ParticleManager::Draw()
