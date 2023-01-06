@@ -10,18 +10,9 @@ using namespace Microsoft::WRL;
 /// <summary>
 /// 静的メンバ変数の実体
 /// </summary>
-const float ParticleManager::radius = 5.0f;				// 底面の半径
-const float ParticleManager::prizmHeight = 8.0f;			// 柱の高さ
-ID3D12Device* ParticleManager::device = nullptr;
-UINT ParticleManager::descriptorHandleIncrementSize = 0;
-ID3D12GraphicsCommandList* ParticleManager::cmdList = nullptr;
 ComPtr<ID3D12RootSignature> ParticleManager::rootsignature;
 ComPtr<ID3D12PipelineState> ParticleManager::pipelinestate;
-ComPtr<ID3D12DescriptorHeap> ParticleManager::descHeap;
 ComPtr<ID3D12Resource> ParticleManager::vertBuff;
-ComPtr<ID3D12Resource> ParticleManager::texbuff;
-CD3DX12_CPU_DESCRIPTOR_HANDLE ParticleManager::cpuDescHandleSRV;
-CD3DX12_GPU_DESCRIPTOR_HANDLE ParticleManager::gpuDescHandleSRV;
 Matrix4 ParticleManager::matBillboard = Matrix4::Identity();
 D3D12_VERTEX_BUFFER_VIEW ParticleManager::vbView{};
 ViewProjection* ParticleManager::viewProjection = nullptr;
@@ -29,39 +20,18 @@ uint32_t ParticleManager::textureIndex = 0;
 
 void ParticleManager::StaticInitialize(ViewProjection* viewProjection)
 {
-	// nullptrチェック
-	ParticleManager::device = DirectXCommon::GetInstance()->GetDevice();
-	assert(device);
-
-	assert(viewProjection);
 	ParticleManager::viewProjection = viewProjection;
 
-	// デスクリプタヒープの初期化
-	//InitializeDescriptorHeap();
+	// nullptrチェック
+	assert(viewProjection);
 
 	// パイプライン初期化
 	InitializeGraphicsPipeline();
 
 	// テクスチャ読み込み
-	//LoadTexture();
-	textureIndex = SpriteCommon::GetInstance()->LoadTexture("Particle.png");
+	textureIndex = SpriteCommon::GetInstance()->LoadTexture("Particle.png", 1);
 	// モデル生成
 	CreateModel();
-}
-
-void ParticleManager::InitializeDescriptorHeap()
-{
-	Result result;
-
-	// デスクリプタヒープを生成	
-	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
-	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダから見えるように
-	descHeapDesc.NumDescriptors = 1; // シェーダーリソースビュー1つ
-	result = device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&descHeap));//生成
-
-	// デスクリプタサイズを取得
-	descriptorHandleIncrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 }
 
 void ParticleManager::InitializeGraphicsPipeline()
@@ -154,84 +124,14 @@ void ParticleManager::InitializeGraphicsPipeline()
 	// バージョン自動判定のシリアライズ
 	result = D3DX12SerializeVersionedRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0, &rootSigBlob, &errorBlob);
 	// ルートシグネチャの生成
+	ID3D12Device* device = DirectXCommon::GetInstance()->GetDevice();
+	assert(device);
 	result = device->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&rootsignature));
 
 	gpipeline.pRootSignature = rootsignature.Get();
 
 	// グラフィックスパイプラインの生成
 	result = device->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelinestate));
-}
-
-void ParticleManager::LoadTexture()
-{
-	HRESULT result = S_FALSE;
-
-	TexMetadata metadata{};
-	ScratchImage scratchImg{};
-
-	// WICテクスチャのロード
-	result = LoadFromWICFile(L"Resources/Particle.png", WIC_FLAGS_NONE, &metadata, scratchImg);
-	assert(SUCCEEDED(result));
-
-	ScratchImage mipChain{};
-	// ミップマップ生成
-	result = GenerateMipMaps(
-		scratchImg.GetImages(), scratchImg.GetImageCount(), scratchImg.GetMetadata(),
-		TEX_FILTER_DEFAULT, 0, mipChain);
-	if (SUCCEEDED(result)) {
-		scratchImg = std::move(mipChain);
-		metadata = scratchImg.GetMetadata();
-	}
-
-	// 読み込んだディフューズテクスチャをSRGBとして扱う
-	metadata.format = MakeSRGB(metadata.format);
-
-	// リソース設定
-	CD3DX12_RESOURCE_DESC texresDesc = CD3DX12_RESOURCE_DESC::Tex2D(
-		metadata.format, metadata.width, (UINT)metadata.height, (UINT16)metadata.arraySize,
-		(UINT16)metadata.mipLevels);
-
-	// ヒーププロパティ
-	CD3DX12_HEAP_PROPERTIES heapProps =
-		CD3DX12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK, D3D12_MEMORY_POOL_L0);
-
-	// テクスチャ用バッファの生成
-	result = device->CreateCommittedResource(
-		&heapProps, D3D12_HEAP_FLAG_NONE, &texresDesc,
-		D3D12_RESOURCE_STATE_GENERIC_READ, // テクスチャ用指定
-		nullptr, IID_PPV_ARGS(&texbuff));
-	assert(SUCCEEDED(result));
-
-	// テクスチャバッファにデータ転送
-	for (size_t i = 0; i < metadata.mipLevels; i++) {
-		const Image* img = scratchImg.GetImage(i, 0, 0); // 生データ抽出
-		result = texbuff->WriteToSubresource(
-			(UINT)i,
-			nullptr,              // 全領域へコピー
-			img->pixels,          // 元データアドレス
-			(UINT)img->rowPitch,  // 1ラインサイズ
-			(UINT)img->slicePitch // 1枚サイズ
-		);
-		assert(SUCCEEDED(result));
-	}
-
-	// シェーダリソースビュー作成
-	cpuDescHandleSRV = CD3DX12_CPU_DESCRIPTOR_HANDLE(descHeap->GetCPUDescriptorHandleForHeapStart(), 0, descriptorHandleIncrementSize);
-	gpuDescHandleSRV = CD3DX12_GPU_DESCRIPTOR_HANDLE(descHeap->GetGPUDescriptorHandleForHeapStart(), 0, descriptorHandleIncrementSize);
-
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{}; // 設定構造体
-	D3D12_RESOURCE_DESC resDesc = texbuff->GetDesc();
-
-	srvDesc.Format = resDesc.Format;
-	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
-	srvDesc.Texture2D.MipLevels = 1;
-
-	device->CreateShaderResourceView(texbuff.Get(), //ビューと関連付けるバッファ
-		&srvDesc, //テクスチャ設定情報
-		cpuDescHandleSRV
-	);
-
 }
 
 void ParticleManager::CreateModel()
@@ -332,7 +232,7 @@ void ParticleManager::Update()
 void ParticleManager::Draw()
 {
 	// コマンドリストをセット
-	ParticleManager::cmdList = DirectXCommon::GetInstance()->GetCommandList();
+	ID3D12GraphicsCommandList* cmdList = DirectXCommon::GetInstance()->GetCommandList();
 
 	// パイプラインステートの設定
 	cmdList->SetPipelineState(pipelinestate.Get());

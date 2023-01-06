@@ -112,7 +112,7 @@ size_t SpriteCommon::GetIncrementSize()
 	return (size_t)incrementSize * textureIndex_;
 }
 
-uint32_t SpriteCommon::LoadTexture(const std::string& FILE_NAME)
+uint32_t SpriteCommon::LoadTexture(const std::string& FILE_NAME, uint32_t mipLevels)
 {
 	// テクスチャの重複読み込みを検出
 	for (uint32_t i = 0; i < textureIndex_; i++)
@@ -174,7 +174,8 @@ uint32_t SpriteCommon::LoadTexture(const std::string& FILE_NAME)
 	srvDesc.Format = textureResourceDesc.Format;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = textureResourceDesc.MipLevels;
+	if (mipLevels == MIP_LEVELS_DEFAULT) { srvDesc.Texture2D.MipLevels = textureResourceDesc.MipLevels; }
+	else { srvDesc.Texture2D.MipLevels = mipLevels; }
 
 	CD3DX12_CPU_DESCRIPTOR_HANDLE srvHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(
 		srvHeap->GetCPUDescriptorHandleForHeapStart(), textureIndex_,
@@ -183,9 +184,7 @@ uint32_t SpriteCommon::LoadTexture(const std::string& FILE_NAME)
 	device->CreateShaderResourceView(GetTextureBuffer(textureIndex_), &srvDesc, srvHandle);
 
 	textures_[textureIndex_].fileName = FILE_NAME;
-
 	textures_[textureIndex_].cpuHandle = srvHandle;
-
 	textures_[textureIndex_].gpuHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(
 		srvHeap->GetGPUDescriptorHandleForHeapStart(), textureIndex_,
 		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV));
