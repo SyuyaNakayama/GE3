@@ -1,14 +1,11 @@
 ﻿#include "ParticleManager.h"
 #include "DirectXCommon.h"
-#include "MathUtility.h"
-#include "Vector4.h"
 #include <d3dcompiler.h>
 #include <DirectXTex.h>
 #include <stdio.h>
 #pragma comment(lib, "d3dcompiler.lib")
 using namespace DirectX;
 using namespace Microsoft::WRL;
-using namespace MathUtility;
 
 /// <summary>
 /// 静的メンバ変数の実体
@@ -25,14 +22,18 @@ ComPtr<ID3D12Resource> ParticleManager::vertBuff;
 ComPtr<ID3D12Resource> ParticleManager::texbuff;
 CD3DX12_CPU_DESCRIPTOR_HANDLE ParticleManager::cpuDescHandleSRV;
 CD3DX12_GPU_DESCRIPTOR_HANDLE ParticleManager::gpuDescHandleSRV;
-Matrix4 ParticleManager::matBillboard = Matrix4Identity();
+Matrix4 ParticleManager::matBillboard = Matrix4::Identity();
 D3D12_VERTEX_BUFFER_VIEW ParticleManager::vbView{};
+ViewProjection* ParticleManager::viewProjection = nullptr;
 
-void ParticleManager::StaticInitialize()
+void ParticleManager::StaticInitialize(ViewProjection* viewProjection)
 {
 	// nullptrチェック
 	ParticleManager::device = DirectXCommon::GetInstance()->GetDevice();
 	assert(device);
+	
+	assert(viewProjection);
+	ParticleManager::viewProjection = viewProjection;
 
 	// デスクリプタヒープの初期化
 	InitializeDescriptorHeap();
@@ -45,24 +46,6 @@ void ParticleManager::StaticInitialize()
 
 	// モデル生成
 	CreateModel();
-}
-
-ParticleManager* ParticleManager::Create(ViewProjection* viewProjection)
-{
-	// 3Dオブジェクトのインスタンスを生成
-	ParticleManager* object3d = new ParticleManager();
-	if (object3d == nullptr) {
-		return nullptr;
-	}
-
-	// 初期化
-	if (!object3d->Initialize(viewProjection)) {
-		delete object3d;
-		assert(0);
-		return nullptr;
-	}
-
-	return object3d;
 }
 
 void ParticleManager::InitializeDescriptorHeap()
@@ -153,8 +136,6 @@ void ParticleManager::InitializeGraphicsPipeline()
 	gpipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // 標準設定
 	// ラスタライザステート
 	gpipeline.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
-	//gpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
-	//gpipeline.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
 	// デプスステンシルステート
 	gpipeline.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
 
@@ -331,41 +312,32 @@ void Vector3ToArray(Vector3 vec, float* array)
 	array[3] = 0;
 }
 
-void Vector4ToArray(Vector4 vec, float* array)
-{
-	array[0] = vec.x;
-	array[1] = vec.y;
-	array[2] = vec.z;
-	array[3] = vec.w;
-}
-
 void ParticleManager::UpdateViewMatrix()
 {
 	Vector3 cameraAxisZ = viewProjection->target - viewProjection->eye;
-
+	Vector3 n = cameraAxisZ == Vector3(0, 0, 0);
 	// 0ベクトルの時
-	assert(!Vector3Equal(cameraAxisZ, Vector3Zero()));
-	assert(!Vector3Equal(viewProjection->up, Vector3Zero()));
+	//assert();
+	//assert(!Vector3Equal(viewProjection->up, Vector3Zero()));
 
-	cameraAxisZ.normalize();
-
-	Vector3 cameraAxisX = viewProjection->up.cross(cameraAxisZ);
-	cameraAxisX = cameraAxisX.normalize();
-
-	Vector3 cameraAxisY = cameraAxisZ.cross(cameraAxisX);
-	cameraAxisY = cameraAxisY.normalize();
+	cameraAxisZ.Normalize();
+	
+	Vector3 cameraAxisX = Cross(viewProjection->up, cameraAxisZ);
+	cameraAxisX = cameraAxisX.Normalize();
+	
+	Vector3 cameraAxisY = Cross(cameraAxisZ, cameraAxisX);
+	cameraAxisY = cameraAxisY.Normalize();
 
 	Matrix4 matCameraRot{};
 
 	Vector3ToArray(cameraAxisX, matCameraRot.m[0]);
 	Vector3ToArray(cameraAxisY, matCameraRot.m[1]);
 	Vector3ToArray(cameraAxisZ, matCameraRot.m[2]);
-	Vector4ToArray({ 0,0,0,1.0f }, matCameraRot.m[3]);
 
 	matBillboard = matCameraRot;
 }
 
-bool ParticleManager::Initialize(ViewProjection* viewProjection)
+void ParticleManager::Initialize()
 {
 	// nullptrチェック
 	assert(device);
@@ -386,10 +358,12 @@ bool ParticleManager::Initialize(ViewProjection* viewProjection)
 		D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
 		IID_PPV_ARGS(&constBuff));
 	assert(SUCCEEDED(result));
+}
 
-	this->viewProjection = viewProjection;
-
-	return true;
+ParticleManager* ParticleManager::GetInstance()
+{
+	static ParticleManager instance;
+	return &instance;
 }
 
 void ParticleManager::Update()
@@ -429,16 +403,13 @@ void ParticleManager::Update()
 	// 定数バッファへデータ転送
 	ConstBufferData* constMap = nullptr;
 	result = constBuff->Map(0, nullptr, (void**)&constMap);
-	constMap->mat = viewProjection->matView * viewProjection->matProjection;	// 行列の合成
+	constMap->mat = viewProjection->GetViewProjectionMatrix();	// 行列の合成
 	constMap->matBillboard = matBillboard;
 	constBuff->Unmap(0, nullptr);
 }
 
 void ParticleManager::Draw()
 {
-	// PreDrawとPostDrawがペアで呼ばれていなければエラー
-	assert(ParticleManager::cmdList == nullptr);
-
 	// コマンドリストをセット
 	ParticleManager::cmdList = DirectXCommon::GetInstance()->GetCommandList();
 
@@ -448,9 +419,6 @@ void ParticleManager::Draw()
 	cmdList->SetGraphicsRootSignature(rootsignature.Get());
 	// プリミティブ形状を設定
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
-	// nullptrチェック
-	assert(device);
-	assert(ParticleManager::cmdList);
 
 	// 頂点バッファの設定
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
@@ -465,14 +433,12 @@ void ParticleManager::Draw()
 	cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandleSRV);
 	// 描画コマンド
 	cmdList->DrawInstanced((UINT)std::distance(particles.begin(), particles.end()), 1, 0, 0);
-	// コマンドリストを解除
-	ParticleManager::cmdList = nullptr;
 }
 
 void ParticleManager::Add(Vector3 position, int life, float start_scale, float end_scale)
 {
 	if (std::distance(particles.begin(), particles.end()) >= vertexCount) { return; }
-	for (size_t i = 0; i < 2; i++)
+	for (size_t i = 0; i < 10; i++)
 	{
 		particles.emplace_front();
 		Particle& p = particles.front();
@@ -494,10 +460,11 @@ void ParticleManager::Add(Vector3 position, int life, float start_scale, float e
 			(float)rand() / RAND_MAX * md_vel - md_vel / 2.0f
 		};
 		p.velocity = vel;
-		// -0.001f~0:y
+		// -0.001f~0.001:xy
 		Vector3 acc{};
 		const float md_acc = 0.001f;
-		acc.y = (float)rand() / RAND_MAX * md_acc;
+		acc.x = (float)rand() / RAND_MAX * md_acc - md_acc / 2.0f,
+		acc.y = (float)rand() / RAND_MAX * md_acc - md_acc / 2.0f,
 		p.accel = acc;
 
 		p.num_frame = life;

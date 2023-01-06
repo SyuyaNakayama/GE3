@@ -11,13 +11,12 @@
 /// <summary>
 /// 3Dオブジェクト
 /// </summary>
-class ParticleManager
+class ParticleManager final
 {
 private: // エイリアス
 	// Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-public: // サブクラス
 	// 頂点データ構造体
 	struct VertexPos
 	{
@@ -57,16 +56,7 @@ public: // 静的メンバ関数
 	/// <summary>
 	/// 静的初期化
 	/// </summary>
-	/// <param name="device">デバイス</param>
-	/// <param name="window_width">画面幅</param>
-	/// <param name="window_height">画面高さ</param>
-	static void StaticInitialize();
-
-	/// <summary>
-	/// 3Dオブジェクト生成
-	/// </summary>
-	/// <returns></returns>
-	static ParticleManager* Create(ViewProjection* viewProjection);
+	static void StaticInitialize(ViewProjection* viewProjection);
 
 private: // 静的メンバ変数
 	// デバイス
@@ -121,8 +111,11 @@ private:// 静的メンバ関数
 	/// </summary>
 	void UpdateViewMatrix();
 
+	ParticleManager() = default;
 public: // メンバ関数
-	bool Initialize(ViewProjection* viewProjection);
+	static ParticleManager* GetInstance();
+	void Initialize();
+
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
@@ -143,6 +136,6 @@ private: // メンバ変数
 	// パーティクル配列
 	std::forward_list<Particle> particles;
 	// ビュープロジェクション
-	ViewProjection* viewProjection;
+	static ViewProjection* viewProjection;
 };
 

@@ -1,6 +1,11 @@
 #include "EnemyManager.h"
 using namespace std;
 
+void EnemyManager::Initialize()
+{
+	deadSE = Audio::Create(L"killedSE.mp3");
+}
+
 void EnemyManager::CreateEnemy(Vector3 pos, Vector3 moveSpd, EnemyType enemyType)
 {
 	unique_ptr<Enemy> newEnemy = make_unique<Enemy>();
@@ -106,7 +111,9 @@ void EnemyManager::NewWave()
 
 void EnemyManager::Update()
 {
+	size_t enemyNum = enemies.size();
 	enemies.remove_if([](unique_ptr<Enemy>& enemy) { return enemy->IsDead(); });
+	if (enemyNum != enemies.size()) { deadSE->Play(); }
 	if (enemies.empty()) { NewWave(); }
 	for (unique_ptr<Enemy>& enemy : enemies) { enemy->Update(); }
 }

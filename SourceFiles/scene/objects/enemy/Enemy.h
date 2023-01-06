@@ -1,6 +1,5 @@
 #pragma once
 #include "EnemyBullet.h"
-#include "Audio.h"
 
 class Enemy : public Collider
 {
@@ -14,17 +13,16 @@ private:
 	EnemyType type;
 	std::list<std::unique_ptr<EnemyBullet>> bullets;
 	Timer shotIntervel = 80;
-	std::unique_ptr<Audio> deadSE;
 
 	void CreateShot(Vector3 moveSpd);
 	void Shot();
 public:
-	~Enemy() { sprite.release(); deadSE->Play(); }
+	~Enemy() { sprite.release(); }
 	void Initialize(Vector3 pos, Vector3 moveSpd_, EnemyType enemyType);
 	void Update();
 	void Draw();
 	bool IsDead() { return isDead; }
-	void OnCollision(Collider* collider) { isDead = true; }
+	void OnCollision(Collider* collider);
 	void SetSprite(Sprite* sprite) { model->SetSprite(sprite); }
 };
 

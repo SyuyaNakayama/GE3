@@ -1,6 +1,7 @@
 #include "Enemy.h"
 #include "SharePtr.h"
 #include <assert.h>
+#include "ParticleManager.h"
 using namespace std;
 
 void Enemy::Initialize(Vector3 pos, Vector3 moveSpd_, EnemyType enemyType)
@@ -19,7 +20,6 @@ void Enemy::Initialize(Vector3 pos, Vector3 moveSpd_, EnemyType enemyType)
 	worldTransform.scale = { 2,2,2 };
 	worldTransform.translation = pos;
 	type = enemyType;
-	deadSE = Audio::Create(L"killedSE.mp3");
 }
 
 void Enemy::CreateShot(Vector3 spd)
@@ -74,4 +74,11 @@ void Enemy::Draw()
 {
 	model->Draw(worldTransform);
 	for (std::unique_ptr<EnemyBullet>& bullet : bullets) { bullet->Draw(); }
+}
+
+void Enemy::OnCollision(Collider* collider)
+{
+	isDead = true;
+	ParticleManager* deathParticle = ParticleManager::GetInstance();
+	deathParticle->Add(worldTransform.translation, 60, 10, 0);
 }

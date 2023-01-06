@@ -6,6 +6,10 @@
 void GamePlayScene::Initialize()
 {
 	WorldTransform::SetViewProjection(&viewProjection);
+	ParticleManager::StaticInitialize(WorldTransform::GetViewProjection());
+	particleManager = ParticleManager::GetInstance();
+	particleManager->Initialize();
+
 	viewProjection.Initialize();
 	viewProjection.eye = { 0,20,-30 };
 	skydome.Initialize();
@@ -18,6 +22,8 @@ void GamePlayScene::Initialize()
 	playerLifeHeart->SetPosition({ 240,650 });
 	playerLifeHeart->Update();
 
+	enemyManager.Initialize();
+
 	bgm = Audio::Create(L"playBGM.mp3");
 	bgm->Play();
 }
@@ -26,6 +32,7 @@ void GamePlayScene::Update()
 {
 	player.Update();
 	enemyManager.Update();
+	particleManager->Update();
 
 	Vector3 cameraMoveSpd =
 	{
@@ -54,6 +61,7 @@ void GamePlayScene::Draw()
 	player.Draw();
 	enemyManager.Draw();
 	Model::PostDraw();
+	particleManager->Draw();
 
 	SpriteCommon* spriteCommon = SpriteCommon::GetInstance();
 	spriteCommon->PreDraw();

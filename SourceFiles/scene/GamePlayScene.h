@@ -5,6 +5,7 @@
 #include "Skydome.h"
 #include "Player.h"
 #include "EnemyManager.h"
+#include "ParticleManager.h"
 
 class GamePlayScene : public BaseScene
 {
@@ -15,6 +16,7 @@ private:
 	EnemyManager enemyManager;
 	std::unique_ptr<Sprite> playerLifeHeart, playerLifeGuage;
 	std::unique_ptr<Audio> bgm;
+	ParticleManager* particleManager = nullptr;
 
 public:
 	void Initialize() override;

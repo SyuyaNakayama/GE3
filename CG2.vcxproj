@@ -210,6 +210,7 @@
     <ClCompile Include="SourceFiles\base\MyGame.cpp" />
     <ClCompile Include="SourceFiles\base\WindowsAPI.cpp" />
     <ClCompile Include="SourceFiles\functions\Functions.cpp" />
+    <ClCompile Include="SourceFiles\functions\ParticleManager.cpp" />
     <ClCompile Include="SourceFiles\functions\SharePtr.cpp" />
     <ClCompile Include="SourceFiles\functions\Timer.cpp" />
     <ClCompile Include="SourceFiles\math\Matrix4.cpp" />
@@ -244,6 +245,7 @@
     <ClInclude Include="SourceFiles\base\MyGame.h" />
     <ClInclude Include="SourceFiles\base\WindowsAPI.h" />
     <ClInclude Include="SourceFiles\functions\Functions.h" />
+    <ClInclude Include="SourceFiles\functions\ParticleManager.h" />
     <ClInclude Include="SourceFiles\functions\SharePtr.h" />
     <ClInclude Include="SourceFiles\functions\Timer.h" />
     <ClInclude Include="SourceFiles\math\Matrix4.h" />
