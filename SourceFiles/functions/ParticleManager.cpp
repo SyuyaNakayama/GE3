@@ -1,8 +1,7 @@
 ﻿#include "ParticleManager.h"
-#include "DirectXCommon.h"
+#include "Functions.h"
 #include <d3dcompiler.h>
 #include <DirectXTex.h>
-#include <stdio.h>
 #pragma comment(lib, "d3dcompiler.lib")
 using namespace DirectX;
 using namespace Microsoft::WRL;
@@ -31,7 +30,7 @@ void ParticleManager::StaticInitialize(ViewProjection* viewProjection)
 	// nullptrチェック
 	ParticleManager::device = DirectXCommon::GetInstance()->GetDevice();
 	assert(device);
-	
+
 	assert(viewProjection);
 	ParticleManager::viewProjection = viewProjection;
 
@@ -66,35 +65,6 @@ void ParticleManager::InitializeDescriptorHeap()
 	descriptorHandleIncrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 }
 
-ComPtr<ID3DBlob> LoadShader(LPCWCHAR fileName, LPCSTR shaderModelName, ComPtr<ID3DBlob> sBlob, ComPtr<ID3DBlob> eBlob)
-{
-	HRESULT result = S_FALSE;
-
-	result = D3DCompileFromFile(
-		fileName,	// シェーダファイル名
-		nullptr,
-		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
-		"main", shaderModelName,	// エントリーポイント名、シェーダーモデル指定
-		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
-		0,
-		&sBlob, &eBlob);
-	if (FAILED(result)) {
-		// errorBlobからエラー内容をstring型にコピー
-		std::string errstr;
-		errstr.resize(eBlob->GetBufferSize());
-
-		std::copy_n((char*)eBlob->GetBufferPointer(),
-			eBlob->GetBufferSize(),
-			errstr.begin());
-		errstr += "\n";
-		// エラー内容を出力ウィンドウに表示
-		OutputDebugStringA(errstr.c_str());
-		assert(0);
-		exit(1);
-	}
-	return sBlob;
-}
-
 void ParticleManager::InitializeGraphicsPipeline()
 {
 	HRESULT result = S_FALSE;
@@ -104,26 +74,18 @@ void ParticleManager::InitializeGraphicsPipeline()
 	ComPtr<ID3DBlob> errorBlob; // エラーオブジェクト
 
 	// 頂点シェーダの読み込みとコンパイル
-	vsBlob = LoadShader(L"Resources/Shaders/ParticleVS.hlsl", "vs_5_0", vsBlob, errorBlob);
+	LoadShader(&vsBlob, L"ParticleVS", "vs_5_0");
 
 	// ピクセルシェーダの読み込みとコンパイル
-	psBlob = LoadShader(L"Resources/Shaders/ParticlePS.hlsl", "ps_5_0", psBlob, errorBlob);
+	LoadShader(&psBlob, L"ParticlePS", "ps_5_0");
 
 	// ジオメトリシェーダの読み込みとコンパイル
-	gsBlob = LoadShader(L"Resources/Shaders/ParticleGS.hlsl", "gs_5_0", gsBlob, errorBlob);
+	LoadShader(&gsBlob, L"ParticleGS", "gs_5_0");
 
 	// 頂点レイアウト
-	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
-		{ // xy座標(1行で書いたほうが見やすい)
-			"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
-			D3D12_APPEND_ALIGNED_ELEMENT,
-			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-		},
-		{ // スケール
-			"TEXCOORD", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
-			D3D12_APPEND_ALIGNED_ELEMENT,
-			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-		},
+	std::vector<D3D12_INPUT_ELEMENT_DESC> inputLayout = {
+		SetInputLayout("POSITION", DXGI_FORMAT_R32G32B32_FLOAT),
+		SetInputLayout("TEXCOORD", DXGI_FORMAT_R32G32B32_FLOAT),
 	};
 
 	// グラフィックスパイプラインの流れを設定
@@ -163,8 +125,8 @@ void ParticleManager::InitializeGraphicsPipeline()
 	gpipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 
 	// 頂点レイアウトの設定
-	gpipeline.InputLayout.pInputElementDescs = inputLayout;
-	gpipeline.InputLayout.NumElements = _countof(inputLayout);
+	gpipeline.InputLayout.pInputElementDescs = inputLayout.data();
+	gpipeline.InputLayout.NumElements = inputLayout.size();
 
 	// 図形の形状設定（三角形）
 	gpipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
@@ -321,10 +283,10 @@ void ParticleManager::UpdateViewMatrix()
 	//assert(!Vector3Equal(viewProjection->up, Vector3Zero()));
 
 	cameraAxisZ.Normalize();
-	
+
 	Vector3 cameraAxisX = Cross(viewProjection->up, cameraAxisZ);
 	cameraAxisX = cameraAxisX.Normalize();
-	
+
 	Vector3 cameraAxisY = Cross(cameraAxisZ, cameraAxisX);
 	cameraAxisY = cameraAxisY.Normalize();
 
@@ -464,8 +426,8 @@ void ParticleManager::Add(Vector3 position, int life, float start_scale, float e
 		Vector3 acc{};
 		const float md_acc = 0.001f;
 		acc.x = (float)rand() / RAND_MAX * md_acc - md_acc / 2.0f,
-		acc.y = (float)rand() / RAND_MAX * md_acc - md_acc / 2.0f,
-		p.accel = acc;
+			acc.y = (float)rand() / RAND_MAX * md_acc - md_acc / 2.0f,
+			p.accel = acc;
 
 		p.num_frame = life;
 		p.scale = p.s_scale = start_scale;
