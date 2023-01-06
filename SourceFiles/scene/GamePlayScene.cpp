@@ -6,7 +6,7 @@
 void GamePlayScene::Initialize()
 {
 	WorldTransform::SetViewProjection(&viewProjection);
-	ParticleManager::StaticInitialize(WorldTransform::GetViewProjection());
+	ParticleManager::StaticInitialize();
 	particleManager = ParticleManager::GetInstance();
 	particleManager->Initialize();
 

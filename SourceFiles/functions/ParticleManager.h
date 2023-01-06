@@ -3,14 +3,14 @@
 #include <wrl.h>
 #include <d3dx12.h>
 #include <forward_list>
-#include "ViewProjection.h"
+#include "WorldTransform.h"
 
 /// <summary>
 /// 3Dオブジェクト
 /// </summary>
 class ParticleManager final
 {
-private: // エイリアス
+private:
 	// Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
@@ -41,7 +41,7 @@ private: // エイリアス
 			e_scale = 0.0f;	// 最終値
 	};
 
-	static const int vertexCount = 1624;		// 頂点数
+	static const int vertexCount = 1024; // 頂点数
 
 	// ルートシグネチャ
 	static ComPtr<ID3D12RootSignature> rootsignature;
@@ -77,7 +77,7 @@ public: // メンバ関数
 	ParticleManager(const ParticleManager& obj) = delete;
 
 	// 静的初期化
-	static void StaticInitialize(ViewProjection* viewProjection);
+	static void StaticInitialize();
 	
 	void Initialize();
 

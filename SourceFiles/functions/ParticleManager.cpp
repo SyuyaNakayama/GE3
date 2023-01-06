@@ -18,9 +18,9 @@ D3D12_VERTEX_BUFFER_VIEW ParticleManager::vbView{};
 ViewProjection* ParticleManager::viewProjection = nullptr;
 uint32_t ParticleManager::textureIndex = 0;
 
-void ParticleManager::StaticInitialize(ViewProjection* viewProjection)
+void ParticleManager::StaticInitialize()
 {
-	ParticleManager::viewProjection = viewProjection;
+	ParticleManager::viewProjection = WorldTransform::GetViewProjection();
 
 	// nullptrチェック
 	assert(viewProjection);
@@ -95,7 +95,7 @@ void ParticleManager::InitializeGraphicsPipeline()
 
 	// 頂点レイアウトの設定
 	gpipeline.InputLayout.pInputElementDescs = inputLayout.data();
-	gpipeline.InputLayout.NumElements = inputLayout.size();
+	gpipeline.InputLayout.NumElements = (UINT)inputLayout.size();
 
 	// 図形の形状設定（三角形）
 	gpipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
@@ -285,9 +285,9 @@ void ParticleManager::Add(Vector3 position, int life, float start_scale, float e
 		// -0.001f~0.001:xy
 		Vector3 acc{};
 		const float md_acc = 0.001f;
-		acc.x = (float)rand() / RAND_MAX * md_acc - md_acc / 2.0f,
-			acc.y = (float)rand() / RAND_MAX * md_acc - md_acc / 2.0f,
-			p.accel = acc;
+		acc.x = (float)rand() / RAND_MAX * md_acc - md_acc / 2.0f;
+		acc.y = (float)rand() / RAND_MAX * md_acc - md_acc / 2.0f;
+		p.accel = acc;
 
 		p.num_frame = life;
 		p.scale = p.s_scale = start_scale;
