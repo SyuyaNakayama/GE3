@@ -7,7 +7,6 @@ void Framework::Initialize()
 	dxCommon->Initialize();
 	spriteCommon->Initialize();
 	input->Initialize();
-	imguiManager->Initialize();
 	Audio::StaticInitialize();
 	sceneManager_->Initialize();
 }
@@ -16,16 +15,13 @@ void Framework::Finalize()
 {
 	sceneManager_->Finalize();
 	Audio::Finalize();
-	imguiManager->Finalize();
 	wAPI->Finalize();
 }
 
 void Framework::Update()
 {
 	input->Update();
-	imguiManager->Begin();
 	sceneManager_->Update();
-	imguiManager->End();
 }
 
 bool Framework::IsEndRequest()

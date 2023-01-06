@@ -22,6 +22,5 @@ void MyGame::Draw()
 {
 	dxCommon->PreDraw();
 	sceneManager_->Draw();
-	imguiManager->Draw();
 	dxCommon->PostDraw();
 }

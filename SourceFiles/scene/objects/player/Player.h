@@ -19,7 +19,7 @@ private:
 	void Move();
 	void Shot();
 public:
-	static const int MAX_HP = 25;
+	static const int MAX_HP = 20;
 
 	void Initialize();
 	void Update();

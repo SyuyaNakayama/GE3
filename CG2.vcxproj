@@ -80,11 +80,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)DirectXTex;$(SolutionDir)imgui;$(WindowsSDK_IncludePath);$(SolutionDir)SourceFiles\scene\objects\Collider;$(SolutionDir)SourceFiles\scene\objects</IncludePath>
+    <IncludePath>$(SolutionDir)DirectXTex;$(WindowsSDK_IncludePath);$(SolutionDir)SourceFiles\scene\objects\Collider;$(SolutionDir)SourceFiles\scene\objects</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)DirectXTex;$(SolutionDir)imgui;$(WindowsSDK_IncludePath);$(SolutionDir)SourceFiles\scene\objects\Collider;$(SolutionDir)SourceFiles\scene\objects</IncludePath>
+    <IncludePath>$(SolutionDir)DirectXTex;$(WindowsSDK_IncludePath);$(SolutionDir)SourceFiles\scene\objects\Collider;$(SolutionDir)SourceFiles\scene\objects</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -161,9 +161,6 @@
     <ProjectReference Include="DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
       <Project>{371b9fa9-4c90-4ac6-a123-aced756d6c77}</Project>
     </ProjectReference>
-    <ProjectReference Include="imgui\imgui.vcxproj">
-      <Project>{aeb46ce2-7e04-41a7-9c7d-2dd82e23a1c4}</Project>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\OBJShaderHeader.hlsli" />
@@ -196,7 +193,6 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SourceFiles\2d\ImGuiManager.cpp" />
     <ClCompile Include="SourceFiles\2d\Sprite.cpp" />
     <ClCompile Include="SourceFiles\2d\SpriteCommon.cpp" />
     <ClCompile Include="SourceFiles\3d\Model.cpp" />
@@ -232,7 +228,6 @@
     <ClCompile Include="SourceFiles\scene\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SourceFiles\2d\ImGuiManager.h" />
     <ClInclude Include="SourceFiles\2d\Sprite.h" />
     <ClInclude Include="SourceFiles\2d\SpriteCommon.h" />
     <ClInclude Include="SourceFiles\3d\Model.h" />

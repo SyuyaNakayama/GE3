@@ -1,15 +1,10 @@
 #include "WindowsAPI.h"
-#include <imgui_impl_win32.h>
 #pragma comment(lib,"winmm.lib")
 const Vector2 WindowsAPI::WIN_SIZE = { 1280.0f,720.0f };
-
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 // ウィンドウプロシージャ
 LRESULT WindowsAPI::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-	if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam)) { return true; }
-
 	// メッセージに応じてゲーム固有の処理を行う
 	switch (msg)
 	{
