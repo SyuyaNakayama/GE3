@@ -135,6 +135,7 @@ private: // メンバ変数
 	ConstBufferData* constMap = nullptr;
 	// パーティクル配列
 	std::forward_list<Particle> particles;
+	static uint32_t textureIndex;
 	// ビュープロジェクション
 	static ViewProjection* viewProjection;
 };

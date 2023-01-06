@@ -1,5 +1,6 @@
 ﻿#include "ParticleManager.h"
 #include "Functions.h"
+#include "SpriteCommon.h"
 #include <d3dcompiler.h>
 #include <DirectXTex.h>
 #pragma comment(lib, "d3dcompiler.lib")
@@ -24,6 +25,7 @@ CD3DX12_GPU_DESCRIPTOR_HANDLE ParticleManager::gpuDescHandleSRV;
 Matrix4 ParticleManager::matBillboard = Matrix4::Identity();
 D3D12_VERTEX_BUFFER_VIEW ParticleManager::vbView{};
 ViewProjection* ParticleManager::viewProjection = nullptr;
+uint32_t ParticleManager::textureIndex = 0;
 
 void ParticleManager::StaticInitialize(ViewProjection* viewProjection)
 {
@@ -35,14 +37,14 @@ void ParticleManager::StaticInitialize(ViewProjection* viewProjection)
 	ParticleManager::viewProjection = viewProjection;
 
 	// デスクリプタヒープの初期化
-	InitializeDescriptorHeap();
+	//InitializeDescriptorHeap();
 
 	// パイプライン初期化
 	InitializeGraphicsPipeline();
 
 	// テクスチャ読み込み
-	LoadTexture();
-
+	//LoadTexture();
+	textureIndex = SpriteCommon::GetInstance()->LoadTexture("Particle.png");
 	// モデル生成
 	CreateModel();
 }
@@ -343,13 +345,14 @@ void ParticleManager::Draw()
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
 
 	// デスクリプタヒープの配列
-	ID3D12DescriptorHeap* ppHeaps[] = { descHeap.Get() };
+	SpriteCommon* spCommon = SpriteCommon::GetInstance();
+	ID3D12DescriptorHeap* ppHeaps[] = { spCommon->GetDescriptorHeap() };
 	cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 
 	// 定数バッファビューをセット
 	cmdList->SetGraphicsRootConstantBufferView(0, constBuff->GetGPUVirtualAddress());
 	// シェーダリソースビューをセット
-	cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandleSRV);
+	cmdList->SetGraphicsRootDescriptorTable(1, spCommon->GetGpuHandle(textureIndex));
 	// 描画コマンド
 	cmdList->DrawInstanced((UINT)std::distance(particles.begin(), particles.end()), 1, 0, 0);
 }
