@@ -130,10 +130,13 @@ uint32_t SpriteCommon::LoadTexture(const std::string& FILE_NAME, uint32_t mipLev
 
 	Result result = LoadFromWICFile(wfilePath.data(), WIC_FLAGS_NONE, &metadata, scratchImg);
 
-	result = GenerateMipMaps(scratchImg.GetImages(), scratchImg.GetImageCount(),
+	HRESULT result1 = GenerateMipMaps(scratchImg.GetImages(), scratchImg.GetImageCount(),
 		scratchImg.GetMetadata(), TEX_FILTER_DEFAULT, 0, mipChain);
-	scratchImg = move(mipChain);
-	metadata = scratchImg.GetMetadata();
+	if(SUCCEEDED(result1))
+	{
+		scratchImg = move(mipChain);
+		metadata = scratchImg.GetMetadata();
+	}
 
 	metadata.format = MakeSRGB(metadata.format);
 
