@@ -22,6 +22,7 @@ D3D12_INPUT_ELEMENT_DESC SetInputLayout(LPCSTR semanticName, DXGI_FORMAT format)
 void LoadShader(ID3DBlob** shaderBlob, std::wstring shaderName, LPCSTR target);
 void Clamp(float& num, float min, float max);
 
+// result値がエラーなら自動で警告が出る
 struct Result
 {
 	HRESULT result_ = S_OK;

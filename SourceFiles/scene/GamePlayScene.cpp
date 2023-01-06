@@ -6,9 +6,8 @@
 void GamePlayScene::Initialize()
 {
 	WorldTransform::SetViewProjection(&viewProjection);
-	ParticleManager::StaticInitialize();
+	ParticleManager::Initialize();
 	particleManager = ParticleManager::GetInstance();
-	particleManager->Initialize();
 
 	viewProjection.Initialize();
 	viewProjection.eye = { 0,20,-30 };

@@ -42,6 +42,7 @@ private:
 	};
 
 	static const int vertexCount = 1024; // 頂点数
+	static const int particleMax = 64;
 
 	// ルートシグネチャ
 	static ComPtr<ID3D12RootSignature> rootsignature;
@@ -49,15 +50,16 @@ private:
 	static ComPtr<ID3D12PipelineState> pipelinestate;
 	// 頂点バッファ
 	static ComPtr<ID3D12Resource> vertBuff;
+	static VertexPos* vertMap;
 	// ビルボード行列
 	static Matrix4 matBillboard;
 	// 頂点バッファビュー
 	static D3D12_VERTEX_BUFFER_VIEW vbView;
 	// 定数バッファ
-	ComPtr<ID3D12Resource> constBuff; 
-	ConstBufferData* constMap = nullptr;
+	static ComPtr<ID3D12Resource> constBuff; 
+	static ConstBufferData* constMap;
 	// パーティクル配列
-	std::forward_list<Particle> particles;
+	static std::forward_list<Particle> particles;
 	static uint32_t textureIndex;
 	// ビュープロジェクション
 	static ViewProjection* viewProjection;
@@ -66,7 +68,7 @@ private:
 	static void InitializeGraphicsPipeline();
 
 	// モデル作成
-	static void CreateModel();
+	static void CreateBuffers();
 
 	// ビュー行列を更新
 	void UpdateViewMatrix();
@@ -77,10 +79,8 @@ public: // メンバ関数
 	ParticleManager(const ParticleManager& obj) = delete;
 
 	// 静的初期化
-	static void StaticInitialize();
+	static void Initialize();
 	
-	void Initialize();
-
 	// 毎フレーム処理
 	void Update();
 
@@ -88,8 +88,8 @@ public: // メンバ関数
 	void Draw();
 
 	// パーティクル追加
-	void Add(Vector3 position,int life, float start_scale, float end_scale);
+	static void Add(Vector3 position,int life, float start_scale, float end_scale);
 
-	size_t GetParticleNum() { return std::distance(particles.begin(), particles.end()); }
+	static size_t GetParticleNum() { return std::distance(particles.begin(), particles.end()); }
 };
 

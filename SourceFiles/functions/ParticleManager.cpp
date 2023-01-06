@@ -1,10 +1,6 @@
 ﻿#include "ParticleManager.h"
 #include "Functions.h"
 #include "SpriteCommon.h"
-#include <d3dcompiler.h>
-#include <DirectXTex.h>
-#pragma comment(lib, "d3dcompiler.lib")
-using namespace DirectX;
 using namespace Microsoft::WRL;
 
 /// <summary>
@@ -13,25 +9,25 @@ using namespace Microsoft::WRL;
 ComPtr<ID3D12RootSignature> ParticleManager::rootsignature;
 ComPtr<ID3D12PipelineState> ParticleManager::pipelinestate;
 ComPtr<ID3D12Resource> ParticleManager::vertBuff;
-Matrix4 ParticleManager::matBillboard = Matrix4::Identity();
+ParticleManager::VertexPos* ParticleManager::vertMap = nullptr;
+ComPtr<ID3D12Resource> ParticleManager::constBuff;
+ParticleManager::ConstBufferData* ParticleManager::constMap = nullptr;
+Matrix4 ParticleManager::matBillboard;
 D3D12_VERTEX_BUFFER_VIEW ParticleManager::vbView{};
 ViewProjection* ParticleManager::viewProjection = nullptr;
 uint32_t ParticleManager::textureIndex = 0;
+std::forward_list<ParticleManager::Particle> ParticleManager::particles;
 
-void ParticleManager::StaticInitialize()
+void ParticleManager::Initialize()
 {
 	ParticleManager::viewProjection = WorldTransform::GetViewProjection();
-
-	// nullptrチェック
 	assert(viewProjection);
-
 	// パイプライン初期化
 	InitializeGraphicsPipeline();
-
 	// テクスチャ読み込み
 	textureIndex = SpriteCommon::GetInstance()->LoadTexture("Particle.png", 1);
 	// モデル生成
-	CreateModel();
+	CreateBuffers();
 }
 
 void ParticleManager::InitializeGraphicsPipeline()
@@ -87,7 +83,7 @@ void ParticleManager::InitializeGraphicsPipeline()
 	// 闇パーティクル
 	blenddesc[1].BlendOp = D3D12_BLEND_OP_REV_SUBTRACT;
 
-	// ブレンドステートの設定
+	// ブレンドステートの設定(光パーティクル)
 	gpipeline.BlendState.RenderTarget[0] = blenddesc[0];
 
 	// 深度バッファのフォーマット
@@ -134,16 +130,18 @@ void ParticleManager::InitializeGraphicsPipeline()
 	result = device->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelinestate));
 }
 
-void ParticleManager::CreateModel()
+void ParticleManager::CreateBuffers()
 {
-	VertexPos* vertMap = nullptr;
 	BufferMapping(&vertBuff, &vertMap, vertexCount);
-	vertBuff->Unmap(0, nullptr);
 
 	// 頂点バッファビューの作成
 	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
 	vbView.SizeInBytes = vertexCount;
 	vbView.StrideInBytes = sizeof(VertexPos);
+
+	BufferMapping(&constBuff, &constMap, (sizeof(ConstBufferData) + 0xff) & ~0xff);
+
+	if (!particles.empty()) { particles.clear(); }
 }
 
 void Vector3ToArray(Vector3 vec, float* array)
@@ -178,12 +176,6 @@ void ParticleManager::UpdateViewMatrix()
 	matBillboard = matCameraRot;
 }
 
-void ParticleManager::Initialize()
-{
-	if (!particles.empty()) { particles.clear(); }
-	BufferMapping(&constBuff, &constMap, (sizeof(ConstBufferData) + 0xff) & ~0xff);
-}
-
 ParticleManager* ParticleManager::GetInstance()
 {
 	static ParticleManager instance;
@@ -192,8 +184,6 @@ ParticleManager* ParticleManager::GetInstance()
 
 void ParticleManager::Update()
 {
-	HRESULT result;
-
 	particles.remove_if([](Particle& x) { return x.frame >= x.num_frame; });
 
 	for (std::forward_list<Particle>::iterator it = particles.begin();
@@ -208,19 +198,13 @@ void ParticleManager::Update()
 	}
 
 	// 定数バッファへデータ転送
-	VertexPos* vertMap = nullptr;
-	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
-	if (SUCCEEDED(result))
+	int i = 0;
+	for (std::forward_list<Particle>::iterator it = particles.begin();
+		it != particles.end(); it++)
 	{
-		for (std::forward_list<Particle>::iterator it = particles.begin();
-			it != particles.end(); it++)
-		{
-			vertMap->pos = it->position;
-			vertMap->scale = it->scale;
-			vertMap++;
-		}
+		vertMap[i].pos = it->position;
+		vertMap[i++].scale = it->scale;
 	}
-	vertBuff->Unmap(0, nullptr);
 
 	UpdateViewMatrix();
 
@@ -254,14 +238,14 @@ void ParticleManager::Draw()
 	// シェーダリソースビューをセット
 	cmdList->SetGraphicsRootDescriptorTable(1, spCommon->GetGpuHandle(textureIndex));
 	// 描画コマンド
-	cmdList->DrawInstanced((UINT)std::distance(particles.begin(), particles.end()), 1, 0, 0);
+	cmdList->DrawInstanced((UINT)GetParticleNum(), 1, 0, 0);
 }
 
 void ParticleManager::Add(Vector3 position, int life, float start_scale, float end_scale)
 {
-	if (std::distance(particles.begin(), particles.end()) >= vertexCount) { return; }
 	for (size_t i = 0; i < 10; i++)
 	{
+		if (GetParticleNum() >= particleMax) { return; }
 		particles.emplace_front();
 		Particle& p = particles.front();
 		const float md_pos = 3.0f;
@@ -274,7 +258,7 @@ void ParticleManager::Add(Vector3 position, int life, float start_scale, float e
 		};
 		p.position = pos + position;
 		// -0.05f~+0.05f:xyz
-		const float md_vel = 0.1f;
+		const float md_vel = 0.2f;
 		Vector3 vel =
 		{
 			(float)rand() / RAND_MAX * md_vel - md_vel / 2.0f,

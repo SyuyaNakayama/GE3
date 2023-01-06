@@ -1,4 +1,5 @@
 #include "DirectXCommon.h"
+#include "Functions.h"
 #include <cassert>
 #include <vector>
 #include <thread>
@@ -39,8 +40,7 @@ void DirectXCommon::InitializeDevice()
 		debugController->SetEnableGPUBasedValidation(TRUE);
 	}
 #endif
-	result = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory));
-	assert(SUCCEEDED(result));
+	Result result = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory));
 
 	vector<ComPtr<IDXGIAdapter4>> adapters;
 	ComPtr<IDXGIAdapter4> tmpAdapter;
@@ -83,7 +83,7 @@ void DirectXCommon::InitializeDevice()
 	{
 		// 採用したアダプターでデバイスを生成
 		result = D3D12CreateDevice(tmpAdapter.Get(), levels[i], IID_PPV_ARGS(&device));
-		if (result == S_OK)
+		if (result.result_ == S_OK)
 		{
 			// デバイスを生成できた時点でループを抜ける
 			featureLevel = levels[i];
@@ -117,18 +117,15 @@ void DirectXCommon::InitializeDevice()
 
 void DirectXCommon::InitializeCommand()
 {
-	result = device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&commandAllocator));
-	assert(SUCCEEDED(result));
+	Result result = device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&commandAllocator));
 
 	result = device->CreateCommandList(0,
 		D3D12_COMMAND_LIST_TYPE_DIRECT,
 		commandAllocator.Get(), nullptr,
 		IID_PPV_ARGS(&commandList));
-	assert(SUCCEEDED(result));
 
 	D3D12_COMMAND_QUEUE_DESC commandQueueDesc{};
 	device->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue));
-	assert(SUCCEEDED(result));
 }
 
 void DirectXCommon::InitializeSwapchain()
@@ -143,13 +140,11 @@ void DirectXCommon::InitializeSwapchain()
 	swapchainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 	ComPtr<IDXGISwapChain1> swapchain1;
-	result = dxgiFactory->CreateSwapChainForHwnd(
+	Result result = dxgiFactory->CreateSwapChainForHwnd(
 		commandQueue.Get(), WindowsAPI::GetInstance()->GetHwnd(), &swapchainDesc, nullptr, nullptr,
 		&swapchain1);
-	assert(SUCCEEDED(result));
 
 	result = swapchain1->QueryInterface(IID_PPV_ARGS(&swapchain));
-	assert(SUCCEEDED(result));
 }
 
 void DirectXCommon::InitializeRenderTargetView()
@@ -159,8 +154,7 @@ void DirectXCommon::InitializeRenderTargetView()
 	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; // レンダーターゲットビュー
 	rtvHeapDesc.NumDescriptors = swapchainDesc.BufferCount; // 裏表の2つ
 	// デスクリプタヒープの生成
-	result = device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&rtvHeap));
-	assert(SUCCEEDED(result));
+	Result result = device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&rtvHeap));
 
 	backBuffers.resize(swapchainDesc.BufferCount);
 
@@ -186,19 +180,17 @@ void DirectXCommon::InitializeDepthBuffer()
 			1, 0, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
 
 	ID3D12Resource* depthBuff;
-	result = device->CreateCommittedResource(
+	Result result = device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 		D3D12_HEAP_FLAG_NONE, &depthResourceDesc,
 		D3D12_RESOURCE_STATE_DEPTH_WRITE,
 		&CD3DX12_CLEAR_VALUE(DXGI_FORMAT_D32_FLOAT, 1.0f, 0),
 		IID_PPV_ARGS(&depthBuff));
-	assert(SUCCEEDED(result));
 
 	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc{};
 	dsvHeapDesc.NumDescriptors = 1;
 	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
 	result = device->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&dsvHeap));
-	assert(SUCCEEDED(result));
 
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
 	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
@@ -209,8 +201,7 @@ void DirectXCommon::InitializeDepthBuffer()
 
 void DirectXCommon::InitializeFence()
 {
-	result = device->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
-	assert(SUCCEEDED(result));
+	Result result = device->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 }
 
 void DirectXCommon::InitializeFixFPS()
@@ -274,15 +265,13 @@ void DirectXCommon::PostDraw()
 		backBuffers[bbIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
 	// 命令のクローズ
-	result = commandList->Close();
-	assert(SUCCEEDED(result));
+	Result result = commandList->Close();
 	// コマンドリストの実行
 	ID3D12CommandList* commandLists[] = { commandList.Get() };
 	commandQueue->ExecuteCommandLists(1, commandLists);
 
 	// 画面に表示するバッファをフリップ(裏表の入替え)
 	result = swapchain->Present(1, 0);
-	assert(SUCCEEDED(result));
 
 	// コマンドの実行完了を待つ
 	commandQueue->Signal(fence.Get(), ++fenceVal);
@@ -301,10 +290,8 @@ void DirectXCommon::PostDraw()
 
 	// キューをクリア
 	result = commandAllocator->Reset();
-	assert(SUCCEEDED(result));
 	// 再びコマンドリストを貯める準備
 	result = commandList->Reset(commandAllocator.Get(), nullptr);
-	assert(SUCCEEDED(result));
 }
 
 void DirectXCommon::SetViewport(Vector2 viewportSize, Vector2 viewportLeftTop)
