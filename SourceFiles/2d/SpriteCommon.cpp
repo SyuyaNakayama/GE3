@@ -5,8 +5,13 @@
 #include <array>
 using namespace std;
 using namespace DirectX;
+using namespace Microsoft::WRL;
 
 string SpriteCommon::DEFAULT_TEXTURE_DIRECTORY_PATH = "Resources/";
+ComPtr<ID3D12RootSignature> SpriteCommon::rootSignature;
+ComPtr<ID3D12PipelineState> SpriteCommon::pipelineState;
+ComPtr<ID3D12DescriptorHeap> SpriteCommon::srvHeap;
+ID3D12GraphicsCommandList* SpriteCommon::cmdList = nullptr;
 
 SpriteCommon* SpriteCommon::GetInstance()
 {

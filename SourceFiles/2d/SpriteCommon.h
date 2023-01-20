@@ -20,13 +20,11 @@ private:
 	// デフォルトディレクトリ
 	static std::string DEFAULT_TEXTURE_DIRECTORY_PATH;
 	ID3D12Device* device = nullptr;
-	// ルートシグネチャ
-	ComPtr<ID3D12RootSignature> rootSignature;
-	// パイプランステート
-	ComPtr<ID3D12PipelineState> pipelineState;
-	ComPtr<ID3D12DescriptorHeap> srvHeap;
+	static ComPtr<ID3D12RootSignature> rootSignature;
+	static ComPtr<ID3D12PipelineState> pipelineState;
+	static ComPtr<ID3D12DescriptorHeap> srvHeap;
+	static ID3D12GraphicsCommandList* cmdList;
 	std::array<TextureData, MAX_SRV_COUNT> textures_;
-	ID3D12GraphicsCommandList* cmdList = nullptr;
 	uint32_t textureIndex_ = 0;
 
 	SpriteCommon() = default;
@@ -35,8 +33,8 @@ public:
 	void Initialize();
 	uint32_t LoadTexture(const std::string& FILE_NAME);
 	void SetTextureCommands(uint32_t index);
-	void PreDraw();
-	void PostDraw() {};
+	static void PreDraw();
+	static void PostDraw() {};
 	void IncrementTextureIndex() { textureIndex_++; }
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGpuHandle(UINT index) { return textures_[index].gpuHandle; }
 	ID3D12DescriptorHeap* GetDescriptorHeap() { return srvHeap.Get(); }
