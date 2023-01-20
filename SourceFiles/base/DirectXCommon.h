@@ -20,7 +20,6 @@ private:
 	ComPtr<IDXGISwapChain4> swapchain;
 	ComPtr<ID3D12DescriptorHeap> dsvHeap, rtvHeap;
 	ComPtr<ID3D12Fence> fence;
-	HRESULT result = S_OK;
 	DXGI_SWAP_CHAIN_DESC1 swapchainDesc{};
 	std::vector<ComPtr<ID3D12Resource>> backBuffers;
 	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle{};

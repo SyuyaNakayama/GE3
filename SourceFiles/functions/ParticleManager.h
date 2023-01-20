@@ -1,19 +1,16 @@
 ﻿#pragma once
 
-#include <Windows.h>
 #include <wrl.h>
-#include <d3d12.h>
-#include <DirectXMath.h>
 #include <d3dx12.h>
 #include <forward_list>
-#include "ViewProjection.h"
+#include "WorldTransform.h"
 
 /// <summary>
 /// 3Dオブジェクト
 /// </summary>
 class ParticleManager final
 {
-private: // エイリアス
+private:
 	// Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
@@ -44,98 +41,55 @@ private: // エイリアス
 			e_scale = 0.0f;	// 最終値
 	};
 
-private: // 定数
+	static const int vertexCount = 1024; // 頂点数
+	static const int particleMax = 64;
 
-	static const int division = 50;					// 分割数
-	static const float radius;				// 底面の半径
-	static const float prizmHeight;			// 柱の高さ
-	static const int planeCount = division * 2 + division * 2;		// 面の数
-	static const int vertexCount = 1624;		// 頂点数
-
-public: // 静的メンバ関数
-	/// <summary>
-	/// 静的初期化
-	/// </summary>
-	static void StaticInitialize(ViewProjection* viewProjection);
-
-private: // 静的メンバ変数
-	// デバイス
-	static ID3D12Device* device;
-	// デスクリプタサイズ
-	static UINT descriptorHandleIncrementSize;
-	// コマンドリスト
-	static ID3D12GraphicsCommandList* cmdList;
 	// ルートシグネチャ
 	static ComPtr<ID3D12RootSignature> rootsignature;
 	// パイプラインステートオブジェクト
 	static ComPtr<ID3D12PipelineState> pipelinestate;
-	// デスクリプタヒープ
-	static ComPtr<ID3D12DescriptorHeap> descHeap;
 	// 頂点バッファ
 	static ComPtr<ID3D12Resource> vertBuff;
-	// テクスチャバッファ
-	static ComPtr<ID3D12Resource> texbuff;
-	// シェーダリソースビューのハンドル(CPU)
-	static CD3DX12_CPU_DESCRIPTOR_HANDLE cpuDescHandleSRV;
-	// シェーダリソースビューのハンドル(CPU)
-	static CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV;
+	static VertexPos* vertMap;
 	// ビルボード行列
 	static Matrix4 matBillboard;
 	// 頂点バッファビュー
 	static D3D12_VERTEX_BUFFER_VIEW vbView;
+	// 定数バッファ
+	static ComPtr<ID3D12Resource> constBuff; 
+	static ConstBufferData* constMap;
+	// パーティクル配列
+	static std::forward_list<Particle> particles;
+	static uint32_t textureIndex;
+	// ビュープロジェクション
+	static ViewProjection* viewProjection;
 
-private:// 静的メンバ関数
-	/// <summary>
-	/// デスクリプタヒープの初期化
-	/// </summary>
-	static void InitializeDescriptorHeap();
-
-	/// <summary>
-	/// グラフィックパイプライン生成
-	/// </summary>
-	/// <returns>成否</returns>
+	// グラフィックパイプライン生成
 	static void InitializeGraphicsPipeline();
 
-	/// <summary>
-	/// テクスチャ読み込み
-	/// </summary>
-	static void LoadTexture();
+	// モデル作成
+	static void CreateBuffers();
 
-	/// <summary>
-	/// モデル作成
-	/// </summary>
-	static void CreateModel();
-
-	/// <summary>
-	/// ビュー行列を更新
-	/// </summary>
+	// ビュー行列を更新
 	void UpdateViewMatrix();
 
 	ParticleManager() = default;
 public: // メンバ関数
 	static ParticleManager* GetInstance();
-	void Initialize();
+	ParticleManager(const ParticleManager& obj) = delete;
 
-	/// <summary>
-	/// 毎フレーム処理
-	/// </summary>
+	// 静的初期化
+	static void Initialize();
+	
+	// 毎フレーム処理
 	void Update();
 
-	/// <summary>
-	/// 描画
-	/// </summary>
+	// 描画
 	void Draw();
 
 	// パーティクル追加
-	void Add(Vector3 position,int life, float start_scale, float end_scale);
+	static void Add(Vector3 position,int life, float start_scale, float end_scale);
 
-	size_t GetParticleNum() { return std::distance(particles.begin(), particles.end()); }
-
-private: // メンバ変数
-	ComPtr<ID3D12Resource> constBuff; // 定数バッファ
-	// パーティクル配列
-	std::forward_list<Particle> particles;
-	// ビュープロジェクション
-	static ViewProjection* viewProjection;
+	static size_t GetParticleNum() { return std::distance(particles.begin(), particles.end()); }
 };
 

@@ -17,6 +17,7 @@ private:
 	};
 
 	static const size_t MAX_SRV_COUNT = 2056;
+	static const uint32_t MIP_LEVELS_DEFAULT = -1;
 	// デフォルトディレクトリ
 	static std::string DEFAULT_TEXTURE_DIRECTORY_PATH;
 	ID3D12Device* device = nullptr;
@@ -31,7 +32,7 @@ private:
 public:
 	static SpriteCommon* GetInstance();
 	void Initialize();
-	uint32_t LoadTexture(const std::string& FILE_NAME);
+	uint32_t LoadTexture(const std::string& FILE_NAME, uint32_t mipLevels = MIP_LEVELS_DEFAULT);
 	void SetTextureCommands(uint32_t index);
 	static void PreDraw();
 	static void PostDraw() {};
