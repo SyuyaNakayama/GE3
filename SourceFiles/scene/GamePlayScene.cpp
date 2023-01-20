@@ -17,7 +17,8 @@ void GamePlayScene::Draw()
 {
 	Model::PreDraw();
 	Model::PostDraw();
+	particleManager->Draw();
 
-	SpriteCommon* spriteCommon = SpriteCommon::GetInstance();
-	spriteCommon->PostDraw();
+	SpriteCommon::PreDraw();
+	SpriteCommon::PostDraw();
 }
