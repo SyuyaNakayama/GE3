@@ -179,7 +179,7 @@ void DirectXCommon::InitializeDepthBuffer()
 			(UINT)WindowsAPI::GetInstance()->WIN_SIZE.y,
 			1, 0, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
 
-	ID3D12Resource* depthBuff;
+	ID3D12Resource* depthBuff = nullptr;
 	Result result = device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 		D3D12_HEAP_FLAG_NONE, &depthResourceDesc,
@@ -296,6 +296,6 @@ void DirectXCommon::PostDraw()
 
 void DirectXCommon::SetViewport(Vector2 viewportSize, Vector2 viewportLeftTop)
 {
-	viewport = CD3DX12_VIEWPORT(viewportLeftTop.x, viewportLeftTop.y, 
+	viewport = CD3DX12_VIEWPORT(viewportLeftTop.x, viewportLeftTop.y,
 		viewportSize.x, viewportSize.y);
 }

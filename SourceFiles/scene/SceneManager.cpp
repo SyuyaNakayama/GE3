@@ -39,9 +39,9 @@ void SceneManager::Draw()
 {
 	scene_->Draw();
 	if (!fadeManager_.IsFade()) { return; }
-	SpriteCommon::GetInstance()->PreDraw();
+	SpriteCommon::PreDraw();
 	fadeManager_.Draw();
-	SpriteCommon::GetInstance()->PostDraw();
+	SpriteCommon::PostDraw();
 }
 
 void SceneManager::SetNextScene(Scene nextScene, bool isUseFade)

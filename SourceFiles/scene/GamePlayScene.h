@@ -13,7 +13,7 @@ private:
 	Skydome skydome;
 	Player player;
 	EnemyManager enemyManager;
-	ParticleManager* particleManager = nullptr;
+	ParticleManager* particleManager = ParticleManager::GetInstance();
 
 public:
 	void Initialize() override;

@@ -38,8 +38,8 @@ void ParticleManager::InitializeGraphicsPipeline()
 	pipelineManager.AddInputLayout("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
 	pipelineManager.AddInputLayout("TEXCOORD", DXGI_FORMAT_R32G32B32_FLOAT);
 	pipelineManager.InitDepthStencilState();
-	pipelineManager.SetBlendDesc(D3D12_BLEND_OP_REV_SUBTRACT, D3D12_BLEND_ONE, D3D12_BLEND_ONE); // 光パーティクル
-	//pipelineManager.SetBlendDesc(D3D12_BLEND_OP_ADD, D3D12_BLEND_ONE, D3D12_BLEND_ONE); // 闇パーティクル
+	pipelineManager.SetBlendDesc(D3D12_BLEND_OP_ADD, D3D12_BLEND_ONE, D3D12_BLEND_ONE); // 光パーティクル
+	//pipelineManager.SetBlendDesc(D3D12_BLEND_OP_REV_SUBTRACT, D3D12_BLEND_ONE, D3D12_BLEND_ONE); // 闇パーティクル
 	pipelineManager.InitDSVFormat();
 	pipelineManager.SetDepthWriteMask(D3D12_DEPTH_WRITE_MASK_ZERO);
 	pipelineManager.SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT);
@@ -114,25 +114,12 @@ void ParticleManager::Update()
 		particle.scale += particle.s_scale;
 	}
 
-	//for (std::forward_list<Particle>::iterator it = particles.begin();
-	//	it != particles.end(); it++)
-	//{
-	//	it->frame++;
-	//	it->velocity += it->accel;
-	//	it->position += it->velocity;
-	//	float f = (float)it->num_frame / it->frame;
-	//	it->scale = (it->e_scale - it->s_scale) / f;
-	//	it->scale += it->s_scale;
-	//}
-
-
 	// 定数バッファへデータ転送
 	int i = 0;
-	for (std::forward_list<Particle>::iterator it = particles.begin();
-		it != particles.end(); it++)
+	for (const Particle& particle : particles)
 	{
-		vertMap[i].pos = it->position;
-		vertMap[i++].scale = it->scale;
+		vertMap[i].pos = particle.position;
+		vertMap[i++].scale = particle.scale;
 	}
 
 	UpdateViewMatrix();
@@ -172,7 +159,7 @@ void ParticleManager::Draw()
 
 void ParticleManager::Add(Vector3 position, int life, float start_scale, float end_scale)
 {
-	for (size_t i = 0; i < 10; i++)
+	for (size_t i = 0; i < 1; i++)
 	{
 		if (GetParticleNum() >= particleMax) { return; }
 		particles.emplace_front();
