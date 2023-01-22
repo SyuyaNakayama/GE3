@@ -83,7 +83,7 @@ void DirectXCommon::InitializeDevice()
 	{
 		// 採用したアダプターでデバイスを生成
 		result = D3D12CreateDevice(tmpAdapter.Get(), levels[i], IID_PPV_ARGS(&device));
-		if (result.result_ == S_OK)
+		if (result.Get() == S_OK)
 		{
 			// デバイスを生成できた時点でループを抜ける
 			featureLevel = levels[i];

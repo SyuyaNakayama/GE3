@@ -11,11 +11,10 @@ private:
 	std::unique_ptr<Sprite> spaceKeyUI;
 	Timer skuAnimeTimer = 30;
 	size_t animeFrame = 0;
-	std::unique_ptr<Audio> bgm;
 
 public:
 	void Initialize() override;
-	void Finalize() { bgm->Stop(); }
+	void Finalize() {}
 	void Update() override;
 	void Draw() override;
 };

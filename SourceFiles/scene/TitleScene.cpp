@@ -11,8 +11,6 @@ void TitleScene::Initialize()
 	spaceKeyUI->SetPosition({ 740,520 });
 	spaceKeyUI->SetTextureSize({ 128,64 });
 	spaceKeyUI->SetSize({ 256,128 });
-	bgm = Audio::Create(L"titleBGM.mp3");
-	bgm->Play();
 }
 
 void TitleScene::Update()
@@ -32,9 +30,8 @@ void TitleScene::Update()
 
 void TitleScene::Draw()
 {
-	SpriteCommon* spriteCommon = SpriteCommon::GetInstance();
-	spriteCommon->PreDraw();
+	SpriteCommon::PreDraw();
 	sprite->Draw();
 	spaceKeyUI->Draw();
-	spriteCommon->PostDraw();
+	SpriteCommon::PostDraw();
 }

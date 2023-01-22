@@ -6,11 +6,13 @@
 void GamePlayScene::Initialize()
 {
 	WorldTransform::SetViewProjection(&viewProjection);
-	ParticleManager::StaticInitialize(WorldTransform::GetViewProjection());
+	ParticleManager::Initialize();
 }
 
 void GamePlayScene::Update()
 {
+	particleManager->Add({}, 60, 1, 0);
+	particleManager->Update();
 }
 
 void GamePlayScene::Draw()
@@ -21,4 +23,8 @@ void GamePlayScene::Draw()
 
 	SpriteCommon::PreDraw();
 	SpriteCommon::PostDraw();
+}
+
+void GamePlayScene::Finalize()
+{
 }

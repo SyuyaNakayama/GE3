@@ -25,14 +25,18 @@ void Clamp(float& num, float min, float max);
 // result値がエラーなら自動で警告が出る
 struct Result
 {
-	HRESULT result_ = S_OK;
+private:
+	HRESULT result = S_OK;
 
+public:
 	Result() {}
 	Result(const HRESULT& result) { operator=(result); }
 
-	void operator=(HRESULT result)
+	void operator=(HRESULT result_)
 	{
-		result_ = result;
+		result = result_;
 		assert(SUCCEEDED(result));
 	}
+
+	HRESULT Get() { return result; }
 };

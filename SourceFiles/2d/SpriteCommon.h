@@ -12,8 +12,8 @@ private:
 	{
 		std::string fileName;
 		ComPtr<ID3D12Resource> buffer;
-		D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle;
-		D3D12_GPU_DESCRIPTOR_HANDLE	gpuHandle;
+		D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle{};
+		D3D12_GPU_DESCRIPTOR_HANDLE	gpuHandle{};
 	};
 
 	static const size_t MAX_SRV_COUNT = 2056;

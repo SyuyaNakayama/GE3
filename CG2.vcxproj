@@ -208,6 +208,7 @@
     <ClCompile Include="SourceFiles\base\Input.cpp" />
     <ClCompile Include="SourceFiles\base\main.cpp" />
     <ClCompile Include="SourceFiles\base\MyGame.cpp" />
+    <ClCompile Include="SourceFiles\base\PipelineManager.cpp" />
     <ClCompile Include="SourceFiles\base\WindowsAPI.cpp" />
     <ClCompile Include="SourceFiles\functions\Functions.cpp" />
     <ClCompile Include="SourceFiles\functions\ParticleManager.cpp" />
@@ -243,6 +244,7 @@
     <ClInclude Include="SourceFiles\base\Framework.h" />
     <ClInclude Include="SourceFiles\base\Input.h" />
     <ClInclude Include="SourceFiles\base\MyGame.h" />
+    <ClInclude Include="SourceFiles\base\PipelineManager.h" />
     <ClInclude Include="SourceFiles\base\WindowsAPI.h" />
     <ClInclude Include="SourceFiles\functions\Functions.h" />
     <ClInclude Include="SourceFiles\functions\ParticleManager.h" />

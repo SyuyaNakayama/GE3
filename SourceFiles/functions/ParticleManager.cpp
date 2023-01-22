@@ -1,6 +1,7 @@
 ﻿#include "ParticleManager.h"
 #include "Functions.h"
 #include "SpriteCommon.h"
+#include "PipelineManager.h"
 using namespace Microsoft::WRL;
 
 /// <summary>
@@ -32,102 +33,19 @@ void ParticleManager::Initialize()
 
 void ParticleManager::InitializeGraphicsPipeline()
 {
-	Result result;
-	ComPtr<ID3DBlob> vsBlob;	// 頂点シェーダオブジェクト
-	ComPtr<ID3DBlob> gsBlob;	// ジオメトリシェーダオブジェクト
-	ComPtr<ID3DBlob> psBlob;	// ピクセルシェーダオブジェクト
-	ComPtr<ID3DBlob> errorBlob; // エラーオブジェクト
-
-	// 頂点シェーダの読み込みとコンパイル
-	LoadShader(&vsBlob, L"ParticleVS", "vs_5_0");
-
-	// ピクセルシェーダの読み込みとコンパイル
-	LoadShader(&psBlob, L"ParticlePS", "ps_5_0");
-
-	// ジオメトリシェーダの読み込みとコンパイル
-	LoadShader(&gsBlob, L"ParticleGS", "gs_5_0");
-
-	// 頂点レイアウト
-	std::vector<D3D12_INPUT_ELEMENT_DESC> inputLayout = {
-		SetInputLayout("POSITION", DXGI_FORMAT_R32G32B32_FLOAT),
-		SetInputLayout("TEXCOORD", DXGI_FORMAT_R32G32B32_FLOAT),
-	};
-
-	// グラフィックスパイプラインの流れを設定
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC gpipeline{};
-	gpipeline.VS = CD3DX12_SHADER_BYTECODE(vsBlob.Get());
-	gpipeline.GS = CD3DX12_SHADER_BYTECODE(gsBlob.Get());
-	gpipeline.PS = CD3DX12_SHADER_BYTECODE(psBlob.Get());
-
-	// サンプルマスク
-	gpipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // 標準設定
-	// ラスタライザステート
-	gpipeline.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
-	// デプスステンシルステート
-	gpipeline.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
-
-	// レンダーターゲットのブレンド設定
-	D3D12_RENDER_TARGET_BLEND_DESC blenddesc[2]{};
-	for (size_t i = 0; i < 2; i++)
-	{
-		blenddesc[i].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;	// RBGA全てのチャンネルを描画
-		blenddesc[i].BlendEnable = true;
-		blenddesc[i].BlendOpAlpha = D3D12_BLEND_OP_ADD;
-		blenddesc[i].SrcBlendAlpha = D3D12_BLEND_ONE;
-		blenddesc[i].DestBlendAlpha = D3D12_BLEND_ZERO;
-		blenddesc[i].SrcBlend = D3D12_BLEND_ONE;
-		blenddesc[i].DestBlend = D3D12_BLEND_ONE;
-	}
-	// 光パーティクル
-	blenddesc[0].BlendOp = D3D12_BLEND_OP_ADD;
-	// 闇パーティクル
-	blenddesc[1].BlendOp = D3D12_BLEND_OP_REV_SUBTRACT;
-
-	// ブレンドステートの設定(光パーティクル)
-	gpipeline.BlendState.RenderTarget[0] = blenddesc[0];
-
-	// 深度バッファのフォーマット
-	gpipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;
-
-	// 頂点レイアウトの設定
-	gpipeline.InputLayout.pInputElementDescs = inputLayout.data();
-	gpipeline.InputLayout.NumElements = (UINT)inputLayout.size();
-
-	// 図形の形状設定（三角形）
-	gpipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
-	gpipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
-	gpipeline.NumRenderTargets = 1;	// 描画対象は1つ
-	gpipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // 0～255指定のRGBA
-	gpipeline.SampleDesc.Count = 1; // 1ピクセルにつき1回サンプリング
-
-	// デスクリプタレンジ
-	CD3DX12_DESCRIPTOR_RANGE descRangeSRV{};
-	descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // t0 レジスタ
-
-	// ルートパラメータ
-	CD3DX12_ROOT_PARAMETER rootparams[2]{};
-	rootparams[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
-	rootparams[1].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
-
-	// スタティックサンプラー
-	CD3DX12_STATIC_SAMPLER_DESC samplerDesc = CD3DX12_STATIC_SAMPLER_DESC(0);
-
-	// ルートシグネチャの設定
-	CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDesc{};
-	rootSignatureDesc.Init_1_0(_countof(rootparams), rootparams, 1, &samplerDesc, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
-
-	ComPtr<ID3DBlob> rootSigBlob;
-	// バージョン自動判定のシリアライズ
-	result = D3DX12SerializeVersionedRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0, &rootSigBlob, &errorBlob);
-	// ルートシグネチャの生成
-	ID3D12Device* device = DirectXCommon::GetInstance()->GetDevice();
-	assert(device);
-	result = device->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&rootsignature));
-
-	gpipeline.pRootSignature = rootsignature.Get();
-
-	// グラフィックスパイプラインの生成
-	result = device->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelinestate));
+	PipelineManager pipelineManager;
+	pipelineManager.LoadShaders(L"ParticleVS", L"ParticlePS", L"ParticleGS");
+	pipelineManager.AddInputLayout("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
+	pipelineManager.AddInputLayout("TEXCOORD", DXGI_FORMAT_R32G32B32_FLOAT);
+	pipelineManager.InitDepthStencilState();
+	pipelineManager.SetBlendDesc(D3D12_BLEND_OP_REV_SUBTRACT, D3D12_BLEND_ONE, D3D12_BLEND_ONE); // 光パーティクル
+	//pipelineManager.SetBlendDesc(D3D12_BLEND_OP_ADD, D3D12_BLEND_ONE, D3D12_BLEND_ONE); // 闇パーティクル
+	pipelineManager.InitDSVFormat();
+	pipelineManager.SetDepthWriteMask(D3D12_DEPTH_WRITE_MASK_ZERO);
+	pipelineManager.SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT);
+	pipelineManager.AddRootParameter(PipelineManager::RootParamType::CBV);
+	pipelineManager.AddRootParameter(PipelineManager::RootParamType::DescriptorTable);
+	pipelineManager.CreatePipeline(pipelinestate, rootsignature);
 }
 
 void ParticleManager::CreateBuffers()
@@ -186,16 +104,27 @@ void ParticleManager::Update()
 {
 	particles.remove_if([](Particle& x) { return x.frame >= x.num_frame; });
 
-	for (std::forward_list<Particle>::iterator it = particles.begin();
-		it != particles.end(); it++)
+	for (Particle& particle: particles)
 	{
-		it->frame++;
-		it->velocity += it->accel;
-		it->position += it->velocity;
-		float f = (float)it->num_frame / it->frame;
-		it->scale = (it->e_scale - it->s_scale) / f;
-		it->scale += it->s_scale;
+		particle.frame++;
+		particle.velocity += particle.accel;
+		particle.position += particle.velocity;
+		float f = (float)particle.num_frame / particle.frame;
+		particle.scale = (particle.e_scale - particle.s_scale) / f;
+		particle.scale += particle.s_scale;
 	}
+
+	//for (std::forward_list<Particle>::iterator it = particles.begin();
+	//	it != particles.end(); it++)
+	//{
+	//	it->frame++;
+	//	it->velocity += it->accel;
+	//	it->position += it->velocity;
+	//	float f = (float)it->num_frame / it->frame;
+	//	it->scale = (it->e_scale - it->s_scale) / f;
+	//	it->scale += it->s_scale;
+	//}
+
 
 	// 定数バッファへデータ転送
 	int i = 0;
