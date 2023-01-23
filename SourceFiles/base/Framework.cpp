@@ -1,5 +1,6 @@
 ﻿#include "Framework.h"
 #include "Audio.h"
+#include "ImGuiManager.h"
 
 void Framework::Initialize()
 {
@@ -7,7 +8,7 @@ void Framework::Initialize()
 	dxCommon->Initialize();
 	spriteCommon->Initialize();
 	input->Initialize();
-	imguiManager->Initialize();
+	ImGuiManager::Initialize();
 	Audio::StaticInitialize();
 	sceneManager_->Initialize();
 }
@@ -16,16 +17,16 @@ void Framework::Finalize()
 {
 	sceneManager_->Finalize();
 	Audio::Finalize();
-	imguiManager->Finalize();
+	ImGuiManager::Finalize();
 	wAPI->Finalize();
 }
 
 void Framework::Update()
 {
 	input->Update();
-	imguiManager->Begin();
+	ImGuiManager::Begin();
 	sceneManager_->Update();
-	imguiManager->End();
+	ImGuiManager::End();
 }
 
 bool Framework::IsEndRequest()

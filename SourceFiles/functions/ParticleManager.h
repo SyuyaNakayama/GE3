@@ -1,13 +1,22 @@
 ﻿#pragma once
-
 #include <wrl.h>
 #include <d3dx12.h>
-#include <forward_list>
+#include <list>
 #include "WorldTransform.h"
+#include "Timer.h"
 
-/// <summary>
-/// 3Dオブジェクト
-/// </summary>
+struct AddParticleProp
+{
+	Vector3 position;
+	float posRange = 1.0f;
+	float velRange = 0.1f;
+	float accRange = 0.001f;
+	int lifeTime = 60;
+	float start_scale = 1.0f;
+	float end_scale = 0.0f;
+	UINT16 addNum = 1;
+};
+
 class ParticleManager final
 {
 private:
@@ -34,11 +43,10 @@ private:
 		Vector3 position{}; // 座標
 		Vector3 velocity{}; // 速度
 		Vector3 accel{}; // 加速度
-		int frame = 0; // 現在フレーム
-		int	num_frame = 0; // 終了フレーム
-		float scale = 0.10f, // スケール
-			s_scale = 0.10f, // 初期値
-			e_scale = 0.0f;	// 最終値
+		Timer frame = 0;
+		float scale = 1.0f; // スケール
+		float s_scale = 1.0f; // 初期値
+		float e_scale = 0.0f;	// 最終値
 	};
 
 	static const int vertexCount = 1024; // 頂点数
@@ -56,10 +64,10 @@ private:
 	// 頂点バッファビュー
 	static D3D12_VERTEX_BUFFER_VIEW vbView;
 	// 定数バッファ
-	static ComPtr<ID3D12Resource> constBuff; 
+	static ComPtr<ID3D12Resource> constBuff;
 	static ConstBufferData* constMap;
 	// パーティクル配列
-	static std::forward_list<Particle> particles;
+	static std::list<Particle> particles;
 	static uint32_t textureIndex;
 	// ビュープロジェクション
 	static ViewProjection* viewProjection;
@@ -71,25 +79,22 @@ private:
 	static void CreateBuffers();
 
 	// ビュー行列を更新
-	void UpdateViewMatrix();
+	static void UpdateViewMatrix();
 
-	ParticleManager() = default;
-public: // メンバ関数
-	static ParticleManager* GetInstance();
+	ParticleManager() = delete;
 	ParticleManager(const ParticleManager& obj) = delete;
+public: // メンバ関数
 
 	// 静的初期化
 	static void Initialize();
-	
+
 	// 毎フレーム処理
-	void Update();
+	static void Update();
 
 	// 描画
-	void Draw();
+	static void Draw();
 
 	// パーティクル追加
-	static void Add(Vector3 position,int life, float start_scale, float end_scale);
-
-	static size_t GetParticleNum() { return std::distance(particles.begin(), particles.end()); }
+	static void Add(const AddParticleProp& particleProp);
 };
 

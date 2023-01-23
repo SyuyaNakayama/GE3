@@ -122,6 +122,19 @@ Matrix4 Matrix4::Translate(const Vector3& t)
 	return result;
 }
 
+Matrix4 Matrix4::CreateFromVector(const Vector3& vec1, const Vector3& vec2, const Vector3& vec3, const Vector3& vec4)
+{
+	Matrix4 result
+	{
+		vec1.x,vec1.y,vec1.z,0.0f,
+		vec2.x,vec2.y,vec2.z,0.0f,
+		vec3.x,vec3.y,vec3.z,0.0f,
+		vec4.x,vec4.y,vec4.z,1.0f
+	};
+
+	return result;
+}
+
 Vector3 operator*(const Vector3& v, const Matrix4& m)
 {
 	float w = v.x * m.m[0][3] + v.y * m.m[1][3] + v.z * m.m[2][3] + m.m[3][3];

@@ -2,6 +2,7 @@
 #include "Functions.h"
 #include "SpriteCommon.h"
 #include "PipelineManager.h"
+#include <random>
 using namespace Microsoft::WRL;
 
 /// <summary>
@@ -17,7 +18,7 @@ Matrix4 ParticleManager::matBillboard;
 D3D12_VERTEX_BUFFER_VIEW ParticleManager::vbView{};
 ViewProjection* ParticleManager::viewProjection = nullptr;
 uint32_t ParticleManager::textureIndex = 0;
-std::forward_list<ParticleManager::Particle> ParticleManager::particles;
+std::list<ParticleManager::Particle> ParticleManager::particles;
 
 void ParticleManager::Initialize()
 {
@@ -62,14 +63,6 @@ void ParticleManager::CreateBuffers()
 	if (!particles.empty()) { particles.clear(); }
 }
 
-void Vector3ToArray(Vector3 vec, float* array)
-{
-	array[0] = vec.x;
-	array[1] = vec.y;
-	array[2] = vec.z;
-	array[3] = 0;
-}
-
 void ParticleManager::UpdateViewMatrix()
 {
 	Vector3 cameraAxisZ = viewProjection->target - viewProjection->eye;
@@ -79,45 +72,23 @@ void ParticleManager::UpdateViewMatrix()
 
 	cameraAxisZ.Normalize();
 
-	Vector3 cameraAxisX = Cross(viewProjection->up, cameraAxisZ);
-	cameraAxisX = cameraAxisX.Normalize();
-
-	Vector3 cameraAxisY = Cross(cameraAxisZ, cameraAxisX);
-	cameraAxisY = cameraAxisY.Normalize();
-
-	Matrix4 matCameraRot{};
-
-	Vector3ToArray(cameraAxisX, matCameraRot.m[0]);
-	Vector3ToArray(cameraAxisY, matCameraRot.m[1]);
-	Vector3ToArray(cameraAxisZ, matCameraRot.m[2]);
-
-	matBillboard = matCameraRot;
-}
-
-ParticleManager* ParticleManager::GetInstance()
-{
-	static ParticleManager instance;
-	return &instance;
+	Vector3 cameraAxisX = Normalize(Cross(viewProjection->up, cameraAxisZ));
+	Vector3 cameraAxisY = Normalize(Cross(cameraAxisZ, cameraAxisX));
+	matBillboard = Matrix4::CreateFromVector(cameraAxisX, cameraAxisY, cameraAxisZ);
 }
 
 void ParticleManager::Update()
 {
-	particles.remove_if([](Particle& x) { return x.frame >= x.num_frame; });
+	particles.remove_if([](Particle& particle) { return particle.frame.CountDown(); });
 
+	int i = 0;
 	for (Particle& particle : particles)
 	{
-		particle.frame++;
 		particle.velocity += particle.accel;
 		particle.position += particle.velocity;
-		float f = (float)particle.num_frame / particle.frame;
-		particle.scale = (particle.e_scale - particle.s_scale) / f;
-		particle.scale += particle.s_scale;
-	}
-
-	// 定数バッファへデータ転送
-	int i = 0;
-	for (const Particle& particle : particles)
-	{
+		float f = 1.0f / particle.frame.GetRemainTimeRate();
+		particle.scale = particle.s_scale + (particle.e_scale - particle.s_scale) / f;
+		// 定数バッファへデータ転送
 		vertMap[i].pos = particle.position;
 		vertMap[i++].scale = particle.scale;
 	}
@@ -154,43 +125,28 @@ void ParticleManager::Draw()
 	// シェーダリソースビューをセット
 	cmdList->SetGraphicsRootDescriptorTable(1, spCommon->GetGpuHandle(textureIndex));
 	// 描画コマンド
-	cmdList->DrawInstanced((UINT)GetParticleNum(), 1, 0, 0);
+	cmdList->DrawInstanced((UINT)particles.size(), 1, 0, 0);
 }
 
-void ParticleManager::Add(Vector3 position, int life, float start_scale, float end_scale)
+void ParticleManager::Add(const AddParticleProp& particleProp)
 {
-	for (size_t i = 0; i < 1; i++)
+	std::random_device rnd;
+	std::mt19937 mt(rnd());
+	std::uniform_real_distribution<float>
+		randPos(-particleProp.posRange, particleProp.posRange), 
+		randVel(-particleProp.velRange, particleProp.velRange),
+		randAcc(-particleProp.accRange, particleProp.accRange);
+
+	for (UINT16 i = 0; i < particleProp.addNum; i++)
 	{
-		if (GetParticleNum() >= particleMax) { return; }
+		if (particles.size() >= particleMax) { return; }
 		particles.emplace_front();
 		Particle& p = particles.front();
-		const float md_pos = 3.0f;
-		// -5.0f~+5.0f:xyz
-		Vector3 pos =
-		{
-			(float)rand() / RAND_MAX * md_pos - md_pos / 2.0f,
-			(float)rand() / RAND_MAX * md_pos - md_pos / 2.0f,
-			(float)rand() / RAND_MAX * md_pos - md_pos / 2.0f
-		};
-		p.position = pos + position;
-		// -0.05f~+0.05f:xyz
-		const float md_vel = 0.2f;
-		Vector3 vel =
-		{
-			(float)rand() / RAND_MAX * md_vel - md_vel / 2.0f,
-			(float)rand() / RAND_MAX * md_vel - md_vel / 2.0f,
-			(float)rand() / RAND_MAX * md_vel - md_vel / 2.0f
-		};
-		p.velocity = vel;
-		// -0.001f~0.001:xy
-		Vector3 acc{};
-		const float md_acc = 0.001f;
-		acc.x = (float)rand() / RAND_MAX * md_acc - md_acc / 2.0f;
-		acc.y = (float)rand() / RAND_MAX * md_acc - md_acc / 2.0f;
-		p.accel = acc;
-
-		p.num_frame = life;
-		p.scale = p.s_scale = start_scale;
-		p.e_scale = end_scale;
+		p.position = Vector3(randPos(mt), randPos(mt), randPos(mt)) + particleProp.position;
+		p.velocity = Vector3(randVel(mt), randVel(mt), randVel(mt));
+		p.accel = Vector3(randAcc(mt), randAcc(mt), 0);
+		p.frame = particleProp.lifeTime;
+		p.scale = p.s_scale = particleProp.start_scale;
+		p.e_scale = particleProp.end_scale;
 	}
 }

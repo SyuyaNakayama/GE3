@@ -22,6 +22,9 @@ public:
 	static Matrix4 RotateZ(float angle);
 	static Matrix4 Rotate(const Vector3& r);
 	static Matrix4 Translate(const Vector3& t);
+	static Matrix4 CreateFromVector(
+		const Vector3& vec1 = { 1,0,0 }, const Vector3& vec2 = { 0,1,0 },
+		const Vector3& vec3 = { 0,0,1 }, const Vector3& vec4 = {});
 };
 
 Matrix4 operator*(const Matrix4& m1, const Matrix4& m2);

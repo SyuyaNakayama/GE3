@@ -4,7 +4,6 @@
 #include "Skydome.h"
 #include "Player.h"
 #include "EnemyManager.h"
-#include "ParticleManager.h"
 
 class GamePlayScene : public BaseScene
 {
@@ -13,11 +12,9 @@ private:
 	Skydome skydome;
 	Player player;
 	EnemyManager enemyManager;
-	ParticleManager* particleManager = ParticleManager::GetInstance();
 
 public:
 	void Initialize() override;
-	void Finalize();
 	void Update() override;
 	void Draw() override;
 };

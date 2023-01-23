@@ -2,6 +2,7 @@
 #include "SpriteCommon.h"
 #include "CollisionManager.h"
 #include "SceneManager.h"
+#include "ParticleManager.h"
 
 void GamePlayScene::Initialize()
 {
@@ -11,8 +12,12 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::Update()
 {
-	particleManager->Add({0,0,-20}, 60, 1, 0);
-	particleManager->Update();
+	AddParticleProp particleProp;
+	particleProp.position = { 0,0,-20 };
+	particleProp.posRange = 3.0f;
+	particleProp.velRange = 0.05f;
+	ParticleManager::Add(particleProp);
+	ParticleManager::Update();
 	viewProjection.Update();
 }
 
@@ -20,12 +25,5 @@ void GamePlayScene::Draw()
 {
 	Model::PreDraw();
 	Model::PostDraw();
-	particleManager->Draw();
-
-	SpriteCommon::PreDraw();
-	SpriteCommon::PostDraw();
-}
-
-void GamePlayScene::Finalize()
-{
+	ParticleManager::Draw();
 }

@@ -79,6 +79,9 @@ void Enemy::Draw()
 void Enemy::OnCollision(Collider* collider)
 {
 	isDead = true;
-	ParticleManager* deathParticle = ParticleManager::GetInstance();
-	deathParticle->Add(worldTransform.translation, 60, 10, 0);
+	AddParticleProp particleProp;
+	particleProp.position = worldTransform.translation;
+	particleProp.start_scale = 10.0f;
+	particleProp.addNum = 10;
+	ParticleManager::Add(particleProp);
 }

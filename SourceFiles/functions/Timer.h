@@ -8,5 +8,8 @@ public:
 	Timer() { timer_ = timeMem_ = 0; }
 	Timer(int timer) { timer_ = timeMem_ = timer; }
 	bool CountDown();
-	int GetPassTime() { return timeMem_ - timer_; }
+	// c‚èŠÔ
+	int GetRemainTime() { return timeMem_ - timer_; }
+	float GetTimeRate() { return (float)timer_ / (float)timeMem_; }
+	float GetRemainTimeRate() { return (float)GetRemainTime() / (float)timeMem_; }
 };

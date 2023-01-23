@@ -1,5 +1,6 @@
 ﻿#include "MyGame.h"
 #include "Model.h"
+#include "ImGuiManager.h"
 
 void MyGame::Initialize()
 {
@@ -22,6 +23,6 @@ void MyGame::Draw()
 {
 	dxCommon->PreDraw();
 	sceneManager_->Draw();
-	imguiManager->Draw();
+	ImGuiManager::Draw();
 	dxCommon->PostDraw();
 }
