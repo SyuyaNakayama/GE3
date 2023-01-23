@@ -213,12 +213,6 @@
     <ClCompile Include="SourceFiles\scene\GamePlayScene.cpp" />
     <ClCompile Include="SourceFiles\collider\Collider.cpp" />
     <ClCompile Include="SourceFiles\collider\CollisionManager.cpp" />
-    <ClCompile Include="SourceFiles\objects\enemy\Enemy.cpp" />
-    <ClCompile Include="SourceFiles\objects\enemy\EnemyBullet.cpp" />
-    <ClCompile Include="SourceFiles\objects\enemy\EnemyManager.cpp" />
-    <ClCompile Include="SourceFiles\objects\player\Player.cpp" />
-    <ClCompile Include="SourceFiles\objects\player\PlayerBullet.cpp" />
-    <ClCompile Include="SourceFiles\objects\Skydome.cpp" />
     <ClCompile Include="SourceFiles\scene\ResultScene.cpp" />
     <ClCompile Include="SourceFiles\scene\SceneFactory.cpp" />
     <ClCompile Include="SourceFiles\scene\SceneManager.cpp" />
@@ -251,12 +245,6 @@
     <ClInclude Include="SourceFiles\scene\GamePlayScene.h" />
     <ClInclude Include="SourceFiles\collider\Collider.h" />
     <ClInclude Include="SourceFiles\collider\CollisionManager.h" />
-    <ClInclude Include="SourceFiles\objects\enemy\Enemy.h" />
-    <ClInclude Include="SourceFiles\objects\enemy\EnemyBullet.h" />
-    <ClInclude Include="SourceFiles\objects\enemy\EnemyManager.h" />
-    <ClInclude Include="SourceFiles\objects\player\Player.h" />
-    <ClInclude Include="SourceFiles\objects\player\PlayerBullet.h" />
-    <ClInclude Include="SourceFiles\objects\Skydome.h" />
     <ClInclude Include="SourceFiles\scene\ResultScene.h" />
     <ClInclude Include="SourceFiles\scene\SceneFactory.h" />
     <ClInclude Include="SourceFiles\scene\SceneManager.h" />
