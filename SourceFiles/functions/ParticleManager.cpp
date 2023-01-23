@@ -104,7 +104,7 @@ void ParticleManager::Update()
 {
 	particles.remove_if([](Particle& x) { return x.frame >= x.num_frame; });
 
-	for (Particle& particle: particles)
+	for (Particle& particle : particles)
 	{
 		particle.frame++;
 		particle.velocity += particle.accel;

@@ -4,17 +4,15 @@
 
 void PipelineManager::CreatePipeline(ComPtr<ID3D12PipelineState>& pipelinestate, ComPtr<ID3D12RootSignature>& rootsignature)
 {
-	Result result;
-
 	// グラフィックスパイプラインの流れを設定
-	VS = CD3DX12_SHADER_BYTECODE(vsBlob.Get());
-	PS = CD3DX12_SHADER_BYTECODE(psBlob.Get());
-	if (gsBlob) { GS = CD3DX12_SHADER_BYTECODE(gsBlob.Get()); }
+	pipeline.VS = CD3DX12_SHADER_BYTECODE(vsBlob.Get());
+	pipeline.PS = CD3DX12_SHADER_BYTECODE(psBlob.Get());
+	if (gsBlob) { pipeline.GS = CD3DX12_SHADER_BYTECODE(gsBlob.Get()); }
 
 	// サンプルマスク
-	SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // 標準設定
+	pipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // 標準設定
 	// ラスタライザステート
-	RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+	pipeline.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 
 	// レンダーターゲットのブレンド設定
 	blenddesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;	// RBGA全てのチャンネルを描画
@@ -24,15 +22,15 @@ void PipelineManager::CreatePipeline(ComPtr<ID3D12PipelineState>& pipelinestate,
 	blenddesc.DestBlendAlpha = D3D12_BLEND_ZERO;
 
 	// ブレンドステートの設定
-	BlendState.RenderTarget[0] = blenddesc;
+	pipeline.BlendState.RenderTarget[0] = blenddesc;
 
 	// 頂点レイアウトの設定
-	InputLayout.pInputElementDescs = inputLayout.data();
-	InputLayout.NumElements = (UINT)inputLayout.size();
+	pipeline.InputLayout.pInputElementDescs = inputLayout.data();
+	pipeline.InputLayout.NumElements = (UINT)inputLayout.size();
 
-	NumRenderTargets = 1;	// 描画対象は1つ
-	RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // 0～255指定のRGBA
-	SampleDesc.Count = 1; // 1ピクセルにつき1回サンプリング
+	pipeline.NumRenderTargets = 1;	// 描画対象は1つ
+	pipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // 0～255指定のRGBA
+	pipeline.SampleDesc.Count = 1; // 1ピクセルにつき1回サンプリング
 
 	// スタティックサンプラー
 	CD3DX12_STATIC_SAMPLER_DESC samplerDesc = CD3DX12_STATIC_SAMPLER_DESC(0);
@@ -42,18 +40,17 @@ void PipelineManager::CreatePipeline(ComPtr<ID3D12PipelineState>& pipelinestate,
 	rootSignatureDesc.Init_1_0(rootParams.size(), rootParams.data(), 1, &samplerDesc,
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
-	ComPtr<ID3DBlob> rootSigBlob;
-	ComPtr<ID3DBlob> errorBlob; // エラーオブジェクト
+	ComPtr<ID3DBlob> rootSigBlob, errorBlob;
 	// バージョン自動判定のシリアライズ
-	result = D3DX12SerializeVersionedRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0, &rootSigBlob, &errorBlob);
+	Result result = D3DX12SerializeVersionedRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0, &rootSigBlob, &errorBlob);
 	// ルートシグネチャの生成
 	ID3D12Device* device = DirectXCommon::GetInstance()->GetDevice();
 	result = device->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&rootsignature));
 
-	pRootSignature = rootsignature.Get();
+	pipeline.pRootSignature = rootsignature.Get();
 
 	// グラフィックスパイプラインの生成
-	result = device->CreateGraphicsPipelineState(this, IID_PPV_ARGS(&pipelinestate));
+	result = device->CreateGraphicsPipelineState(&pipeline, IID_PPV_ARGS(&pipelinestate));
 }
 
 void PipelineManager::AddRootParameter(RootParamType paramType)
@@ -61,7 +58,7 @@ void PipelineManager::AddRootParameter(RootParamType paramType)
 	// デスクリプタレンジ
 	CD3DX12_DESCRIPTOR_RANGE descriptorRange{};
 	descriptorRange.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
-	
+
 	CD3DX12_ROOT_PARAMETER rootParam{};
 	switch (paramType)
 	{

@@ -7,11 +7,11 @@ void GamePlayScene::Initialize()
 {
 	WorldTransform::SetViewProjection(&viewProjection);
 	ParticleManager::Initialize();
-	particleManager->Add({0,0,-20}, 60, 1, 0);
 }
 
 void GamePlayScene::Update()
 {
+	particleManager->Add({0,0,-20}, 60, 1, 0);
 	particleManager->Update();
 	viewProjection.Update();
 }
