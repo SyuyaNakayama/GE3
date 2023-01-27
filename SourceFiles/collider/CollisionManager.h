@@ -12,6 +12,7 @@ private:
 	static std::list<PolygonCollider*> polygonColliders;
 	static std::list<RayCollider*> rayColliders;
 
+	// 個別当たり判定
 	static bool CheckCollisionFiltering(BaseCollider* colliderA, BaseCollider* colliderB);
 	static bool CheckCollision2Boxes(BoxCollider* colliderA, BoxCollider* colliderB);
 	static bool CheckCollision2IncludeObjects(IncludeCollider* colliderA, IncludeCollider* colliderB);
@@ -22,6 +23,15 @@ private:
 	static bool CheckCollisionRayPolygon(RayCollider* colliderA, PolygonCollider* colliderB, float* distance = nullptr);
 	static bool CheckCollisionRaySphere(RayCollider* colliderA, SphereCollider* colliderB, float* distance = nullptr, Vector3* inter = nullptr);
 
+	// 種類別当たり判定
+	static void CheckBoxCollisions();
+	static void CheckIncludeCollisions();
+	static void CheckSphereCollisions();
+	static void CheckSpherePlaneCollisions();
+	static void CheckSpherePolygonCollisions();
+	static void CheckRayPlaneCollisions();
+	static void CheckRayPolygonCollisions();
+	static void CheckRaySphereCollisions();
 public:
 	CollisionManager() = delete;
 	// コライダー登録関数
@@ -37,12 +47,7 @@ public:
 	static void PopCollider(PlaneCollider* collider) { planeColliders.remove(collider); }
 	static void PopCollider(PolygonCollider* collider) { polygonColliders.remove(collider); }
 	static void PopCollider(RayCollider* collider) { rayColliders.remove(collider); }
-	// 個別当たり判定
-	static void CheckBoxCollisions();
-	static void CheckIncludeCollisions();
-	static void CheckSphereCollisions();
-	static void CheckRayPlaneCollisions();
-	static void CheckRayPolygonCollisions();
 	// 全当たり判定
+	static void CheckRayCastCollision(RayCollider* collider);
 	static void CheckAllCollisions();
 };

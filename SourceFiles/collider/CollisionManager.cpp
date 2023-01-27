@@ -2,6 +2,7 @@
 #include <cassert>
 #include <imgui.h>
 #include <algorithm>
+#include "ImGuiManager.h"
 using namespace std;
 
 list<BoxCollider*> CollisionManager::boxColliders;
@@ -74,9 +75,88 @@ bool CollisionManager::CheckCollisionSpherePlane(SphereCollider* colliderA, Plan
 	return true;
 }
 
+int NumberLoop(int num, int min = 1, int max = 6)
+{
+	if (num > max) { return num % max + min - 1; }
+	return num;
+}
+
+void ClosestPtPoint2Triangle(const Vector3& point, PolygonCollider* triangle, Vector3* closest)
+{
+	vector<Vector3> p0_p; p0_p.push_back({});
+	p0_p.push_back(triangle->GetVertices()[1] - triangle->GetVertices()[0]);
+	p0_p.push_back(triangle->GetVertices()[2] - triangle->GetVertices()[0]);
+	vector<float> d; d.push_back(0);
+	vector<float> v;
+
+	for (size_t i = 0; i < 3; i++)
+	{
+		Vector3 pi_pt = point - triangle->GetVertices()[i];
+		d.push_back(Dot(p0_p[1], pi_pt));
+		d.push_back(Dot(p0_p[2], pi_pt));
+
+		switch (i)
+		{
+		case 0:
+			// pointがp0の外側の頂点領域の中にあるかどうかチェック
+			if (d[1] <= 0.0f && d[2] <= 0.0f)
+			{
+				// p0が最近傍
+				*closest = triangle->GetVertices()[0];
+				return;
+			}
+			break;
+		default:
+			bool roopNum = i == 2;
+			if (d[3 * i] >= 0.0f && d[4 + roopNum] <= d[3 * i])
+			{
+				// p[i]が最近傍
+				*closest = triangle->GetVertices()[i];
+				return;
+			}
+
+			// pointがp0_p[i]の辺領域の中にあるかどうかチェックし、あればpointのp0_p[i]上に対する射影を返す
+			v.push_back(d[NumberLoop(1 + 4 * roopNum)] * d[NumberLoop(4 + 4 * roopNum)] -
+				d[NumberLoop(3 + 4 * roopNum)] * d[NumberLoop(2 + 4 * roopNum)]);
+			if (v[0 + roopNum] <= 0.0f && d[1 + roopNum] >= 0.0f && d[3 * i] <= 0.0f)
+			{
+				float v = d[1 + roopNum] / (d[1 + roopNum] - d[3 * i]);
+				*closest = triangle->GetVertices()[0] + v * p0_p[i];
+				return;
+			}
+
+			if (!roopNum) { continue; }
+			// pointがp1_p2の辺領域の中にあるかどうかチェックし、あればpointのp1_p2上に対する射影を返す
+			float va = d[3] * d[6] - d[5] * d[4];
+			if (va <= 0.0f && (d[4] - d[3]) >= 0.0f && (d[5] - d[6]) >= 0.0f)
+			{
+				float w = (d[4] - d[3]) / ((d[4] - d[3]) + (d[5] - d[6]));
+				*closest = triangle->GetVertices()[1] + w * (triangle->GetVertices()[2] - triangle->GetVertices()[1]);
+				return;
+			}
+
+			float denom = 1.0f / (va + v[1] + v[0]);
+			float v1 = v[1] * denom;
+			float w = v[0] * denom;
+			*closest = triangle->GetVertices()[0] + p0_p[1] * v1 + p0_p[2] * w;
+			break;
+		}
+	}
+}
+
 bool CollisionManager::CheckCollisionSpherePolygon(SphereCollider* colliderA, PolygonCollider* colliderB, Vector3* inter)
 {
-	return false;
+	Vector3 p;
+	// 球の中心に対する最近接点である三角形上にある点pを見つける
+	ClosestPtPoint2Triangle(colliderA->GetWorldPosition(), colliderB, &p);
+	// 点pと球の中心の差分ベクトル
+	Vector3 v = p - colliderA->GetWorldPosition();
+	float vLenSq = Dot(v, v);
+	// 球と三角形の距離が半径以下なら当たっていない
+	if (vLenSq > colliderA->GetRadius() * colliderA->GetRadius()) { return false; } // 三角形上の最近接点pを疑似交点とする
+	// 疑似交点を計算
+	if (inter) { *inter = p; }
+	return true;
 }
 
 bool CollisionManager::CheckCollisionRayPlane(RayCollider* colliderA, PlaneCollider* colliderB, float* distance)
@@ -199,6 +279,32 @@ void CollisionManager::CheckSphereCollisions()
 	}
 }
 
+void CollisionManager::CheckSpherePlaneCollisions()
+{
+	for (SphereCollider* sphereCollider : sphereColliders) {
+		for (PlaneCollider* planeCollider : planeColliders)
+		{
+			if (!CheckCollisionSpherePlane(sphereCollider, planeCollider)) { continue; }
+
+			sphereCollider->OnCollision(planeCollider);
+			planeCollider->OnCollision(sphereCollider);
+		}
+	}
+}
+
+void CollisionManager::CheckSpherePolygonCollisions()
+{
+	for (SphereCollider* sphereCollider : sphereColliders) {
+		for (PolygonCollider* polygonCollider : polygonColliders)
+		{
+			if (!CheckCollisionSpherePolygon(sphereCollider, polygonCollider)) { continue; }
+
+			sphereCollider->OnCollision(polygonCollider);
+			polygonCollider->OnCollision(sphereCollider);
+		}
+	}
+}
+
 void CollisionManager::CheckRayPlaneCollisions()
 {
 	if (rayColliders.empty() || planeColliders.empty()) { return; }
@@ -217,24 +323,84 @@ void CollisionManager::CheckRayPolygonCollisions()
 {
 	if (rayColliders.empty() || polygonColliders.empty()) { return; }
 	for (RayCollider* rayCollider : rayColliders) {
-		for (PolygonCollider* triangleCollider : polygonColliders)
+		for (PolygonCollider* polygonCollider : polygonColliders)
 		{
-			if (!CheckCollisionRayPolygon(rayCollider, triangleCollider)) { continue; }
+			if (!CheckCollisionRayPolygon(rayCollider, polygonCollider)) { continue; }
 
-			rayCollider->OnCollision(triangleCollider);
-			triangleCollider->OnCollision(rayCollider);
+			rayCollider->OnCollision(polygonCollider);
+			polygonCollider->OnCollision(rayCollider);
 		}
+	}
+}
+
+void CollisionManager::CheckRaySphereCollisions()
+{
+	for (RayCollider* rayCollider : rayColliders) {
+		for (SphereCollider* sphereCollider : sphereColliders)
+		{
+			if (!CheckCollisionRaySphere(rayCollider, sphereCollider)) { continue; }
+
+			rayCollider->OnCollision(sphereCollider);
+			sphereCollider->OnCollision(rayCollider);
+		}
+	}
+}
+
+void CollisionManager::CheckRayCastCollision(RayCollider* collider)
+{
+	struct RayCastHit
+	{
+		float distance = 0;
+		PlaneCollider* planeCollider = nullptr;
+		PolygonCollider* polygonCollider = nullptr;
+		SphereCollider* sphereCollider = nullptr;
+	};
+
+	float distance = 0;
+	vector<RayCastHit> collisionInfo;
+
+	RayCastHit newInfo;
+	for (PlaneCollider* planeCollider : planeColliders)
+	{
+		if (!CheckCollisionRayPlane(collider, planeCollider, &distance)) { continue; }
+		newInfo.distance = distance;
+		newInfo.planeCollider = planeCollider;
+		collisionInfo.push_back(newInfo);
+	}
+	for (PolygonCollider* polygonCollider : polygonColliders)
+	{
+		if (!CheckCollisionRayPolygon(collider, polygonCollider, &distance)) { continue; }
+		newInfo.distance = distance;
+		newInfo.polygonCollider = polygonCollider;
+		collisionInfo.push_back(newInfo);
+	}
+	for (SphereCollider* sphereCollider : sphereColliders)
+	{
+		if (!CheckCollisionRaySphere(collider, sphereCollider, &distance)) { continue; }
+		newInfo.distance = distance;
+		newInfo.sphereCollider = sphereCollider;
+		collisionInfo.push_back(newInfo);
+	}
+
+	if (collisionInfo.empty()) { return; }
+	if (collisionInfo.size() == 1)
+	{
+		if(collisionInfo[0].planeCollider){}
+		//collider->OnCollision();
+	}
+	for (size_t i = 0; i < collisionInfo.size() - 1; i++)
+	{
+
 	}
 }
 
 void CollisionManager::CheckAllCollisions()
 {
 	CheckBoxCollisions();
-	CheckRayPlaneCollisions();
-	CheckRayPolygonCollisions();
 	CheckIncludeCollisions();
-	ImGui::Text("boxColliders.size() = %d", boxColliders.size());
-	ImGui::Text("planeColliders.size() = %d", planeColliders.size());
-	ImGui::Text("polygonColliders.size() = %d", polygonColliders.size());
-	ImGui::Text("includeColliders.size() = %d", includeColliders.size());
+	CheckSpherePlaneCollisions();
+	CheckSpherePolygonCollisions();
+	//CheckRayPlaneCollisions();
+	//CheckRayPolygonCollisions();
+	//CheckRaySphereCollisions();
 }

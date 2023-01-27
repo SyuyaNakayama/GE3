@@ -52,6 +52,9 @@ std::unique_ptr<Model> Model::Create(const string& modelName)
 			newModel->vertices = model->vertices;
 			newModel->material = model->material;
 			newModel->indices = model->indices;
+			unique_ptr<Sprite> newSprite = make_unique<Sprite>();
+			*newSprite = *model->sprite;
+			newModel->sprite = move(newSprite);
 			newModel->CreateBuffers();
 			return newModel;
 		}

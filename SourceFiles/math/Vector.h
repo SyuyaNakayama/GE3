@@ -24,6 +24,8 @@ public:
 	Vector2& operator/=(float s);
 };
 
+class Matrix4;
+
 class Vector3
 {
 public:
@@ -43,6 +45,7 @@ public:
 	Vector3& operator+=(const Vector3& v);
 	Vector3& operator-=(const Vector3& v);
 	Vector3& operator*=(float s);
+	Vector3& operator*=(const Matrix4& m);
 	Vector3& operator/=(float s);
 
 	bool operator<=(Vector3);
@@ -50,6 +53,10 @@ public:
 	bool operator<(Vector3);
 	bool operator>(Vector3);
 	bool operator==(Vector3);
+
+	static Vector3 MakeXAxis() { return { 1,0,0 }; }
+	static Vector3 MakeYAxis() { return { 0,1,0 }; }
+	static Vector3 MakeZAxis() { return { 0,0,1 }; }
 };
 
 // 2項演算子オーバーロード

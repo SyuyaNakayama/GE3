@@ -1,4 +1,5 @@
 #include "Vector.h"
+#include "Matrix4.h"
 #include <cmath>
 
 float Vector2::Length() const { return sqrtf(x * x + y * y); }
@@ -104,6 +105,13 @@ Vector3& Vector3::operator*=(float s)
 	x *= s;
 	y *= s;
 	z *= s;
+	return *this;
+}
+
+Vector3& Vector3::operator*=(const Matrix4& m)
+{
+	Vector3 temp = *this * m;
+	*this = temp;
 	return *this;
 }
 

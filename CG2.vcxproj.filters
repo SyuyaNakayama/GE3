@@ -120,19 +120,10 @@
     <ClCompile Include="SourceFiles\functions\SharePtr.cpp">
       <Filter>ソース ファイル\functions</Filter>
     </ClCompile>
-    <ClCompile Include="SourceFiles\scene\GamePlayScene.cpp">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="SourceFiles\scene\ResultScene.cpp">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClCompile>
     <ClCompile Include="SourceFiles\scene\SceneFactory.cpp">
       <Filter>ソース ファイル\scene</Filter>
     </ClCompile>
     <ClCompile Include="SourceFiles\scene\SceneManager.cpp">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="SourceFiles\scene\TitleScene.cpp">
       <Filter>ソース ファイル\scene</Filter>
     </ClCompile>
     <ClCompile Include="SourceFiles\scene\FadeManager.cpp">
@@ -149,6 +140,12 @@
     </ClCompile>
     <ClCompile Include="SourceFiles\base\PipelineManager.cpp">
       <Filter>ソース ファイル\base</Filter>
+    </ClCompile>
+    <ClCompile Include="SourceFiles\scene\AL4Scenes.cpp">
+      <Filter>ソース ファイル\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="SourceFiles\objects\Objects.cpp">
+      <Filter>ソース ファイル\objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -212,19 +209,10 @@
     <ClInclude Include="SourceFiles\scene\BaseScene.h">
       <Filter>ソース ファイル\scene</Filter>
     </ClInclude>
-    <ClInclude Include="SourceFiles\scene\GamePlayScene.h">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="SourceFiles\scene\ResultScene.h">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClInclude>
     <ClInclude Include="SourceFiles\scene\SceneFactory.h">
       <Filter>ソース ファイル\scene</Filter>
     </ClInclude>
     <ClInclude Include="SourceFiles\scene\SceneManager.h">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="SourceFiles\scene\TitleScene.h">
       <Filter>ソース ファイル\scene</Filter>
     </ClInclude>
     <ClInclude Include="SourceFiles\scene\FadeManager.h">
@@ -241,6 +229,12 @@
     </ClInclude>
     <ClInclude Include="SourceFiles\base\PipelineManager.h">
       <Filter>ソース ファイル\base</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\scene\AL4Scenes.h">
+      <Filter>ソース ファイル\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\objects\Objects.h">
+      <Filter>ソース ファイル\objects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

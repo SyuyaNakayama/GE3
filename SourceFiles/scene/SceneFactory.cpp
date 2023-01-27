@@ -1,7 +1,5 @@
 #include "SceneFactory.h"
-#include "TitleScene.h"
-#include "GamePlayScene.h"
-#include "ResultScene.h"
+#include "AL4Scenes.h"
 #include <cassert>
 
 SceneFactory* SceneFactory::GetInstance()
@@ -16,16 +14,10 @@ BaseScene* SceneFactory::CreateScene(Scene scene)
 
     switch (scene)
     {
-    case Scene::Title:
-        newScene = new TitleScene();
-        break;
-    case Scene::Play:
-        newScene = new GamePlayScene();
-        break;
-    case Scene::GameOver:
-    case Scene::Clear:
-        newScene = new ResultScene(scene);
-        break;
+    case Scene::Sphere:     newScene = new SphereScene();   break;
+    case Scene::Ray:        newScene = new RayScene();      break;
+    case Scene::RayPlane:   newScene = new RayPlaneScene(); break;
+    case Scene::RayCast:    newScene = new RayCastScene();  break;
     }
     
     assert(newScene);

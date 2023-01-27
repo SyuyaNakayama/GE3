@@ -69,6 +69,21 @@ Matrix4 Quaternion::MakeRotateMatrix(const Quaternion& q)
 	return q.MakeRotateMatrix();
 }
 
+float Dot(const Quaternion& q1, const Quaternion& q2)
+{
+	return q1.w * q2.w + Dot(q1.GetImaginary(), q2.GetImaginary());
+}
+
+Quaternion operator+(const Quaternion& q1, const Quaternion& q2)
+{
+	return Quaternion(q1.w + q2.w, q1.GetImaginary() + q2.GetImaginary());
+}
+
+Quaternion operator-(const Quaternion& q1, const Quaternion& q2)
+{
+	return Quaternion(q1.w - q2.w, q1.GetImaginary() - q2.GetImaginary());
+}
+
 Quaternion operator*(const Quaternion& q1, const Quaternion& q2)
 {
 	Quaternion ans = q1;
@@ -76,9 +91,36 @@ Quaternion operator*(const Quaternion& q1, const Quaternion& q2)
 	return ans;
 }
 
-Quaternion operator/(const Quaternion& q1, float norm)
+Quaternion operator/(const Quaternion& q, float norm)
 {
-	Quaternion ans = q1;
+	Quaternion ans = q;
 	ans /= norm;
 	return ans;
+}
+
+Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t)
+{
+	Quaternion q0temp = q0;
+	float dot = Dot(q0temp, q1);
+	if (dot < 0)
+	{
+		q0temp = -q0temp;
+		dot = -dot;
+	}
+
+	const float EPSILON = 1.0e-5f;
+	if (dot >= 1.0f - EPSILON) { return (1.0f - t) * q0temp + t * q1; }
+
+	float theta = std::acos(dot);
+	float scale0 = std::sin((1 - t) * theta) / std::sin(theta);
+	float scale1 = std::sin(t * theta) / std::sin(theta);
+	return scale0 * q0temp + scale1 * q1;
+}
+
+Quaternion DirectionToDirection(const Vector3& u, const Vector3& v)
+{
+	float dot = Dot(u, v);
+	Vector3 axis = Normalize(Cross(u, v));
+	float theta = std::acos(dot);
+	return Quaternion::MakeAxisAngle(axis, theta);
 }

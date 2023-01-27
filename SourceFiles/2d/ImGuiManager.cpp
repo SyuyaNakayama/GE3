@@ -64,29 +64,35 @@ void ImGuiManager::Finalize()
 	DestroyContext();
 }
 
-void ImGuiManager::PrintVector(std::string& str, const Vector2& vec)
+void ImGuiManager::PrintVector(std::string str, const Vector2& vec)
 {
 	str += " = (%.3f, %.3f)";
 	Text(str.c_str(), vec.x, vec.y);
 }
 
-void ImGuiManager::PrintVector(std::string& str, const Vector3& vec)
+void ImGuiManager::PrintVector(std::string str, const Vector3& vec)
 {
 	str += " = (%.3f, %.3f, %.3f)";
 	Text(str.c_str(), vec.x, vec.y, vec.z);
 }
 
-void ImGuiManager::SliderVector(std::string& str, Vector2& vec)
+void ImGuiManager::PrintQuaternion(std::string str, const Quaternion& q)
+{
+	str += " = (%.2f, %.2f, %.2f, %.2f)";
+	Text(str.c_str(), q.w, q.x, q.y, q.z);
+}
+
+void ImGuiManager::SliderVector(std::string str, Vector2& vec, int minVal, int maxVal)
 {
 	float num[2] = { vec.x,vec.y };
-	SliderFloat2(str.c_str(), num, 0, WindowsAPI::WIN_SIZE.x);
+	SliderFloat2(str.c_str(), num, minVal, maxVal);
 	vec = { num[0],num[1] };
 }
 
-void ImGuiManager::SliderVector(std::string& str, Vector3& vec)
+void ImGuiManager::SliderVector(std::string str, Vector3& vec, int minVal, int maxVal)
 {
 	float num[3] = { vec.x,vec.y,vec.z };
-	SliderFloat3(str.c_str(), num, 0, WindowsAPI::WIN_SIZE.x);
+	SliderFloat3(str.c_str(), num, minVal, maxVal);
 	vec = { num[0],num[1],num[2] };
 }
 

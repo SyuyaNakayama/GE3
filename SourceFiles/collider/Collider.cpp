@@ -30,5 +30,11 @@ void PolygonCollider::SetVertices()
 void PolygonCollider::ToPlaneCollider(PlaneCollider* planeCollider)
 {
 	planeCollider->SetDistance(distance);
-	planeCollider->SetNormal(normal);
+	planeCollider->SetRotation(worldTransform.rotation);
+	planeCollider->SetBaseNormal(baseNormal);
+}
+
+void PolygonCollider::UpdateVertices()
+{
+	for (Vector3& vertex : vertices) { vertex *= worldTransform.matWorld; }
 }
