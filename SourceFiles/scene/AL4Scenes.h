@@ -36,6 +36,7 @@ public:
 
 class RayCastScene : public AL4Scenes
 {
+	bool isUseRayCast = true;
 	Ray* ray = nullptr;
 public:
 	void Initialize();

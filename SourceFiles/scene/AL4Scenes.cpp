@@ -2,7 +2,7 @@
 #include "CollisionManager.h"
 #include "SceneManager.h"
 #include "Quaternion.h"
-#include "ImGuiManager.h"
+#include <imgui.h>
 
 void AL4Scenes::Initialize()
 {
@@ -16,6 +16,11 @@ void AL4Scenes::Update()
 	if (input->IsTrigger(DIK_2)) { sceneManager_->SetNextScene(Scene::Ray); }
 	if (input->IsTrigger(DIK_3)) { sceneManager_->SetNextScene(Scene::RayPlane); }
 	if (input->IsTrigger(DIK_4)) { sceneManager_->SetNextScene(Scene::RayCast); }
+
+	ImGui::Text("1 Key : SphereCollision");
+	ImGui::Text("2 Key : RayCollision");
+	ImGui::Text("3 Key : Ray&PlaneCollision");
+	ImGui::Text("4 Key : RayCastCollision");
 
 	for (const std::unique_ptr<Objects>& object : objects) { object->Update(); }
 
@@ -97,5 +102,22 @@ void RayCastScene::Initialize()
 
 void RayCastScene::Update()
 {
-	CollisionManager::CheckRayCastCollision(ray);
+	if (input->IsTrigger(DIK_1)) { sceneManager_->SetNextScene(Scene::Sphere); }
+	if (input->IsTrigger(DIK_2)) { sceneManager_->SetNextScene(Scene::Ray); }
+	if (input->IsTrigger(DIK_3)) { sceneManager_->SetNextScene(Scene::RayPlane); }
+	if (input->IsTrigger(DIK_4)) { sceneManager_->SetNextScene(Scene::RayCast); }
+
+	ImGui::Text("1 Key : SphereCollision");
+	ImGui::Text("2 Key : RayCollision");
+	ImGui::Text("3 Key : Ray&PlaneCollision");
+	ImGui::Text("4 Key : RayCastCollision");
+	ImGui::Text("Q Key : CollisionModeChange");
+	if (!isUseRayCast) { ImGui::Text("Mode  : CollisionAll"); }
+	else { ImGui::Text("Mode  : CollisionNearly"); }
+
+	for (const std::unique_ptr<Objects>& object : objects) { object->Update(); }
+	if (input->IsTrigger(DIK_Q)) { isUseRayCast = !isUseRayCast; }
+	if (isUseRayCast) { CollisionManager::CheckRayCastCollision(ray); }
+	else { CollisionManager::CheckAllCollisions(); }
+	viewProjection.Update();
 }

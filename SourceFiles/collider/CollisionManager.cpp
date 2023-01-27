@@ -354,15 +354,34 @@ void CollisionManager::CheckRayCastCollision(RayCollider* collider)
 		PlaneCollider* planeCollider = nullptr;
 		PolygonCollider* polygonCollider = nullptr;
 		SphereCollider* sphereCollider = nullptr;
+
+		void OnCollision(RayCollider* collider)
+		{
+			if (this->planeCollider)
+			{
+				collider->OnCollision(this->planeCollider);
+				this->planeCollider->OnCollision(collider);
+			}
+			else if (this->sphereCollider)
+			{
+				collider->OnCollision(this->sphereCollider);
+				this->sphereCollider->OnCollision(collider);
+			}
+			else if (this->polygonCollider)
+			{
+				collider->OnCollision(this->polygonCollider);
+				this->sphereCollider->OnCollision(collider);
+			}
+		}
 	};
 
 	float distance = 0;
 	vector<RayCastHit> collisionInfo;
 
-	RayCastHit newInfo;
 	for (PlaneCollider* planeCollider : planeColliders)
 	{
 		if (!CheckCollisionRayPlane(collider, planeCollider, &distance)) { continue; }
+		RayCastHit newInfo;
 		newInfo.distance = distance;
 		newInfo.planeCollider = planeCollider;
 		collisionInfo.push_back(newInfo);
@@ -370,6 +389,7 @@ void CollisionManager::CheckRayCastCollision(RayCollider* collider)
 	for (PolygonCollider* polygonCollider : polygonColliders)
 	{
 		if (!CheckCollisionRayPolygon(collider, polygonCollider, &distance)) { continue; }
+		RayCastHit newInfo;
 		newInfo.distance = distance;
 		newInfo.polygonCollider = polygonCollider;
 		collisionInfo.push_back(newInfo);
@@ -377,21 +397,26 @@ void CollisionManager::CheckRayCastCollision(RayCollider* collider)
 	for (SphereCollider* sphereCollider : sphereColliders)
 	{
 		if (!CheckCollisionRaySphere(collider, sphereCollider, &distance)) { continue; }
+		RayCastHit newInfo;
 		newInfo.distance = distance;
 		newInfo.sphereCollider = sphereCollider;
 		collisionInfo.push_back(newInfo);
 	}
 
+	// ‰½‚Æ‚à“–‚Á‚Ä‚¢‚È‚¢
 	if (collisionInfo.empty()) { return; }
 	if (collisionInfo.size() == 1)
 	{
-		if(collisionInfo[0].planeCollider){}
-		//collider->OnCollision();
+		collisionInfo[0].OnCollision(collider);
+		return;
 	}
-	for (size_t i = 0; i < collisionInfo.size() - 1; i++)
-	{
 
+	RayCastHit nearly = collisionInfo[0];
+	for (size_t i = 1; i < collisionInfo.size(); i++)
+	{
+		if (nearly.distance > collisionInfo[i].distance) { nearly = collisionInfo[i]; }
 	}
+	nearly.OnCollision(collider);
 }
 
 void CollisionManager::CheckAllCollisions()
@@ -400,7 +425,7 @@ void CollisionManager::CheckAllCollisions()
 	CheckIncludeCollisions();
 	CheckSpherePlaneCollisions();
 	CheckSpherePolygonCollisions();
-	//CheckRayPlaneCollisions();
-	//CheckRayPolygonCollisions();
-	//CheckRaySphereCollisions();
+	CheckRayPlaneCollisions();
+	CheckRayPolygonCollisions();
+	CheckRaySphereCollisions();
 }

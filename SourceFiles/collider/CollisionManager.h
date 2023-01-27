@@ -23,15 +23,6 @@ private:
 	static bool CheckCollisionRayPolygon(RayCollider* colliderA, PolygonCollider* colliderB, float* distance = nullptr);
 	static bool CheckCollisionRaySphere(RayCollider* colliderA, SphereCollider* colliderB, float* distance = nullptr, Vector3* inter = nullptr);
 
-	// 種類別当たり判定
-	static void CheckBoxCollisions();
-	static void CheckIncludeCollisions();
-	static void CheckSphereCollisions();
-	static void CheckSpherePlaneCollisions();
-	static void CheckSpherePolygonCollisions();
-	static void CheckRayPlaneCollisions();
-	static void CheckRayPolygonCollisions();
-	static void CheckRaySphereCollisions();
 public:
 	CollisionManager() = delete;
 	// コライダー登録関数
@@ -47,7 +38,16 @@ public:
 	static void PopCollider(PlaneCollider* collider) { planeColliders.remove(collider); }
 	static void PopCollider(PolygonCollider* collider) { polygonColliders.remove(collider); }
 	static void PopCollider(RayCollider* collider) { rayColliders.remove(collider); }
-	// 全当たり判定
+	// 種類別当たり判定
+	static void CheckBoxCollisions();
+	static void CheckIncludeCollisions();
+	static void CheckSphereCollisions();
+	static void CheckSpherePlaneCollisions();
+	static void CheckSpherePolygonCollisions();
+	static void CheckRayPlaneCollisions();
+	static void CheckRayPolygonCollisions();
+	static void CheckRaySphereCollisions();
 	static void CheckRayCastCollision(RayCollider* collider);
+	// 全当たり判定
 	static void CheckAllCollisions();
 };
