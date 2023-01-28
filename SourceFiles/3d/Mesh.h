@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-#include "Material.h"
 #include <DirectXMath.h>
 #include <Windows.h>
 #include <d3d12.h>
@@ -16,12 +15,6 @@ class Mesh {
 private: // エイリアス
 	// Microsoft::WRL::を省略
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-	// DirectX::を省略
-	using XMFLOAT2 = DirectX::XMFLOAT2;
-	using XMFLOAT3 = DirectX::XMFLOAT3;
-	using XMFLOAT4 = DirectX::XMFLOAT4;
-	using XMVECTOR = DirectX::XMVECTOR;
-	using XMMATRIX = DirectX::XMMATRIX;
 
 public: // サブクラス
 	// 頂点データ構造体（テクスチャあり）
@@ -31,29 +24,7 @@ public: // サブクラス
 		XMFLOAT2 uv;     // uv座標
 	};
 
-public: // 静的メンバ関数
-	/// <summary>
-	/// 静的初期化
-	/// </summary>
-	/// <param name="device">デバイス</param>
-	static void StaticInitialize(ID3D12Device* device);
-
-private: // 静的メンバ変数
-	// デバイス
-	static ID3D12Device* device;
-
 public: // メンバ関数
-	/// <summary>
-	/// 名前を取得
-	/// </summary>
-	/// <returns>名前</returns>
-	const std::string& GetName() { return name; }
-
-	/// <summary>
-	/// 名前をセット
-	/// </summary>
-	/// <param name="name">名前</param>
-	void SetName(const std::string& name) { this->name = name; }
 
 	/// <summary>
 	/// 頂点データの追加
@@ -66,18 +37,6 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="index">インデックス</param>
 	void AddIndex(unsigned short index) { indices.emplace_back(index); }
-
-	/// <summary>
-	/// マテリアルの取得
-	/// </summary>
-	/// <returns>マテリアル</returns>
-	Material* GetMaterial() { return material; }
-
-	/// <summary>
-	/// マテリアルの割り当て
-	/// </summary>
-	/// <param name="material">マテリアル</param>
-	void SetMaterial(Material* material) { this->material = material; }
 
 	/// <summary>
 	/// バッファの生成
@@ -109,8 +68,6 @@ public: // メンバ関数
 	void CalculateSmoothedVertexNormals();
 
 private: // メンバ変数
-	// 名前
-	std::string name;
 	// 頂点バッファ
 	ComPtr<ID3D12Resource> vertBuff;
 	// インデックスバッファ
@@ -123,8 +80,6 @@ private: // メンバ変数
 	std::vector<VertexPosNormalUv> vertices;
 	// 頂点インデックス配列
 	std::vector<unsigned short> indices;
-	// マテリアル
-	Material* material = nullptr;
 	// 頂点バッファのマップ
 	VertexPosNormalUv* vertMap = nullptr;
 	// インデックスバッファのマップ

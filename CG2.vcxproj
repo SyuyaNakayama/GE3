@@ -191,6 +191,7 @@
     <ClCompile Include="SourceFiles\2d\ImGuiManager.cpp" />
     <ClCompile Include="SourceFiles\2d\Sprite.cpp" />
     <ClCompile Include="SourceFiles\2d\SpriteCommon.cpp" />
+    <ClCompile Include="SourceFiles\3d\Mesh.cpp" />
     <ClCompile Include="SourceFiles\3d\Model.cpp" />
     <ClCompile Include="SourceFiles\3d\ViewProjection.cpp" />
     <ClCompile Include="SourceFiles\3d\WorldTransform.cpp" />
@@ -221,6 +222,7 @@
     <ClInclude Include="SourceFiles\2d\ImGuiManager.h" />
     <ClInclude Include="SourceFiles\2d\Sprite.h" />
     <ClInclude Include="SourceFiles\2d\SpriteCommon.h" />
+    <ClInclude Include="SourceFiles\3d\Mesh.h" />
     <ClInclude Include="SourceFiles\3d\Model.h" />
     <ClInclude Include="SourceFiles\3d\ViewProjection.h" />
     <ClInclude Include="SourceFiles\3d\WorldTransform.h" />

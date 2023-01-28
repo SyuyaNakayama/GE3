@@ -5,18 +5,6 @@
 #pragma comment(lib, "d3dcompiler.lib")
 using namespace DirectX;
 
-/// <summary>
-/// 静的メンバ変数の実体
-/// </summary>
-ID3D12Device* Mesh::device = nullptr;
-
-void Mesh::StaticInitialize(ID3D12Device* device) {
-	Mesh::device = device;
-
-	// マテリアルの静的初期化
-	Material::StaticInitialize(device);
-}
-
 void Mesh::CreateBuffers() {
 	HRESULT result;
 

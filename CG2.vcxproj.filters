@@ -147,6 +147,9 @@
     <ClCompile Include="SourceFiles\objects\Objects.cpp">
       <Filter>ソース ファイル\objects</Filter>
     </ClCompile>
+    <ClCompile Include="SourceFiles\3d\Mesh.cpp">
+      <Filter>ソース ファイル\3d</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SourceFiles\base\DirectXCommon.h">
@@ -235,6 +238,9 @@
     </ClInclude>
     <ClInclude Include="SourceFiles\objects\Objects.h">
       <Filter>ソース ファイル\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\3d\Mesh.h">
+      <Filter>ソース ファイル\3d</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
