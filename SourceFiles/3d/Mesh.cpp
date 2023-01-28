@@ -1,58 +1,25 @@
 ﻿#include "Mesh.h"
-#include <cassert>
-#include <d3dcompiler.h>
-
-#pragma comment(lib, "d3dcompiler.lib")
-using namespace DirectX;
+#include "Functions.h"
 
 void Mesh::CreateBuffers() {
-	HRESULT result;
-
-	UINT sizeVB = static_cast<UINT>(sizeof(VertexPosNormalUv) * vertices.size());
-
-	// ヒーププロパティ
-	CD3DX12_HEAP_PROPERTIES heapPropsVertexBuffer = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
-	// リソース設定
-	CD3DX12_RESOURCE_DESC resourceDescVertexBuffer = CD3DX12_RESOURCE_DESC::Buffer(sizeVB);
-
+	UINT sizeVB = static_cast<UINT>(sizeof(VertexData) * vertices.size());
 	// 頂点バッファ生成
-	result = device->CreateCommittedResource(
-		&heapPropsVertexBuffer, D3D12_HEAP_FLAG_NONE, &resourceDescVertexBuffer,
-		D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&vertBuff));
-	assert(SUCCEEDED(result));
-
-	// 頂点バッファのマッピング
-	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
-	assert(SUCCEEDED(result));
-
-	// 頂点バッファへのデータ転送
-	std::copy(vertices.begin(), vertices.end(), vertMap);
-
+	BufferMapping(&vertBuff, &vertMap, sizeVB);
+	// 全頂点に対して
+	copy(vertices.begin(), vertices.end(), vertMap); // 座標をコピー
+	vertBuff->Unmap(0, nullptr);
 	// 頂点バッファビューの作成
 	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
 	vbView.SizeInBytes = sizeVB;
-	vbView.StrideInBytes = sizeof(vertices[0]);
+	vbView.StrideInBytes = sizeof(VertexData);
 
+	unsigned short* indexMap = nullptr;
 	UINT sizeIB = static_cast<UINT>(sizeof(unsigned short) * indices.size());
-
-	// ヒーププロパティ
-	CD3DX12_HEAP_PROPERTIES heapPropsIndexBuffer = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
-	// リソース設定
-	CD3DX12_RESOURCE_DESC resourceDescIndexBuffer = CD3DX12_RESOURCE_DESC::Buffer(sizeIB);
-
 	// インデックスバッファ生成
-	result = device->CreateCommittedResource(
-		&heapPropsIndexBuffer, D3D12_HEAP_FLAG_NONE, &resourceDescIndexBuffer,
-		D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&indexBuff));
-	assert(SUCCEEDED(result));
-
-	// インデックスバッファのマッピング
-	result = indexBuff->Map(0, nullptr, (void**)&indexMap);
-	assert(SUCCEEDED(result));
-
-	// インデックスバッファへのデータ転送
-	std::copy(indices.begin(), indices.end(), indexMap);
-
+	BufferMapping(&indexBuff, &indexMap, sizeIB);
+	// 全インデックスに対して
+	copy(indices.begin(), indices.end(), indexMap);	// インデックスをコピー
+	indexBuff->Unmap(0, nullptr);
 	// インデックスバッファビューの作成
 	ibView.BufferLocation = indexBuff->GetGPUVirtualAddress();
 	ibView.Format = DXGI_FORMAT_R16_UINT;

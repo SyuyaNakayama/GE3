@@ -14,15 +14,6 @@ private:
 	using string = std::string;
 	template <class T> using vector = std::vector<T>;
 
-	// 頂点データ構造体
-	struct VertexData
-	{
-		Vector3 pos; // xyz座標
-		Vector3 normal; // 法線ベクトル
-		Vector2 uv;  // uv座標
-		Color color; // 色
-	};
-
 	// マテリアル
 	struct Material
 	{
@@ -44,25 +35,12 @@ private:
 		float alpha;
 	};
 private:
-	VertexData* vertMap = nullptr;
 	// テクスチャ
 	std::unique_ptr<Sprite> sprite;
 	// モデル名
 	string name;
-	// 頂点バッファ
-	ComPtr<ID3D12Resource> vertBuff;
-	// インデックスバッファ
-	ComPtr<ID3D12Resource> indexBuff;
 	// 定数バッファ
 	ComPtr<ID3D12Resource> constBuffer;
-	// 頂点バッファビュー
-	D3D12_VERTEX_BUFFER_VIEW vbView{};
-	// インデックスバッファビュー
-	D3D12_INDEX_BUFFER_VIEW ibView{};
-	// 頂点データ配列
-	vector<VertexData> vertices;
-	// 頂点インデックス配列
-	vector<uint16_t> indices;
 	// マテリアル
 	Material material;
 	// パイプラインステートオブジェクト
