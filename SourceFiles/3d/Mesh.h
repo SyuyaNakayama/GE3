@@ -54,12 +54,6 @@ public: // メンバ関数
 	/// <returns>インデックスバッファ</returns>
 	const D3D12_INDEX_BUFFER_VIEW& GetIBView() { return ibView; }
 
-	/// <summary>
-	/// 描画
-	/// </summary>
-	/// <param name="cmdList">命令発行先コマンドリスト</param>
-	void Draw(ID3D12GraphicsCommandList* cmdList);
-
 	size_t GetVertexCount() { return vertices.size(); }
 
 	void AddSmoothData(UINT16 indexPosition, UINT16 indexVertex) { smoothData[indexPosition].emplace_back(indexVertex); }
@@ -81,8 +75,6 @@ private: // メンバ変数
 	std::vector<UINT16> indices;
 	// 頂点バッファのマップ
 	VertexData* vertMap = nullptr;
-	// インデックスバッファのマップ
-	UINT16* indexMap = nullptr;
 	// 頂点座標スムージング用データ
 	std::unordered_map<UINT16, std::vector<UINT16>> smoothData;
 };
