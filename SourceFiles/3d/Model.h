@@ -1,8 +1,6 @@
 #pragma once
-#include <Windows.h>
-#include <vector>
-#include "Sprite.h"
 #include "WorldTransform.h"
+#include "Mesh.h"
 
 class Model
 {
@@ -39,6 +37,8 @@ private:
 	std::unique_ptr<Sprite> sprite;
 	// モデル名
 	string name;
+	// メッシュ
+	Mesh mesh;
 	// 定数バッファ
 	ComPtr<ID3D12Resource> constBuffer;
 	// マテリアル

@@ -47,3 +47,27 @@ void Mesh::CalculateSmoothedVertexNormals()
 		}
 	}
 }
+
+void Mesh::Update(Sprite* sprite, Vector2 spriteSizeRate)
+{
+	for (size_t i = 0; i < vertices.size(); i++)
+	{
+		Vector2 uv = vertices[i].uv;
+		uv.x *= spriteSizeRate.x;
+		uv.y *= spriteSizeRate.y;
+		uv += sprite->GetVerticesUv(Sprite::VertexNumber::LT);
+		vertMap[i].uv = uv;
+		vertMap[i].color = sprite->GetColor();
+	}
+}
+
+void Mesh::Draw()
+{
+	ID3D12GraphicsCommandList* cmdList = DirectXCommon::GetInstance()->GetCommandList();
+	// 頂点バッファの設定
+	cmdList->IASetVertexBuffers(0, 1, &vbView);
+	// インデックスバッファの設定
+	cmdList->IASetIndexBuffer(&ibView);
+	// 描画コマンド
+	cmdList->DrawIndexedInstanced((UINT)indices.size(), 1, 0, 0, 0);
+}

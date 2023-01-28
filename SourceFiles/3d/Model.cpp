@@ -49,9 +49,8 @@ std::unique_ptr<Model> Model::Create(const string& modelName)
 		if (model->name == modelName)
 		{
 			newModel->name = model->name;
-			newModel->vertices = model->vertices;
+			newModel->mesh = model->mesh;
 			newModel->material = model->material;
-			newModel->indices = model->indices;
 			unique_ptr<Sprite> newSprite = make_unique<Sprite>();
 			*newSprite = *model->sprite;
 			newModel->sprite = move(newSprite);
@@ -85,16 +84,7 @@ void Model::TextureUpdate(Sprite* sprite)
 		sprite->GetTextureSize().x / sprite->GetSize().x,
 		sprite->GetTextureSize().y / sprite->GetSize().y
 	};
-
-	for (size_t i = 0; i < vertices.size(); i++)
-	{
-		Vector2 uv = vertices[i].uv;
-		uv.x *= spriteSizeRate.x;
-		uv.y *= spriteSizeRate.y;
-		uv += sprite->GetVerticesUv(Sprite::VertexNumber::LT);
-		vertMap[i].uv = uv;
-		vertMap[i].color = sprite->GetColor();
-	}
+	mesh.Update(sprite, spriteSizeRate);
 }
 
 void Model::LoadFromOBJInternal(const std::string& modelName)
@@ -150,7 +140,7 @@ void Model::LoadFromOBJInternal(const std::string& modelName)
 		if (key == "f")
 		{
 			string index_string;
-			vector<VertexData> vert;
+			std::vector<Mesh::VertexData> tempVertices;
 			while (getline(line_stream, index_string, ' '))
 			{
 				istringstream index_stream(index_string);
@@ -161,21 +151,21 @@ void Model::LoadFromOBJInternal(const std::string& modelName)
 				index_stream.seekg(1, ios_base::cur);
 				index_stream >> indexNormal;
 
-				VertexData vertex{};
+				Mesh::VertexData vertex;
 				vertex.pos = positions[(size_t)indexPosition - 1];
 				vertex.normal = normals[(size_t)indexNormal - 1];
 				vertex.uv = texcoords[(size_t)indexTexcoord - 1];
-				vertices.emplace_back(vertex);
-				vert.emplace_back(vertex);
-				indices.emplace_back(indices.size());
+				tempVertices.emplace_back(vertex);
+				mesh.AddVertex(vertex);
+				mesh.AddIndex(mesh.GetIndexCount());
 
-				if (vert.size() != 4) { continue; }
-				vertices.pop_back();
+				if (tempVertices.size() != 4) { continue; }
+				mesh.PopVertex();
 				for (size_t j = 0; j < 4; j++)
 				{
 					if (j == 1) { continue; }
-					vertices.push_back(vert[j]);
-					indices.emplace_back(indices.size());
+					mesh.AddVertex(tempVertices[j]);
+					mesh.AddIndex(mesh.GetIndexCount());
 				}
 			}
 		}
@@ -214,6 +204,8 @@ void Model::LoadMaterial(const string& DIRECTORY_PATH, const string& FILENAME)
 
 void Model::CreateBuffers()
 {
+	mesh.CreateBuffers();
+
 	ConstBufferData* constMap = nullptr;
 	// 定数バッファ生成
 	BufferMapping(&constBuffer, &constMap, (sizeof(ConstBufferData) + 0xff) & ~0xff);
@@ -249,10 +241,6 @@ void Model::Draw(const WorldTransform& worldTransform, Sprite* sprite)
 
 	cmdList->SetGraphicsRootConstantBufferView(0, worldTransform.constBuffer->GetGPUVirtualAddress());
 
-	// 頂点バッファの設定
-	cmdList->IASetVertexBuffers(0, 1, &vbView);
-	// インデックスバッファの設定
-	cmdList->IASetIndexBuffer(&ibView);
 	cmdList->SetGraphicsRootConstantBufferView(1, constBuffer->GetGPUVirtualAddress());
 
 	// デスクリプタヒープの配列
@@ -265,6 +253,5 @@ void Model::Draw(const WorldTransform& worldTransform, Sprite* sprite)
 		// シェーダリソースビューをセット
 		cmdList->SetGraphicsRootDescriptorTable(2, spCommon->GetGpuHandle(sprite->GetTextureIndex()));
 	}
-	// 描画コマンド
-	cmdList->DrawIndexedInstanced((UINT)indices.size(), 1, 0, 0, 0);
+	mesh.Draw();
 }
