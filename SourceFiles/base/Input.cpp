@@ -1,45 +1,54 @@
 #include "Input.h"
 #include "WindowsAPI.h"
-#include <cassert>
+#include "Functions.h"
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
 
 Input* Input::GetInstance()
 {
-	static Input* input = new Input;
-	return input;
+	static Input input;
+	return &input;
 }
 
 void Input::Initialize()
 {
-	HRESULT result;
+	Result result;
 	WindowsAPI* wAPI = WindowsAPI::GetInstance();
 
 	result = DirectInput8Create(wAPI->GetHInstance(), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&directInput, nullptr);
-	assert(SUCCEEDED(result));
-
+	// キーボード
 	result = directInput->CreateDevice(GUID_SysKeyboard, &keyboard, NULL);
-	assert(SUCCEEDED(result));
-
 	result = keyboard->SetDataFormat(&c_dfDIKeyboard);
-	assert(SUCCEEDED(result));
-	
 	result = keyboard->SetCooperativeLevel(wAPI->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
-	assert(SUCCEEDED(result));
-
-	key.resize(256);
-	oldkey.resize(256);
+	// マウス
+	result = directInput->CreateDevice(GUID_SysMouse, &mouse, NULL);
+	result = mouse->SetDataFormat(&c_dfDIMouse2);
+	result = mouse->SetCooperativeLevel(wAPI->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 }
 
 void Input::Update()
 {
-	oldkey = key;
 	keyboard->Acquire();
-	keyboard->GetDeviceState((DWORD)key.size(), (LPVOID)key.c_str());
+	oldkey = key;
+	DIK_0;
+	keyboard->GetDeviceState((DWORD)key.size(), (LPVOID)key.data());
+
+	mouse->Acquire();
+	mouseStatePre = mouseState;
+	mouse->GetDeviceState(sizeof(mouseState), &mouseState);
 }
 
-bool Input::IsInput(const int KEY) { return key[KEY]; }
+bool Input::IsTriggerMouse(Mouse KEY)
+{
+	return !mouseStatePre.rgbButtons[(int)KEY] && mouseState.rgbButtons[(int)KEY]; 
+}
 
-bool Input::IsTrigger(const int KEY) { return (!oldkey[KEY] && key[KEY]); }
+Input::MouseMove Input::GetMouseMove() {
+	MouseMove tmp;
+	tmp.lX = mouseState.lX;
+	tmp.lY = mouseState.lY;
+	tmp.lZ = mouseState.lZ;
+	return tmp;
+}
 
 float Input::Move(const int KEY1, const int KEY2, const float spd) { return (IsInput(KEY1) - IsInput(KEY2)) * spd; }

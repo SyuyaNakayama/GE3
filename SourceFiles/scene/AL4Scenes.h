@@ -2,11 +2,13 @@
 #include "BaseScene.h"
 #include "Model.h"
 #include "Objects.h"
+#include "DebugCamera.h"
 
 class AL4Scenes : public BaseScene
 {
 protected:
 	ViewProjection viewProjection;
+	DebugCamera debugCamera;
 	std::vector<std::unique_ptr<Objects>> objects;
 
 public:

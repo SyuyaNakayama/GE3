@@ -132,9 +132,6 @@
     <ClCompile Include="SourceFiles\base\Audio.cpp">
       <Filter>ソース ファイル\functions</Filter>
     </ClCompile>
-    <ClCompile Include="SourceFiles\base\Input.cpp">
-      <Filter>ソース ファイル\functions</Filter>
-    </ClCompile>
     <ClCompile Include="SourceFiles\functions\ParticleManager.cpp">
       <Filter>ソース ファイル\3d</Filter>
     </ClCompile>
@@ -149,6 +146,12 @@
     </ClCompile>
     <ClCompile Include="SourceFiles\3d\Mesh.cpp">
       <Filter>ソース ファイル\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="SourceFiles\3d\DebugCamera.cpp">
+      <Filter>ソース ファイル\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="SourceFiles\base\Input.cpp">
+      <Filter>ソース ファイル\base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -224,9 +227,6 @@
     <ClInclude Include="SourceFiles\base\Audio.h">
       <Filter>ソース ファイル\functions</Filter>
     </ClInclude>
-    <ClInclude Include="SourceFiles\base\Input.h">
-      <Filter>ソース ファイル\functions</Filter>
-    </ClInclude>
     <ClInclude Include="SourceFiles\functions\ParticleManager.h">
       <Filter>ソース ファイル\3d</Filter>
     </ClInclude>
@@ -241,6 +241,12 @@
     </ClInclude>
     <ClInclude Include="SourceFiles\3d\Mesh.h">
       <Filter>ソース ファイル\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\3d\DebugCamera.h">
+      <Filter>ソース ファイル\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\base\Input.h">
+      <Filter>ソース ファイル\base</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

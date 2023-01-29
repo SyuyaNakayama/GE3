@@ -3,10 +3,12 @@
 #include "SceneManager.h"
 #include "Quaternion.h"
 #include <imgui.h>
+#include "ImGuiManager.h"
 
 void AL4Scenes::Initialize()
 {
-	WorldTransform::SetViewProjection(&viewProjection);
+	debugCamera.Initialize();
+	WorldTransform::SetViewProjection(&debugCamera.GetViewProjection());
 	for (const std::unique_ptr<Objects>& object : objects) { object->Initialize(); }
 }
 
@@ -17,14 +19,11 @@ void AL4Scenes::Update()
 	if (input->IsTrigger(DIK_3)) { sceneManager_->SetNextScene(Scene::RayPlane); }
 	if (input->IsTrigger(DIK_4)) { sceneManager_->SetNextScene(Scene::RayCast); }
 
-	ImGui::Text("1 Key : SphereCollision");
-	ImGui::Text("2 Key : RayCollision");
-	ImGui::Text("3 Key : Ray&PlaneCollision");
-	ImGui::Text("4 Key : RayCastCollision");
-
 	for (const std::unique_ptr<Objects>& object : objects) { object->Update(); }
 
 	CollisionManager::CheckAllCollisions();
+
+	debugCamera.Update();
 
 	viewProjection.Update();
 }

@@ -12,7 +12,7 @@ public:
 #endif // NDEBUG
 
 	float Length() const; // ノルム(長さ)
-	void Normalize(); // 正規化
+	Vector2 Normalize(); // 正規化
 
 	// 単項演算子オーバーロード
 	Vector2 operator-() const { return Vector2(-x, -y); }
@@ -79,6 +79,7 @@ float Cross(const Vector2& v1, const Vector2& v2);
 Vector3 Cross(const Vector3& v1, const Vector3& v2);
 // メンバ関数のグローバル関数版
 float Length(const Vector3& v);
+Vector2 Normalize(const Vector2& v);
 Vector3 Normalize(const Vector3& v);
 
 // 線形補間

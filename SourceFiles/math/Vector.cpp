@@ -4,10 +4,11 @@
 
 float Vector2::Length() const { return sqrtf(x * x + y * y); }
 
-void Vector2::Normalize()
+Vector2 Vector2::Normalize()
 {
 	float len = Length();
 	if (len != 0) { *this /= len; }
+	return *this;
 }
 
 Vector2& Vector2::operator+=(const Vector2& v)
@@ -69,7 +70,7 @@ float Vector3::Length() const { return sqrtf(x * x + y * y + z * z); }
 Vector3 Vector3::Normalize()
 {
 	float len = Length();
-	if (len != 0) { return *this /= len; }
+	if (len != 0) { *this /= len; }
 	return *this;
 }
 
@@ -196,6 +197,7 @@ Vector3 Cross(const Vector3& v1, const Vector3& v2)
 	return temp;
 }
 float Length(const Vector3& v) { return Vector3(v).Length(); }
+Vector2 Normalize(const Vector2& v) { return Vector2(v).Normalize(); }
 Vector3 Normalize(const Vector3& v) { return Vector3(v).Normalize(); }
 const Vector3 lerp(const Vector3& start, const Vector3& end, const float t) { return start * (1.0f - t) + end * t; }
 Vector2 VectorChange(Vector3 vec) { return Vector2(vec.x, vec.y); }
