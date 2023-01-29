@@ -18,23 +18,22 @@ class Input final
 {
 private:
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-	struct MouseMove {
+
+	Input() = default;
+	ComPtr<IDirectInput8> directInput;
+	ComPtr<IDirectInputDevice8> keyboard;
+	std::array<BYTE, 256> key, oldkey;
+	ComPtr<IDirectInputDevice8> mouse;
+	DIMOUSESTATE2 mouseState{}, mouseStatePre{};
+
+public:
+	struct MouseMove
+	{
 		LONG lX;
 		LONG lY;
 		LONG lZ;
 	};
 
-
-
-	ComPtr<IDirectInput8> directInput;
-	ComPtr<IDirectInputDevice8> keyboard;
-	std::array<BYTE, 256> key, oldkey;
-	ComPtr<IDirectInputDevice8> mouse;
-	DIMOUSESTATE2 mouseState{};
-	DIMOUSESTATE2 mouseStatePre{};
-
-	Input() = default;
-public:
 	static Input* GetInstance();
 	Input(const Input& obj) = delete;
 	void Initialize();

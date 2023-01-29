@@ -15,4 +15,5 @@ public:
 	void Initialize(Vector3 targetPos = { 0,0,0 }, float distance_ = 50);
 	void Update();
 	ViewProjection& GetViewProjection() { return viewProjection; }
+	Matrix4 matRot;
 };
