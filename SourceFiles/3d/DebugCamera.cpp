@@ -25,53 +25,48 @@ void DebugCamera::Update()
 	Input::MouseMove mouseMove = input->GetMouseMove();
 
 	// マウスの左ボタンが押されていたらカメラを回転させる
-	if (input->IsInputMouse(Mouse::Left)) {
-		Vector2 d =
-		{ 
-			mouseMove.lY * scale.x,
-			mouseMove.lX * scale.y
-		};
-
-		angle = -d * PI;
+	if (input->IsInputMouse(Mouse::Left))
+	{
+		angle = -Vector2(mouseMove.lY * scale.x, mouseMove.lX * scale.y) * PI;
 		dirty = true;
 	}
 
 	// マウスの中ボタンが押されていたらカメラを並行移動させる
-	if (input->IsInputMouse(Mouse::Middle)) {
-		float dx = mouseMove.lX / 100.0f;
-		float dy = mouseMove.lY / 100.0f;
-
-		Vector3 move = { -dx, dy, };
-		move = move * matRot;
+	if (input->IsInputMouse(Mouse::Middle))
+	{
+		Vector3 move = Vector3(-mouseMove.lX, mouseMove.lY) / 100.0f;
+		move = Quaternion::RotateVector(move,rotQ);
 
 		viewProjection.CameraMove(move);
 		dirty = true;
 	}
 
 	// ホイール入力で距離を変更
-	if (mouseMove.lZ != 0) {
+	if (mouseMove.lZ != 0) 
+	{
 		distance -= mouseMove.lZ / 100.0f;
 		distance = max(distance, 1.0f);
 		dirty = true;
 	}
 
-	if (dirty) {
+	if (dirty) 
+	{
 		// 追加回転分の回転行列を生成
-		Matrix4 matRotNew;
-		matRotNew *= Matrix4::RotateX(-angle.x);
-		matRotNew *= Matrix4::RotateY(-angle.y);
+		Quaternion rotQNew;
+		rotQNew = Quaternion::MakeAxisAngle(Vector3::MakeYAxis(), -angle.y);
+		rotQNew *= Quaternion::MakeAxisAngle(Vector3::MakeXAxis(), -angle.x);
 		// 累積の回転行列を合成
 		// ※回転行列を累積していくと、誤差でスケーリングがかかる危険がある為
 		// クォータニオンを使用する方が望ましい
-		matRot = matRotNew * matRot;
+		rotQ *= rotQNew;
 
 		// 注視点から視点へのベクトルと、上方向ベクトル
 		Vector3 vTargetEye = { 0.0f, 0.0f, -distance };
 		Vector3 vUp = { 0.0f, 1.0f };
 
 		// ベクトルを回転
-		vTargetEye = vTargetEye * matRot;
-		vUp = vUp * matRot;
+		vTargetEye = Quaternion::RotateVector(vTargetEye,rotQ);
+		vUp = Quaternion::RotateVector(vUp, rotQ);
 
 		// 注視点からずらした位置に視点座標を決定
 		viewProjection.eye = viewProjection.target + vTargetEye;
