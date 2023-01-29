@@ -7,8 +7,6 @@ class DebugCamera
 private:
 	ViewProjection viewProjection;
 	float distance = 50;
-	Vector3 initEyePos;
-	float angle = 0;
 	Quaternion rotQ = 1.0f;
 
 public:

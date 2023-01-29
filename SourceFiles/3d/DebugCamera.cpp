@@ -1,8 +1,5 @@
 #include "DebugCamera.h"
 #include "Input.h"
-#include <cmath>
-#include "ImGuiManager.h"
-#include <imgui.h>
 #include "WindowsAPI.h"
 
 void DebugCamera::Initialize(Vector3 targetPos, float distance_)
@@ -10,7 +7,6 @@ void DebugCamera::Initialize(Vector3 targetPos, float distance_)
 	distance = distance_;
 	viewProjection.target = viewProjection.eye = targetPos;
 	viewProjection.eye.z -= distance;
-	initEyePos = viewProjection.eye;
 	viewProjection.Initialize();
 }
 
@@ -51,13 +47,11 @@ void DebugCamera::Update()
 
 	if (dirty) 
 	{
-		// 追加回転分の回転行列を生成
+		// 追加回転分のQuaternionを生成
 		Quaternion rotQNew;
 		rotQNew = Quaternion::MakeAxisAngle(Vector3::MakeYAxis(), -angle.y);
 		rotQNew *= Quaternion::MakeAxisAngle(Vector3::MakeXAxis(), -angle.x);
-		// 累積の回転行列を合成
-		// ※回転行列を累積していくと、誤差でスケーリングがかかる危険がある為
-		// クォータニオンを使用する方が望ましい
+		// 累積のQuaternionを合成
 		rotQ *= rotQNew;
 
 		// 注視点から視点へのベクトルと、上方向ベクトル
