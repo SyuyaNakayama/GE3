@@ -66,6 +66,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)SourceFiles\2d;$(ProjectDir)SourceFiles\3d;$(ProjectDir)SourceFiles\base;$(ProjectDir)SourceFiles\collider;$(ProjectDir)SourceFiles\functions;$(ProjectDir)SourceFiles\math;$(ProjectDir)SourceFiles\objects;$(ProjectDir)SourceFiles\objects\player;$(ProjectDir)SourceFiles\objects\enemy;$(ProjectDir)SourceFiles\scene;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -89,6 +90,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)SourceFiles\2d;$(ProjectDir)SourceFiles\3d;$(ProjectDir)SourceFiles\base;$(ProjectDir)SourceFiles\collider;$(ProjectDir)SourceFiles\functions;$(ProjectDir)SourceFiles\math;$(ProjectDir)SourceFiles\objects;$(ProjectDir)SourceFiles\objects\player;$(ProjectDir)SourceFiles\objects\enemy;$(ProjectDir)SourceFiles\scene;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -22,7 +22,7 @@ public:
 	static void PrintVector(std::string str, const Vector2& vec);
 	static void PrintVector(std::string str, const Vector3& vec);
 	static void PrintQuaternion(std::string str, const Quaternion& q);
-	static void SliderVector(std::string str, Vector2& vec, int minVal, int maxVal);
-	static void SliderVector(std::string str, Vector3& vec, int minVal, int maxVal);
+	static void SliderVector(std::string str, Vector2& vec, float minVal, float maxVal);
+	static void SliderVector(std::string str, Vector3& vec, float minVal, float maxVal);
 	static void ColorEdit(Color& color);
 };

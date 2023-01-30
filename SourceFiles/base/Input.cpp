@@ -43,8 +43,9 @@ bool Input::IsTriggerMouse(Mouse KEY)
 	return !mouseStatePre.rgbButtons[(int)KEY] && mouseState.rgbButtons[(int)KEY]; 
 }
 
-Input::MouseMove Input::GetMouseMove() {
-	MouseMove tmp;
+Input::MouseMove Input::GetMouseMove() 
+{
+	MouseMove tmp{};
 	tmp.lX = mouseState.lX;
 	tmp.lY = mouseState.lY;
 	tmp.lZ = mouseState.lZ;

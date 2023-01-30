@@ -25,7 +25,12 @@ void AL4Scenes::Update()
 
 	debugCamera.Update();
 
+	WorldTransform w; w.Initialize();
 	viewProjection.Update();
+	for (size_t i = 0; i < 1000; i++)
+	{
+		w.Update();
+	}
 }
 
 void AL4Scenes::Draw()

@@ -82,14 +82,14 @@ void ImGuiManager::PrintQuaternion(std::string str, const Quaternion& q)
 	Text(str.c_str(), q.w, q.x, q.y, q.z);
 }
 
-void ImGuiManager::SliderVector(std::string str, Vector2& vec, int minVal, int maxVal)
+void ImGuiManager::SliderVector(std::string str, Vector2& vec, float minVal, float maxVal)
 {
 	float num[2] = { vec.x,vec.y };
 	SliderFloat2(str.c_str(), num, minVal, maxVal);
 	vec = { num[0],num[1] };
 }
 
-void ImGuiManager::SliderVector(std::string str, Vector3& vec, int minVal, int maxVal)
+void ImGuiManager::SliderVector(std::string str, Vector3& vec, float minVal, float maxVal)
 {
 	float num[3] = { vec.x,vec.y,vec.z };
 	SliderFloat3(str.c_str(), num, minVal, maxVal);

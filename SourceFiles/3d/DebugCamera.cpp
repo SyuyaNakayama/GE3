@@ -31,26 +31,27 @@ void DebugCamera::Update()
 	if (input->IsInputMouse(Mouse::Middle))
 	{
 		Vector3 move = Vector3(-mouseMove.lX, mouseMove.lY) / 100.0f;
-		move = Quaternion::RotateVector(move,rotQ);
+		move = Quaternion::RotateVector(move, rotQ);
 
 		viewProjection.CameraMove(move);
 		dirty = true;
 	}
 
 	// ホイール入力で距離を変更
-	if (mouseMove.lZ != 0) 
+	if (mouseMove.lZ != 0)
 	{
 		distance -= mouseMove.lZ / 100.0f;
 		distance = max(distance, 1.0f);
 		dirty = true;
 	}
 
-	if (dirty) 
+	if (dirty)
 	{
 		// 追加回転分のQuaternionを生成
 		Quaternion rotQNew;
 		rotQNew = Quaternion::MakeAxisAngle(Vector3::MakeYAxis(), -angle.y);
 		rotQNew *= Quaternion::MakeAxisAngle(Vector3::MakeXAxis(), -angle.x);
+
 		// 累積のQuaternionを合成
 		rotQ *= rotQNew;
 
@@ -59,7 +60,7 @@ void DebugCamera::Update()
 		Vector3 vUp = { 0.0f, 1.0f };
 
 		// ベクトルを回転
-		vTargetEye = Quaternion::RotateVector(vTargetEye,rotQ);
+		vTargetEye = Quaternion::RotateVector(vTargetEye, rotQ);
 		vUp = Quaternion::RotateVector(vUp, rotQ);
 
 		// 注視点からずらした位置に視点座標を決定
