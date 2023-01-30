@@ -1,8 +1,6 @@
 ﻿#pragma once
 #include "Sprite.h"
-#include <d3d12.h>
 #include <vector>
-#include <wrl.h>
 #include <unordered_map>
 
 // 形状データ

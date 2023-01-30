@@ -10,6 +10,10 @@ void AL4Scenes::Initialize()
 	debugCamera.Initialize();
 	WorldTransform::SetViewProjection(&debugCamera.GetViewProjection());
 	for (const std::unique_ptr<Objects>& object : objects) { object->Initialize(); }
+	Light::StaticInitialize();
+	light = Light::Create();
+	light->SetLightColor({ 1,1,1 });
+	WorldTransform::SetLight(light);
 }
 
 void AL4Scenes::Update()
@@ -27,10 +31,10 @@ void AL4Scenes::Update()
 
 	WorldTransform w; w.Initialize();
 	viewProjection.Update();
-	for (size_t i = 0; i < 1000; i++)
-	{
-		w.Update();
-	}
+	static Vector3 lightDir = { 0,1,5 };
+	ImGuiManager::SliderVector("lightDir", lightDir, -10.0f, 10.0f);
+	light->SetLightDir(lightDir);
+	light->Update();
 }
 
 void AL4Scenes::Draw()
@@ -43,14 +47,14 @@ void AL4Scenes::Draw()
 void SphereScene::Initialize()
 {
 	std::unique_ptr<Objects> obj = std::make_unique<Sphere>();
-	obj->SetPosition({ 0,2 });
-	obj->SetMoveSpeed({ 0,-0.08f });
+	//obj->SetPosition({ 0,2 });
+	//obj->SetMoveSpeed({ 0,-0.08f });
 	objects.push_back(move(obj));
-	obj = std::make_unique<Plane>();
-	objects.push_back(move(obj));
-	obj = std::make_unique<Triangle>();
-	obj->SetPosition({ 0,3 });
-	objects.push_back(move(obj));
+	//obj = std::make_unique<Plane>();
+	//objects.push_back(move(obj));
+	//obj = std::make_unique<Triangle>();
+	//obj->SetPosition({ 0,3 });
+	//objects.push_back(move(obj));
 	AL4Scenes::Initialize();
 	viewProjection.eye = { 0,5.0f,-10.0f, };
 	viewProjection.target.y = 0.0f;

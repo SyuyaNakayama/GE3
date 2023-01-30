@@ -35,16 +35,10 @@ void Mesh::CalculateSmoothedVertexNormals()
 		std::vector<UINT16>& v = itr->second;
 		// 全頂点の法線を平均する
 		Vector3 normal{};
-		for (UINT16 index : v)
-		{
-			normal += vertices[index].normal;
-		}
+		for (UINT16 index : v) { normal += vertices[index].normal; }
 		normal = Normalize(normal / (float)v.size());
 		// 共通法線を使用する全ての頂点データに書き込む
-		for (UINT16 index : v)
-		{
-			vertices[index].normal = normal;
-		}
+		for (UINT16 index : v) { vertices[index].normal = normal; }
 	}
 }
 

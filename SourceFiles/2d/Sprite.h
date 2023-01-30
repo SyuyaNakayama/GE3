@@ -3,9 +3,7 @@
 #include <wrl.h>
 #include <d3d12.h>
 #include "Matrix4.h"
-#include "Vector.h"
 #include <string>
-#include <array>
 #include <memory>
 
 struct Color

@@ -12,7 +12,7 @@ void Objects::ChangeColor(Color color)
 
 void Sphere::Initialize()
 {
-	model = Model::Create("sphere");
+	model = Model::Create("sphere", true);
 	worldTransform.Initialize();
 }
 
@@ -21,6 +21,7 @@ void Sphere::Update()
 	ChangeColor({ 1,1,1,1 });
 	if (Length(Vector3(0, 2.0f) - worldTransform.translation) >= 3.0f) { moveSpd = -moveSpd; }
 	worldTransform.translation += moveSpd;
+	worldTransform.rotation.y += 0.05f;
 	worldTransform.Update();
 }
 

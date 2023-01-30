@@ -48,7 +48,7 @@ private:
 	// ルートシグネチャ
 	static ComPtr<ID3D12RootSignature> rootsignature;
 
-	void LoadFromOBJInternal(const string& modelName);
+	void LoadFromOBJInternal(const string& modelName, bool smoothing);
 
 	// マテリアル読み込み
 	void LoadMaterial(const string& DIRECTORY_PATH, const string& FILENAME);
@@ -64,11 +64,11 @@ public:
 	// 描画後処理
 	static void PostDraw() {}
 	// モデル作成
-	static std::unique_ptr<Model> Create(const string& modelName);
+	static std::unique_ptr<Model> Create(const string& modelName, bool smoothing = false);
 	Sprite* GetSprite() { return sprite.get(); }
-	void SetSprite(Sprite* sprite_);
-	void TextureUpdate();
+	void SetSprite(Sprite* sprite_) { sprite.reset(sprite_); }
+	void TextureUpdate() { TextureUpdate(sprite.get()); }
 	void TextureUpdate(Sprite* sprite);
-	void Draw(const WorldTransform& worldTransform);
+	void Draw(const WorldTransform& worldTransform){ Draw(worldTransform, sprite.get()); }
 	void Draw(const WorldTransform& worldTransform, Sprite* sprite); // テクスチャの変更
 };

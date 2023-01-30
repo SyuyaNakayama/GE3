@@ -1,7 +1,6 @@
 #pragma once
-#include <d3dx12.h>
-#include <wrl.h>
 #include "ViewProjection.h"
+#include "Light.h"
 
 class WorldTransform
 {
@@ -9,11 +8,15 @@ private:
 	// 定数バッファ用データ構造体
 	struct ConstBufferData
 	{
-		Matrix4 mat;	// 3D変換行列
+		Matrix4 viewproj; // ビュープロジェクション行列
+		Matrix4 world; // ワールド行列
+		Vector3 cameraPos; // カメラ座標(ワールド座標)
 	};
 
 	// ビュープロジェクションのポインタ
 	static ViewProjection* viewProjection_;
+	// ライト
+	static std::unique_ptr<Light> light;
 public:
 	Matrix4 matWorld;
 	ConstBufferData* constMap = nullptr;
@@ -25,5 +28,7 @@ public:
 	void Update();
 	Vector3 GetWorldPosition() { return { matWorld.m[3][0],matWorld.m[3][1],matWorld.m[3][2] }; }
 	static void SetViewProjection(ViewProjection* viewProjection) { viewProjection_ = viewProjection; }
+	static void SetLight(Light* light) { WorldTransform::light.reset(light); }
 	static ViewProjection* GetViewProjection() { return viewProjection_; }
+	static Light* GetLight() { return light.get(); }
 };

@@ -37,10 +37,11 @@ void Model::InitializeGraphicsPipeline()
 	pipelineManager.AddRootParameter(PipelineManager::RootParamType::CBV);
 	pipelineManager.AddRootParameter(PipelineManager::RootParamType::CBV);
 	pipelineManager.AddRootParameter(PipelineManager::RootParamType::DescriptorTable);
+	pipelineManager.AddRootParameter(PipelineManager::RootParamType::CBV);
 	pipelineManager.CreatePipeline(pipelinestate, rootsignature);
 }
 
-std::unique_ptr<Model> Model::Create(const string& modelName)
+std::unique_ptr<Model> Model::Create(const string& modelName, bool smoothing)
 {
 	unique_ptr<Model> newModel = make_unique<Model>();
 
@@ -59,21 +60,10 @@ std::unique_ptr<Model> Model::Create(const string& modelName)
 		}
 	}
 
-	newModel->LoadFromOBJInternal(modelName);
+	newModel->LoadFromOBJInternal(modelName, smoothing);
 	newModel->CreateBuffers();
 	models.push_back(newModel.get());
 	return newModel;
-}
-
-void Model::SetSprite(Sprite* sprite_)
-{
-	sprite.reset(sprite_);
-}
-
-void Model::TextureUpdate()
-{
-	assert(sprite);
-	TextureUpdate(sprite.get());
 }
 
 void Model::TextureUpdate(Sprite* sprite)
@@ -87,19 +77,21 @@ void Model::TextureUpdate(Sprite* sprite)
 	mesh.Update(sprite, spriteSizeRate);
 }
 
-void Model::LoadFromOBJInternal(const std::string& modelName)
+void Model::LoadFromOBJInternal(const std::string& modelName, bool smoothing)
 {
+	const string FILENAME = modelName + ".obj";
+	const string DIRECTORY_PATH = "Resources/models/" + modelName + "/";
+
 	ifstream file;
 	name = modelName;
-	const string FILENAME = modelName + ".obj",
-		DIRECTORY_PATH = "Resources/models/" + modelName + "/";
 	file.open(DIRECTORY_PATH + FILENAME);
 	assert(!file.fail());
 
 	vector<Vector3> positions, normals;
 	vector<Vector2> texcoords;
-
+	int indexCountTex = 0;
 	string line;
+
 	while (getline(file, line))
 	{
 		istringstream line_stream(line);
@@ -140,7 +132,8 @@ void Model::LoadFromOBJInternal(const std::string& modelName)
 		if (key == "f")
 		{
 			string index_string;
-			std::vector<Mesh::VertexData> tempVertices;
+			int faceIndexCount = 0;
+
 			while (getline(line_stream, index_string, ' '))
 			{
 				istringstream index_stream(index_string);
@@ -151,26 +144,33 @@ void Model::LoadFromOBJInternal(const std::string& modelName)
 				index_stream.seekg(1, ios_base::cur);
 				index_stream >> indexNormal;
 
+				// 頂点データの追加
 				Mesh::VertexData vertex;
 				vertex.pos = positions[(size_t)indexPosition - 1];
 				vertex.normal = normals[(size_t)indexNormal - 1];
 				vertex.uv = texcoords[(size_t)indexTexcoord - 1];
-				tempVertices.emplace_back(vertex);
 				mesh.AddVertex(vertex);
-				mesh.AddIndex(mesh.GetIndexCount());
+				if (smoothing) { mesh.AddSmoothData(indexPosition, (UINT16)mesh.GetVertexCount() - 1); }
 
-				if (tempVertices.size() != 4) { continue; }
-				mesh.PopVertex();
-				for (size_t j = 0; j < 4; j++)
+				// インデックスデータの追加
+				if (faceIndexCount >= 3)
 				{
-					if (j == 1) { continue; }
-					mesh.AddVertex(tempVertices[j]);
-					mesh.AddIndex(mesh.GetIndexCount());
+					// 四角形ポリゴンの4点目なので、
+					// 四角形の0,1,2,3の内 2,3,0で三角形を構築する
+					mesh.AddIndex(indexCountTex - 1);
+					mesh.AddIndex(indexCountTex);
+					mesh.AddIndex(indexCountTex - 3);
 				}
+				else { mesh.AddIndex(indexCountTex); }
+
+				indexCountTex++;
+				faceIndexCount++;
 			}
 		}
 	}
 	file.close();
+
+	if (smoothing) { mesh.CalculateSmoothedVertexNormals(); }
 }
 
 void Model::LoadMaterial(const string& DIRECTORY_PATH, const string& FILENAME)
@@ -230,28 +230,21 @@ void Model::PreDraw()
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-void Model::Draw(const WorldTransform& worldTransform)
-{
-	Draw(worldTransform, sprite.get());
-}
-
 void Model::Draw(const WorldTransform& worldTransform, Sprite* sprite)
 {
 	ID3D12GraphicsCommandList* cmdList = DirectXCommon::GetInstance()->GetCommandList();
 
 	cmdList->SetGraphicsRootConstantBufferView(0, worldTransform.constBuffer->GetGPUVirtualAddress());
-
 	cmdList->SetGraphicsRootConstantBufferView(1, constBuffer->GetGPUVirtualAddress());
+	worldTransform.GetLight()->Draw(3);
 
 	// デスクリプタヒープの配列
 	SpriteCommon* spCommon = SpriteCommon::GetInstance();
 	ID3D12DescriptorHeap* ppHeaps[] = { spCommon->GetDescriptorHeap() };
 	cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 
-	if (sprite)
-	{
-		// シェーダリソースビューをセット
-		cmdList->SetGraphicsRootDescriptorTable(2, spCommon->GetGpuHandle(sprite->GetTextureIndex()));
-	}
+	// シェーダリソースビューをセット
+	if (sprite) { cmdList->SetGraphicsRootDescriptorTable(2, spCommon->GetGpuHandle(sprite->GetTextureIndex())); }
+	
 	mesh.Draw();
 }

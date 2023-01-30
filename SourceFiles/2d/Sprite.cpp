@@ -1,6 +1,5 @@
 #include "Sprite.h"
 #include "SpriteCommon.h"
-#include "WindowsAPI.h"
 #include <cassert>
 #include "Functions.h"
 

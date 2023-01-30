@@ -1,6 +1,8 @@
 #include "WorldTransform.h"
 #include "Functions.h"
+
 ViewProjection* WorldTransform::viewProjection_ = nullptr;
+std::unique_ptr<Light> WorldTransform::light;
 
 void WorldTransform::Initialize()
 {
@@ -17,5 +19,7 @@ void WorldTransform::Update()
 	matWorld = matScale * matRot * matTrans;
 	if (parent) { matWorld *= parent->matWorld; }
 
-	constMap->mat = matWorld * viewProjection_->GetViewProjectionMatrix();
+	constMap->world = matWorld;
+	constMap->viewproj = viewProjection_->GetViewProjectionMatrix();
+	constMap->cameraPos = viewProjection_->eye;
 }

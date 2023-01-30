@@ -10,6 +10,7 @@ protected:
 	ViewProjection viewProjection;
 	DebugCamera debugCamera;
 	std::vector<std::unique_ptr<Objects>> objects;
+	Light* light;
 
 public:
 	virtual ~AL4Scenes() = default;

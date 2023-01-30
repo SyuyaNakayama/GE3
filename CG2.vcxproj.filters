@@ -39,6 +39,9 @@
     <Filter Include="ソース ファイル\collider">
       <UniqueIdentifier>{1c10147f-e0c6-402e-b5f0-b758064e2de4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Light">
+      <UniqueIdentifier>{769be226-a120-4709-9112-6eee57a00d43}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Sprite.hlsli">
@@ -153,6 +156,9 @@
     <ClCompile Include="SourceFiles\base\Input.cpp">
       <Filter>ソース ファイル\base</Filter>
     </ClCompile>
+    <ClCompile Include="SourceFiles\Light\Light.cpp">
+      <Filter>ソース ファイル\Light</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SourceFiles\base\DirectXCommon.h">
@@ -247,6 +253,9 @@
     </ClInclude>
     <ClInclude Include="SourceFiles\base\Input.h">
       <Filter>ソース ファイル\base</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\Light\Light.h">
+      <Filter>ソース ファイル\Light</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

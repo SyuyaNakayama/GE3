@@ -78,7 +78,7 @@ void ImGuiManager::PrintVector(std::string str, const Vector3& vec)
 
 void ImGuiManager::PrintQuaternion(std::string str, const Quaternion& q)
 {
-	str += " = (%.2f, %.2f, %.2f, %.2f)";
+	str += " = (%.3f, %.3f, %.3f, %.3f)";
 	Text(str.c_str(), q.w, q.x, q.y, q.z);
 }
 
