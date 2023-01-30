@@ -214,6 +214,7 @@ void Model::CreateBuffers()
 	constMap->diffuse = material.diffuse;
 	constMap->specular = material.specular;
 	constMap->alpha = material.alpha;
+	constMap->color = sprite->GetColor();
 	constBuffer->Unmap(0, nullptr);
 }
 
@@ -236,7 +237,7 @@ void Model::Draw(const WorldTransform& worldTransform, Sprite* sprite)
 
 	cmdList->SetGraphicsRootConstantBufferView(0, worldTransform.constBuffer->GetGPUVirtualAddress());
 	cmdList->SetGraphicsRootConstantBufferView(1, constBuffer->GetGPUVirtualAddress());
-	worldTransform.GetLight()->Draw(3);
+	worldTransform.GetLightGroup()->Draw(3);
 
 	// デスクリプタヒープの配列
 	SpriteCommon* spCommon = SpriteCommon::GetInstance();

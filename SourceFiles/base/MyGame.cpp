@@ -1,12 +1,14 @@
 ﻿#include "MyGame.h"
 #include "Model.h"
 #include "ImGuiManager.h"
+#include "Scenes.h"
 
 void MyGame::Initialize()
 {
 	Framework::Initialize();
-	sceneManager_->SetNextScene(Scene::Sphere, false);
+	sceneManager_->SetNextScene(Scene::Collider, false);
 	Model::InitializeGraphicsPipeline();
+	AbstractScenes::StaticInitialize();
 }
 
 void MyGame::Finalize()

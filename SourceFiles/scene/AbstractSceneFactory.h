@@ -2,7 +2,7 @@
 #include "BaseScene.h"
 #include <string>
 
-enum class Scene { Null, Sphere, Ray, RayPlane, RayCast };
+enum class Scene { Null, Sprite, Model, Light, Collider };
 
 class AbstractSceneFactory
 {

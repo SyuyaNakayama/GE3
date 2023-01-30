@@ -151,17 +151,18 @@
     <ClCompile Include="SourceFiles\functions\ParticleManager.cpp" />
     <ClCompile Include="SourceFiles\functions\SharePtr.cpp" />
     <ClCompile Include="SourceFiles\functions\Timer.cpp" />
-    <ClCompile Include="SourceFiles\Light\Light.cpp" />
+    <ClCompile Include="SourceFiles\Light\DirectionalLight.cpp" />
+    <ClCompile Include="SourceFiles\Light\LightGroup.cpp" />
     <ClCompile Include="SourceFiles\math\Matrix4.cpp" />
     <ClCompile Include="SourceFiles\math\Quaternion.cpp" />
     <ClCompile Include="SourceFiles\math\Vector.cpp" />
     <ClCompile Include="SourceFiles\objects\Objects.cpp" />
-    <ClCompile Include="SourceFiles\scene\AL4Scenes.cpp" />
     <ClCompile Include="SourceFiles\scene\FadeManager.cpp" />
     <ClCompile Include="SourceFiles\collider\Collider.cpp" />
     <ClCompile Include="SourceFiles\collider\CollisionManager.cpp" />
     <ClCompile Include="SourceFiles\scene\SceneFactory.cpp" />
     <ClCompile Include="SourceFiles\scene\SceneManager.cpp" />
+    <ClCompile Include="SourceFiles\scene\Scenes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SourceFiles\2d\ImGuiManager.h" />
@@ -183,19 +184,20 @@
     <ClInclude Include="SourceFiles\functions\ParticleManager.h" />
     <ClInclude Include="SourceFiles\functions\SharePtr.h" />
     <ClInclude Include="SourceFiles\functions\Timer.h" />
-    <ClInclude Include="SourceFiles\Light\Light.h" />
+    <ClInclude Include="SourceFiles\Light\DirectionalLight.h" />
+    <ClInclude Include="SourceFiles\Light\LightGroup.h" />
     <ClInclude Include="SourceFiles\math\Matrix4.h" />
     <ClInclude Include="SourceFiles\math\Quaternion.h" />
     <ClInclude Include="SourceFiles\math\Vector.h" />
     <ClInclude Include="SourceFiles\objects\Objects.h" />
     <ClInclude Include="SourceFiles\scene\AbstractSceneFactory.h" />
-    <ClInclude Include="SourceFiles\scene\AL4Scenes.h" />
     <ClInclude Include="SourceFiles\scene\BaseScene.h" />
     <ClInclude Include="SourceFiles\scene\FadeManager.h" />
     <ClInclude Include="SourceFiles\collider\Collider.h" />
     <ClInclude Include="SourceFiles\collider\CollisionManager.h" />
     <ClInclude Include="SourceFiles\scene\SceneFactory.h" />
     <ClInclude Include="SourceFiles\scene\SceneManager.h" />
+    <ClInclude Include="SourceFiles\scene\Scenes.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="External\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

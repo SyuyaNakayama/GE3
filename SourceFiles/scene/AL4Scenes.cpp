@@ -10,10 +10,8 @@ void AL4Scenes::Initialize()
 	debugCamera.Initialize();
 	WorldTransform::SetViewProjection(&debugCamera.GetViewProjection());
 	for (const std::unique_ptr<Objects>& object : objects) { object->Initialize(); }
-	Light::StaticInitialize();
-	light = Light::Create();
-	light->SetLightColor({ 1,1,1 });
-	WorldTransform::SetLight(light);
+	lightGroup = LightGroup::Create();
+	WorldTransform::SetLightGroup(lightGroup);
 }
 
 void AL4Scenes::Update()
@@ -28,13 +26,15 @@ void AL4Scenes::Update()
 	CollisionManager::CheckAllCollisions();
 
 	debugCamera.Update();
-
-	WorldTransform w; w.Initialize();
+	for (size_t i = 0; i < 3; i++)
+	{
+		ImGuiManager::SliderVector("lightDir" + std::to_string(i), lightDir[i], -10, 10);
+		ImGuiManager::SliderVector("lightColor" + std::to_string(i), lightColor[i], 0, 1);
+		lightGroup->SetDirLightDir(i, lightDir[i]);
+		lightGroup->SetDirLightColor(i, lightColor[i]);
+	}
 	viewProjection.Update();
-	static Vector3 lightDir = { 0,1,5 };
-	ImGuiManager::SliderVector("lightDir", lightDir, -10.0f, 10.0f);
-	light->SetLightDir(lightDir);
-	light->Update();
+	lightGroup->Update();
 }
 
 void AL4Scenes::Draw()

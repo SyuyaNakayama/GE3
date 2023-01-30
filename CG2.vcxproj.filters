@@ -141,9 +141,6 @@
     <ClCompile Include="SourceFiles\base\PipelineManager.cpp">
       <Filter>ソース ファイル\base</Filter>
     </ClCompile>
-    <ClCompile Include="SourceFiles\scene\AL4Scenes.cpp">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClCompile>
     <ClCompile Include="SourceFiles\objects\Objects.cpp">
       <Filter>ソース ファイル\objects</Filter>
     </ClCompile>
@@ -156,8 +153,14 @@
     <ClCompile Include="SourceFiles\base\Input.cpp">
       <Filter>ソース ファイル\base</Filter>
     </ClCompile>
-    <ClCompile Include="SourceFiles\Light\Light.cpp">
+    <ClCompile Include="SourceFiles\Light\DirectionalLight.cpp">
       <Filter>ソース ファイル\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="SourceFiles\Light\LightGroup.cpp">
+      <Filter>ソース ファイル\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="SourceFiles\scene\Scenes.cpp">
+      <Filter>ソース ファイル\scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -239,9 +242,6 @@
     <ClInclude Include="SourceFiles\base\PipelineManager.h">
       <Filter>ソース ファイル\base</Filter>
     </ClInclude>
-    <ClInclude Include="SourceFiles\scene\AL4Scenes.h">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClInclude>
     <ClInclude Include="SourceFiles\objects\Objects.h">
       <Filter>ソース ファイル\objects</Filter>
     </ClInclude>
@@ -254,8 +254,14 @@
     <ClInclude Include="SourceFiles\base\Input.h">
       <Filter>ソース ファイル\base</Filter>
     </ClInclude>
-    <ClInclude Include="SourceFiles\Light\Light.h">
+    <ClInclude Include="SourceFiles\Light\DirectionalLight.h">
       <Filter>ソース ファイル\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\Light\LightGroup.h">
+      <Filter>ソース ファイル\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\scene\Scenes.h">
+      <Filter>ソース ファイル\scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

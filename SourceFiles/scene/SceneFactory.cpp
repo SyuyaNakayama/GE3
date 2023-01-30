@@ -1,5 +1,5 @@
 #include "SceneFactory.h"
-#include "AL4Scenes.h"
+#include "Scenes.h"
 #include <cassert>
 
 SceneFactory* SceneFactory::GetInstance()
@@ -14,10 +14,18 @@ BaseScene* SceneFactory::CreateScene(Scene scene)
 
     switch (scene)
     {
-    case Scene::Sphere:     newScene = new SphereScene();   break;
-    case Scene::Ray:        newScene = new RayScene();      break;
-    case Scene::RayPlane:   newScene = new RayPlaneScene(); break;
-    case Scene::RayCast:    newScene = new RayCastScene();  break;
+    case Scene::Sprite:
+        newScene = new SpriteScene;
+        break;
+    case Scene::Model:
+        newScene = new ModelScene;
+        break;
+    case Scene::Light:
+        newScene = new LightScene;
+        break;
+    case Scene::Collider:
+        newScene = new ColliderScene;
+        break;
     }
     
     assert(newScene);
