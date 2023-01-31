@@ -22,13 +22,10 @@ void Sprite::Initialize(uint32_t textureIndex)
 	// 頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
 	UINT sizeVB = static_cast<UINT>(sizeof(Vertex) * vertices.size());
 	ID3D12Resource* vertBuff = nullptr;
-	BufferMapping<Vertex>(&vertBuff, &vertMap, sizeVB);
+	CreateBuffer<Vertex>(&vertBuff, &vertMap, sizeVB);
 
 	// 全頂点に対して座標をコピー
 	copy(vertices.begin(), vertices.end(), vertMap);
-
-	// 繋がりを解除
-	vertBuff->Unmap(0, nullptr);
 
 	// GPU仮想アドレス
 	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
@@ -38,11 +35,8 @@ void Sprite::Initialize(uint32_t textureIndex)
 	vbView.StrideInBytes = sizeof(Vertex);
 
 	// 定数バッファ
-	BufferMapping(constBuffMaterial.GetAddressOf(),
-		&constMapMaterial, (sizeof(ConstBufferDataMaterial) + 0xff) & ~0xff);
-
-	BufferMapping(constBuffTransform.GetAddressOf(),
-		&constMapTransform, (sizeof(ConstBufferDataTransform) + 0xff) & ~0xff);
+	CreateBuffer(constBuff.GetAddressOf(),
+		&constMap, (sizeof(ConstBufferData) + 0xff) & ~0xff);
 
 	textureIndex_ = textureIndex;
 	AdjustTextureSize();
@@ -69,6 +63,9 @@ void Sprite::AdjustTextureSize()
 
 void Sprite::Update()
 {
+	if (!dirty) { return; }
+	dirty = false;
+
 	float left = (0.0f - anchorPoint_.x) * size_.x;
 	float right = (1.0f - anchorPoint_.x) * size_.x;
 	float top = (0.0f - anchorPoint_.y) * size_.y;
@@ -102,8 +99,8 @@ void Sprite::Update()
 	matWorld = matRot * matTrans;
 
 	// GPU転送
-	constMapTransform->mat = matWorld * matProj;
-	constMapMaterial->color = color_;
+	constMap->mat = matWorld * matProj;
+	constMap->color = color_;
 	std::copy(std::begin(vertices), std::end(vertices), vertMap);
 }
 
@@ -118,16 +115,7 @@ void Sprite::Draw()
 
 	// 頂点バッファビューの設定コマンド
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
-	cmdList->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
-	cmdList->SetGraphicsRootConstantBufferView(2, constBuffTransform->GetGPUVirtualAddress());
+	cmdList->SetGraphicsRootConstantBufferView(0, constBuff->GetGPUVirtualAddress());
 	// 描画コマンド
 	cmdList->DrawInstanced((UINT)vertices.size(), 1, 0, 0); // 全ての頂点を使って描画
-}
-
-float Color::ColorClass::operator=(float val)
-{
-	val_ = val;
-	if (val_ > 1.0f) { val_ -= (int)val_; }
-	if (val_ < 0.0f) { val_ += 1.0f + (int)val_; }
-	return val_;
 }

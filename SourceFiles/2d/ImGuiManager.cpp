@@ -96,9 +96,18 @@ void ImGuiManager::SliderVector(std::string str, Vector3& vec, float minVal, flo
 	vec = { num[0],num[1],num[2] };
 }
 
-void ImGuiManager::ColorEdit(Color& color)
+void ImGuiManager::ColorEditRGB(std::string str, ColorRGB& color)
 {
-	float c[4] = { color.r.GetVal(),color.g.GetVal(),color.b.GetVal(),color.a.GetVal() };
-	ColorEdit4("Color", c);
+	float c[3] = { color.r,color.g,color.b };
+	str += "Color";
+	ColorEdit3(str.c_str(), c);
+	color = { c[0],c[1],c[2] };
+}
+
+void ImGuiManager::ColorEditRGBA(std::string str, ColorRGBA& color)
+{
+	float c[4] = { color.r,color.g,color.b,color.a };
+	str += "Color";
+	ColorEdit4(str.c_str(), c);
 	color = { c[0],c[1],c[2],c[3] };
 }

@@ -8,9 +8,7 @@
 using namespace Microsoft::WRL;
 using namespace std;
 
-/// <summary>
-/// 静的メンバ変数の実体
-/// </summary>
+// 静的メンバ変数の実体
 ComPtr<ID3D12PipelineState> Model::pipelinestate = nullptr;
 ComPtr<ID3D12RootSignature> Model::rootsignature = nullptr;
 vector<Model*> Model::models;
@@ -208,14 +206,12 @@ void Model::CreateBuffers()
 
 	ConstBufferData* constMap = nullptr;
 	// 定数バッファ生成
-	BufferMapping(&constBuffer, &constMap, (sizeof(ConstBufferData) + 0xff) & ~0xff);
+	CreateBuffer(&constBuffer, &constMap, (sizeof(ConstBufferData) + 0xff) & ~0xff);
 
 	constMap->ambient = material.ambient;
 	constMap->diffuse = material.diffuse;
 	constMap->specular = material.specular;
 	constMap->alpha = material.alpha;
-	constMap->color = sprite->GetColor();
-	constBuffer->Unmap(0, nullptr);
 }
 
 void Model::PreDraw()
@@ -229,6 +225,8 @@ void Model::PreDraw()
 	cmdList->SetGraphicsRootSignature(rootsignature.Get());
 	// プリミティブ形状を設定
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	// ライトの描画
+	WorldTransform::GetLightGroup()->Draw(3);
 }
 
 void Model::Draw(const WorldTransform& worldTransform, Sprite* sprite)
@@ -237,7 +235,6 @@ void Model::Draw(const WorldTransform& worldTransform, Sprite* sprite)
 
 	cmdList->SetGraphicsRootConstantBufferView(0, worldTransform.constBuffer->GetGPUVirtualAddress());
 	cmdList->SetGraphicsRootConstantBufferView(1, constBuffer->GetGPUVirtualAddress());
-	worldTransform.GetLightGroup()->Draw(3);
 
 	// デスクリプタヒープの配列
 	SpriteCommon* spCommon = SpriteCommon::GetInstance();
@@ -245,7 +242,8 @@ void Model::Draw(const WorldTransform& worldTransform, Sprite* sprite)
 	cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 
 	// シェーダリソースビューをセット
-	if (sprite) { cmdList->SetGraphicsRootDescriptorTable(2, spCommon->GetGpuHandle(sprite->GetTextureIndex())); }
-	
+	assert(sprite);
+	cmdList->SetGraphicsRootDescriptorTable(2, spCommon->GetGpuHandle(sprite->GetTextureIndex()));
+
 	mesh.Draw();
 }

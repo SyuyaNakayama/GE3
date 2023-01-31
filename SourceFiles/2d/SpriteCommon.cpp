@@ -31,7 +31,6 @@ void SpriteCommon::Initialize()
 	pipelineManager.SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 	pipelineManager.AddRootParameter(PipelineManager::RootParamType::CBV);
 	pipelineManager.AddRootParameter(PipelineManager::RootParamType::DescriptorTable);
-	pipelineManager.AddRootParameter(PipelineManager::RootParamType::CBV);
 	pipelineManager.CreatePipeline(pipelineState, rootSignature);
 	
 	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc{};

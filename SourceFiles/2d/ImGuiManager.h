@@ -24,5 +24,6 @@ public:
 	static void PrintQuaternion(std::string str, const Quaternion& q);
 	static void SliderVector(std::string str, Vector2& vec, float minVal, float maxVal);
 	static void SliderVector(std::string str, Vector3& vec, float minVal, float maxVal);
-	static void ColorEdit(Color& color);
+	static void ColorEditRGB(std::string str, ColorRGB& color);
+	static void ColorEditRGBA(std::string str, ColorRGBA& color);
 };

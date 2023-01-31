@@ -13,7 +13,7 @@ public:
 		Vector3 pos; // xyz座標
 		Vector3 normal; // 法線ベクトル
 		Vector2 uv;  // uv座標
-		Color color; // 色
+		ColorRGBA color; // 色
 	};
 
 private:
@@ -34,6 +34,7 @@ private:
 	std::vector<UINT16> indices;
 	// 頂点バッファのマップ
 	VertexData* vertMap = nullptr;
+	//std::unique_ptr<VertexData> vertMap;
 	// 頂点座標スムージング用データ
 	std::unordered_map<UINT16, std::vector<UINT16>> smoothData;
 

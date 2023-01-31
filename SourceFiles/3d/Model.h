@@ -31,7 +31,6 @@ private:
 		float pad2;
 		Vector3 specular;
 		float alpha;
-		Color color;
 	};
 private:
 	// テクスチャ

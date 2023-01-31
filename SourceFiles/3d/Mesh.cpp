@@ -1,25 +1,24 @@
 ﻿#include "Mesh.h"
 #include "Functions.h"
 
-void Mesh::CreateBuffers() {
+void Mesh::CreateBuffers()
+{
 	UINT sizeVB = static_cast<UINT>(sizeof(VertexData) * vertices.size());
 	// 頂点バッファ生成
-	BufferMapping(&vertBuff, &vertMap, sizeVB);
+	CreateBuffer(&vertBuff, &vertMap, sizeVB);
 	// 全頂点に対して
 	copy(vertices.begin(), vertices.end(), vertMap); // 座標をコピー
-	vertBuff->Unmap(0, nullptr);
 	// 頂点バッファビューの作成
 	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
 	vbView.SizeInBytes = sizeVB;
 	vbView.StrideInBytes = sizeof(VertexData);
 
 	UINT16* indexMap = nullptr;
-	UINT sizeIB = static_cast<UINT>(sizeof(unsigned short) * indices.size());
+	UINT sizeIB = static_cast<UINT>(sizeof(UINT16) * indices.size());
 	// インデックスバッファ生成
-	BufferMapping(&indexBuff, &indexMap, sizeIB);
+	CreateBuffer(&indexBuff, &indexMap, sizeIB);
 	// 全インデックスに対して
 	copy(indices.begin(), indices.end(), indexMap);	// インデックスをコピー
-	indexBuff->Unmap(0, nullptr);
 	// インデックスバッファビューの作成
 	ibView.BufferLocation = indexBuff->GetGPUVirtualAddress();
 	ibView.Format = DXGI_FORMAT_R16_UINT;

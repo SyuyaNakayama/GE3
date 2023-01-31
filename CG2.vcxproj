@@ -147,6 +147,7 @@
     <ClCompile Include="SourceFiles\base\MyGame.cpp" />
     <ClCompile Include="SourceFiles\base\PipelineManager.cpp" />
     <ClCompile Include="SourceFiles\base\WindowsAPI.cpp" />
+    <ClCompile Include="SourceFiles\functions\Color.cpp" />
     <ClCompile Include="SourceFiles\functions\Functions.cpp" />
     <ClCompile Include="SourceFiles\functions\ParticleManager.cpp" />
     <ClCompile Include="SourceFiles\functions\SharePtr.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="SourceFiles\base\MyGame.h" />
     <ClInclude Include="SourceFiles\base\PipelineManager.h" />
     <ClInclude Include="SourceFiles\base\WindowsAPI.h" />
+    <ClInclude Include="SourceFiles\functions\Color.h" />
     <ClInclude Include="SourceFiles\functions\Functions.h" />
     <ClInclude Include="SourceFiles\functions\ParticleManager.h" />
     <ClInclude Include="SourceFiles\functions\SharePtr.h" />

@@ -4,6 +4,7 @@
 #include "SceneManager.h"
 #include <imgui.h>
 #include "ImGuiManager.h"
+#include "DirectXCommon.h"
 
 ViewProjection AbstractScenes::viewProjection;
 DebugCamera AbstractScenes::debugCamera;
@@ -42,6 +43,7 @@ void SpriteScene::Draw()
 void ModelScene::Initialize()
 {
 	model = Model::Create("sphere");
+	lightGroup->DefaultLightSetting();
 	worldTransform.Initialize();
 }
 
@@ -60,28 +62,39 @@ void ModelScene::Draw()
 
 void LightScene::Initialize()
 {
+	model = Model::Create("sphere", true);
+	modelCube = Model::Create("cube",true);
+	worldTransform.Initialize();
+	worldTransformCube.Initialize();
+	worldTransformCube.translation.x = 3.0f;;
 }
 
 void LightScene::Update()
 {
 	AbstractScenes::Update();
+	worldTransform.Update();
+	worldTransformCube.Update();
 	ImGui::Text("---------------------");
 	for (size_t i = 0; i < 3; i++)
 	{
 		ImGuiManager::SliderVector("lightDir" + std::to_string(i), lightDir[i], -10, 10);
-		ImGuiManager::SliderVector("lightColor" + std::to_string(i), lightColor[i], 0, 1);
+		ImGuiManager::ColorEditRGB("light" + std::to_string(i), lightColor[i]);
 		lightGroup->SetDirLightDir(i, lightDir[i]);
 		lightGroup->SetDirLightColor(i, lightColor[i]);
 	}
-	lightGroup->Update();
 }
 
 void LightScene::Draw()
 {
+	Model::PreDraw();
+	model->Draw(worldTransform);
+	modelCube->Draw(worldTransformCube);
+	Model::PostDraw();
 }
 
 void ColliderScene::Initialize()
 {
+	lightGroup->DefaultLightSetting();
 	std::unique_ptr<Objects> obj = std::make_unique<Sphere>();
 	obj->SetPosition({ 2 });
 	objects.push_back(move(obj));
@@ -92,7 +105,7 @@ void ColliderScene::Initialize()
 	obj = std::make_unique<Triangle>();
 	obj->SetPosition({ -2 });
 	objects.push_back(move(obj));
-	for (const std::unique_ptr<Objects>& object : objects) { object->Initialize(); }
+	for (std::unique_ptr<Objects>& object : objects) { object->Initialize(); }
 	viewProjection.eye = { 0,2.5f,-5.0f, };
 	viewProjection.target.y = 0;
 }
@@ -107,7 +120,7 @@ void ColliderScene::Update()
 void ColliderScene::Draw()
 {
 	Model::PreDraw();
-	for (const std::unique_ptr<Objects>& object : objects) { object->Update(); }
+	for (const std::unique_ptr<Objects>& object : objects) { object->Draw(); }
 	Model::PostDraw();
 }
 
@@ -151,4 +164,5 @@ void AbstractScenes::Update()
 		viewProjection.Update();
 		ImGui::Text("DebugMode : Off");
 	}
+	lightGroup->Update();
 }

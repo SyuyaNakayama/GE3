@@ -13,7 +13,7 @@ public:
 	virtual void Update() {};
 	virtual void Draw() {};
 	virtual ~Objects() {};
-	void ChangeColor(Color color = { 1,0,0,1 });
+	void ChangeColor(ColorRGBA color = { 1,0,0,1 });
 	void SetMoveSpeed(const Vector3& spd) { moveSpd = spd; }
 	virtual void SetPosition(const Vector3& pos) {}
 };

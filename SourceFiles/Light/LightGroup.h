@@ -11,15 +11,16 @@ private:
 
 	struct ConstBufferData
 	{
-		Vector3 ambientColor;
+		ColorRGB ambientColor;
 		float pad1;
 		DirectionalLight::ConstBufferData dirLights[DIR_LIGHT_NUM];
 	};
 
 	ComPtr<ID3D12Resource> constBuff;
-	Vector3 ambientColor = { 1,1,1 };
+	ColorRGB ambientColor;
 	DirectionalLight dirLights[DIR_LIGHT_NUM]{};
 	bool dirty = false;
+	ConstBufferData* constMap = nullptr;
 
 	void TransferConstBuffer();
 public:
@@ -28,8 +29,8 @@ public:
 	void Update();
 	void Draw(UINT rootParameterIndex);
 	void DefaultLightSetting();
-	void SetAmbientColor(const Vector3& color) { ambientColor = color; dirty = true; }
+	void SetAmbientColor(const ColorRGB& color) { ambientColor = color; dirty = true; }
 	void SetDirLightActive(int index, bool active);
 	void SetDirLightDir(int index, const Vector3& lightDir);
-	void SetDirLightColor(int index, const Vector3& lightcolor);
+	void SetDirLightColor(int index, const ColorRGB& lightcolor);
 };

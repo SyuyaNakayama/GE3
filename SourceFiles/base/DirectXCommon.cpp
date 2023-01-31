@@ -55,18 +55,16 @@ void DirectXCommon::InitializeDevice()
 		adapters.push_back(tmpAdapter);
 	}
 	// 妥当なアダプタを選別する
-	for (size_t i = 0; i < adapters.size(); i++)
+	for (ComPtr<IDXGIAdapter4> adapter : adapters)
 	{
 		DXGI_ADAPTER_DESC3 adapterDesc;
 		// アダプターの情報を取得する
-		adapters[i]->GetDesc3(&adapterDesc);
+		adapter->GetDesc3(&adapterDesc);
 		// ソフトウェアデバイスを回避
-		if (!(adapterDesc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE))
-		{
-			// デバイスを採用してループを抜ける
-			tmpAdapter = adapters[i];
-			break;
-		}
+		if ((adapterDesc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE)) { continue; }
+		// デバイスを採用してループを抜ける
+		tmpAdapter = adapter;
+		break;
 	}
 
 	D3D_FEATURE_LEVEL featureLevel{};
@@ -79,16 +77,13 @@ void DirectXCommon::InitializeDevice()
 		D3D_FEATURE_LEVEL_11_0,
 	};
 
-	for (size_t i = 0; i < levels.size(); i++)
+	for (D3D_FEATURE_LEVEL level : levels)
 	{
 		// 採用したアダプターでデバイスを生成
-		result = D3D12CreateDevice(tmpAdapter.Get(), levels[i], IID_PPV_ARGS(&device));
-		if (result.Get() == S_OK)
-		{
-			// デバイスを生成できた時点でループを抜ける
-			featureLevel = levels[i];
-			break;
-		}
+		if (FAILED(D3D12CreateDevice(tmpAdapter.Get(), level, IID_PPV_ARGS(&device)))) { continue; }
+		// デバイスを生成できた時点でループを抜ける
+		featureLevel = level;
+		break;
 	}
 
 #ifdef _DEBUG
@@ -130,8 +125,8 @@ void DirectXCommon::InitializeCommand()
 
 void DirectXCommon::InitializeSwapchain()
 {
-	swapchainDesc.Width = 1280;
-	swapchainDesc.Height = 720;
+	swapchainDesc.Width = (UINT)WIN_SIZE.x;
+	swapchainDesc.Height = (UINT)WIN_SIZE.y;
 	swapchainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // 色情報の書式
 	swapchainDesc.SampleDesc.Count = 1; // マルチサンプルしない
 	swapchainDesc.BufferUsage = DXGI_USAGE_BACK_BUFFER; // バックバッファ用

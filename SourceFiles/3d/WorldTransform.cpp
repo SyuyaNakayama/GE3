@@ -6,7 +6,7 @@ std::unique_ptr<LightGroup> WorldTransform::lightGroup;
 
 void WorldTransform::Initialize()
 {
-	BufferMapping(constBuffer.GetAddressOf(), &constMap, (sizeof(ConstBufferData) + 0xff) & ~0xff);
+	CreateBuffer(constBuffer.GetAddressOf(), &constMap, (sizeof(ConstBufferData) + 0xff) & ~0xff);
 }
 
 void WorldTransform::Update()

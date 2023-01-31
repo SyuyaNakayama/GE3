@@ -30,5 +30,5 @@ public:
 	static void SetViewProjection(ViewProjection* viewProjection) { viewProjection_ = viewProjection; }
 	static void SetLightGroup(LightGroup* lightGroup) { WorldTransform::lightGroup.reset(lightGroup); }
 	static ViewProjection* GetViewProjection() { return viewProjection_; }
-	LightGroup* GetLightGroup() const { return lightGroup.get(); }
+	static LightGroup* GetLightGroup() { return lightGroup.get(); }
 };

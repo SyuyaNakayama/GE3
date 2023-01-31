@@ -1,11 +1,7 @@
-cbuffer ConstBufferDataMaterial : register(b0)
-{
-	float4 color;
-}
-
-cbuffer ConstBufferDataTransform : register(b1)
+cbuffer ConstBufferData : register(b0)
 {
 	matrix mat;
+	float4 color;
 }
 
 struct VSOutput

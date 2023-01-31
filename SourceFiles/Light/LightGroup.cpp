@@ -1,30 +1,22 @@
 #include "LightGroup.h"
 #include <cassert>
 #include "DirectXCommon.h"
+#include "Functions.h"
 
 void LightGroup::TransferConstBuffer()
-{
-	// 定数バッファのマッピング
-	ConstBufferData* constMap = nullptr;
-	HRESULT result = constBuff->Map(0, nullptr, (void**)&constMap);
-	if (SUCCEEDED(result))
+{	
+	constMap->ambientColor = ambientColor;
+	for (int i = 0; i < DIR_LIGHT_NUM; i++)
 	{
-		constMap->ambientColor = ambientColor;
-
-		for (int i = 0; i < DIR_LIGHT_NUM; i++)
+		// ライトが有効なら設定を転送	
+		if (dirLights[i].IsActive())
 		{
-			// ライトが有効なら設定を転送	
-			if (dirLights[i].IsActive())
-			{
-				constMap->dirLights[i].active = 1;
-				constMap->dirLights[i].lightv = -dirLights[i].GetLightDir();
-				constMap->dirLights[i].lightcolor = dirLights[i].GetLightColor();
-			}
-			// ライトが向こうなら転送しない
-			else { constMap->dirLights[i].active = 0; }
+			constMap->dirLights[i].active = 1;
+			constMap->dirLights[i].lightv = -dirLights[i].GetLightDir();
+			constMap->dirLights[i].lightcolor = dirLights[i].GetLightColor();
 		}
-
-		constBuff->Unmap(0, nullptr);
+		// ライトが無効なら転送しない
+		else { constMap->dirLights[i].active = 0; }
 	}
 }
 
@@ -38,19 +30,7 @@ LightGroup* LightGroup::Create()
 void LightGroup::Initialize()
 {
 	DefaultLightSetting();
-
-	// ヒーププロパティ
-	CD3DX12_HEAP_PROPERTIES heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
-	// リソース設定
-	CD3DX12_RESOURCE_DESC resourceDesc =
-		CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferData) + 0xff) & ~0xff);
-
-	// 定数バッファの生成
-	HRESULT result = DirectXCommon::GetInstance()->GetDevice()->CreateCommittedResource(
-		&heapProps, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
-		IID_PPV_ARGS(&constBuff));
-	assert(SUCCEEDED(result));
-
+	CreateBuffer(&constBuff, &constMap, (sizeof(ConstBufferData) + 0xff) & ~0xff);
 	TransferConstBuffer();
 }
 
@@ -92,10 +72,9 @@ void LightGroup::SetDirLightDir(int index, const Vector3& lightDir)
 	dirty = true;
 }
 
-void LightGroup::SetDirLightColor(int index, const Vector3& lightcolor)
+void LightGroup::SetDirLightColor(int index, const ColorRGB& lightcolor)
 {
 	assert(0 <= index && index < DIR_LIGHT_NUM);
 	dirLights[index].SetLightColor(lightcolor);
 	dirty = true;
-
 }

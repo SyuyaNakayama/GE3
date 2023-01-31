@@ -6,7 +6,7 @@
 void MyGame::Initialize()
 {
 	Framework::Initialize();
-	sceneManager_->SetNextScene(Scene::Collider, false);
+	sceneManager_->SetNextScene(Scene::Light, false);
 	Model::InitializeGraphicsPipeline();
 	AbstractScenes::StaticInitialize();
 }

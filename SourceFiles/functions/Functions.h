@@ -1,13 +1,13 @@
 #pragma once
 #include <string>
+#include <memory>
 #include <cassert>
 #include "DirectXCommon.h"
 
-template<class T> void BufferMapping(ID3D12Resource** buff, T** map, UINT64 width)
+template<class T> void CreateBuffer(ID3D12Resource** buff, T** map, UINT64 width)
 {
-	Result result;
 	// バッファの生成
-	result = DirectXCommon::GetInstance()->GetDevice()->CreateCommittedResource(
+	Result result = DirectXCommon::GetInstance()->GetDevice()->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		D3D12_HEAP_FLAG_NONE,
 		&CD3DX12_RESOURCE_DESC::Buffer(width),
@@ -16,6 +16,8 @@ template<class T> void BufferMapping(ID3D12Resource** buff, T** map, UINT64 widt
 
 	// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
 	result = (*buff)->Map(0, nullptr, (void**)map);
+	// 繋がりを解除
+	(*buff)->Unmap(0, nullptr);
 }
 
 D3D12_INPUT_ELEMENT_DESC SetInputLayout(LPCSTR semanticName, DXGI_FORMAT format);
@@ -37,6 +39,4 @@ public:
 		result = result_;
 		assert(SUCCEEDED(result));
 	}
-
-	HRESULT Get() { return result; }
 };

@@ -3,7 +3,7 @@
 #include <imgui.h>
 #include <random>
 
-void Objects::ChangeColor(Color color)
+void Objects::ChangeColor(ColorRGBA color)
 {
 	Sprite* textureSprite = model->GetSprite();
 	textureSprite->SetColor(color);
@@ -21,7 +21,6 @@ void Sphere::Update()
 	ChangeColor({ 1,1,1,1 });
 	if (Length(Vector3(0, 2.0f) - worldTransform.translation) >= 3.0f) { moveSpd = -moveSpd; }
 	worldTransform.translation += moveSpd;
-	worldTransform.rotation.y += 0.05f;
 	worldTransform.Update();
 }
 

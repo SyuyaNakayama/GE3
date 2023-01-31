@@ -39,11 +39,16 @@ public:
 
 class LightScene : public AbstractScenes
 {
+	WorldTransform worldTransform;
+	WorldTransform worldTransformCube;
+	std::unique_ptr<Model> model;
+	std::unique_ptr<Model> modelCube;
+	
 	Vector3 lightDir[3] =
 	{
 		{0,0,1},{0,1,0},{0,0,1}
 	};
-	Vector3 lightColor[3]
+	ColorRGB lightColor[3]
 	{
 		{1,0,0},{0,1,0},{0,0,1}
 	};

@@ -51,14 +51,14 @@ void ParticleManager::InitializeGraphicsPipeline()
 
 void ParticleManager::CreateBuffers()
 {
-	BufferMapping(&vertBuff, &vertMap, vertexCount);
+	CreateBuffer(&vertBuff, &vertMap, vertexCount);
 
 	// 頂点バッファビューの作成
 	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
 	vbView.SizeInBytes = vertexCount;
 	vbView.StrideInBytes = sizeof(VertexPos);
 
-	BufferMapping(&constBuff, &constMap, (sizeof(ConstBufferData) + 0xff) & ~0xff);
+	CreateBuffer(&constBuff, &constMap, (sizeof(ConstBufferData) + 0xff) & ~0xff);
 
 	if (!particles.empty()) { particles.clear(); }
 }

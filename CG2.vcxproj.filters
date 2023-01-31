@@ -162,6 +162,9 @@
     <ClCompile Include="SourceFiles\scene\Scenes.cpp">
       <Filter>ソース ファイル\scene</Filter>
     </ClCompile>
+    <ClCompile Include="SourceFiles\functions\Color.cpp">
+      <Filter>ソース ファイル\functions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SourceFiles\base\DirectXCommon.h">
@@ -262,6 +265,9 @@
     </ClInclude>
     <ClInclude Include="SourceFiles\scene\Scenes.h">
       <Filter>ソース ファイル\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\functions\Color.h">
+      <Filter>ソース ファイル\functions</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
