@@ -23,7 +23,7 @@ class LightScene : public AbstractScenes
 	WorldTransform worldTransform;
 	WorldTransform worldTransformCube;
 	std::unique_ptr<Model> model;
-	std::unique_ptr<Model> modelCube;
+	std::unique_ptr<Model> modelSmooth;
 
 	Vector3 lightDir[3] =
 	{

@@ -12,8 +12,8 @@ LightGroup* AbstractScenes::lightGroup;
 
 void LightScene::Initialize()
 {
-	model = Model::Create("sphere", true);
-	modelCube = Model::Create("cube", true);
+	model = Model::Create("sphere",true);
+	modelSmooth = Model::Create("sphere");
 	worldTransform.Initialize();
 	worldTransformCube.Initialize();
 	worldTransformCube.translation.x = 3.0f;
@@ -27,26 +27,26 @@ void LightScene::Update()
 	ImGui::Text("---------------------");
 	for (size_t i = 0; i < 3; i++)
 	{
-		lightGroup->SetDirLightActive(i, false);
-		//ImGuiManager::SliderVector("lightDir" + std::to_string(i), lightDir[i], -10, 10);
-		//ImGuiManager::ColorEditRGB("light" + std::to_string(i), lightColor[i]);
-		//lightGroup->SetDirLightDir(i, lightDir[i]);
-		//lightGroup->SetDirLightColor(i, lightColor[i]);
+		//lightGroup->SetDirLightActive(i, false);
+		ImGuiManager::SliderVector("lightDir" + std::to_string(i), lightDir[i], -10, 10);
+		ImGuiManager::ColorEditRGB("light" + std::to_string(i), lightColor[i]);
+		lightGroup->SetDirLightDir(i, lightDir[i]);
+		lightGroup->SetDirLightColor(i, lightColor[i]);
 	}
-	lightGroup->SetPointLightActive(0, true);
-	ImGuiManager::SliderVector("lightPos", pointLightpos, -10, 10);
-	ImGuiManager::ColorEditRGB("pointLight", pointLightColor);
-	ImGuiManager::SliderVector("lightAtten", pointLightAtten, -10, 10);
-	lightGroup->SetPointLightPos(0, pointLightpos);
-	lightGroup->SetPointLightColor(0, pointLightColor);
-	lightGroup->SetPointLightAtten(0, pointLightAtten);
+	//lightGroup->SetPointLightActive(0, true);
+	//ImGuiManager::SliderVector("lightPos", pointLightpos, -10, 10);
+	//ImGuiManager::ColorEditRGB("pointLight", pointLightColor);
+	//ImGuiManager::SliderVector("lightAtten", pointLightAtten, -10, 10);
+	//lightGroup->SetPointLightPos(0, pointLightpos);
+	//lightGroup->SetPointLightColor(0, pointLightColor);
+	//lightGroup->SetPointLightAtten(0, pointLightAtten);
 }
 
 void LightScene::Draw()
 {
 	Model::PreDraw();
 	model->Draw(worldTransform);
-	modelCube->Draw(worldTransformCube);
+	modelSmooth->Draw(worldTransformCube);
 	Model::PostDraw();
 }
 

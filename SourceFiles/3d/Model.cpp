@@ -42,22 +42,6 @@ void Model::InitializeGraphicsPipeline()
 std::unique_ptr<Model> Model::Create(const string& modelName, bool smoothing)
 {
 	unique_ptr<Model> newModel = make_unique<Model>();
-
-	for (Model* model : models)
-	{
-		if (model->name == modelName)
-		{
-			newModel->name = model->name;
-			newModel->mesh = model->mesh;
-			newModel->material = model->material;
-			unique_ptr<Sprite> newSprite = make_unique<Sprite>();
-			*newSprite = *model->sprite;
-			newModel->sprite = move(newSprite);
-			newModel->CreateBuffers();
-			return newModel;
-		}
-	}
-
 	newModel->LoadFromOBJInternal(modelName, smoothing);
 	newModel->CreateBuffers();
 	models.push_back(newModel.get());
