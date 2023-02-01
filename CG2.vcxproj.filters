@@ -33,9 +33,6 @@
     <Filter Include="ソース ファイル\functions">
       <UniqueIdentifier>{823e7a3e-f66c-4d55-a1f7-a5ed16915fdf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\objects">
-      <UniqueIdentifier>{93d52b3d-d172-4ae0-a414-ff5de841ae01}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\collider">
       <UniqueIdentifier>{1c10147f-e0c6-402e-b5f0-b758064e2de4}</UniqueIdentifier>
     </Filter>
@@ -141,9 +138,6 @@
     <ClCompile Include="SourceFiles\base\PipelineManager.cpp">
       <Filter>ソース ファイル\base</Filter>
     </ClCompile>
-    <ClCompile Include="SourceFiles\objects\Objects.cpp">
-      <Filter>ソース ファイル\objects</Filter>
-    </ClCompile>
     <ClCompile Include="SourceFiles\3d\Mesh.cpp">
       <Filter>ソース ファイル\3d</Filter>
     </ClCompile>
@@ -241,9 +235,6 @@
     </ClInclude>
     <ClInclude Include="SourceFiles\base\PipelineManager.h">
       <Filter>ソース ファイル\base</Filter>
-    </ClInclude>
-    <ClInclude Include="SourceFiles\objects\Objects.h">
-      <Filter>ソース ファイル\objects</Filter>
     </ClInclude>
     <ClInclude Include="SourceFiles\3d\Mesh.h">
       <Filter>ソース ファイル\3d</Filter>

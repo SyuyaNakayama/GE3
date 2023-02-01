@@ -99,6 +99,7 @@ void LightGroup::SetPointLightActive(int index, bool active)
 {
 	assert(0 <= index && index < DIR_LIGHT_NUM);
 	pointLights[index].SetActive(active);
+	dirty = true;
 }
 
 void LightGroup::SetPointLightPos(int index, const Vector3& lightpos)

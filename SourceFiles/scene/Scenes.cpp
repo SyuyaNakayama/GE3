@@ -15,13 +15,17 @@ void LightScene::Initialize()
 	model = Model::Create("sphere");
 	modelSmooth = Model::Create("sphere", true);
 	modelSkydome = Model::Create("background", true);
+	modelGround = Model::Create("cube", true);
 	worldTransform.Initialize();
+	worldTransform.translation.x = -1.5f;
 	worldTransformSmooth.Initialize();
-	worldTransformSmooth.translation.x = 3.0f;
+	worldTransformSmooth.translation.x = 1.5f;
 	skydome.Initialize();
 	skydome.scale *= 10.0f;
+	ground.Initialize();
+	ground.scale = { 10,1,5 };
+	ground.translation.y = -2;
 	Sprite* skydomeSprite = modelSkydome->GetSprite();
-	skydomeSprite->SetColor({ 0,0,0,1 });
 	modelSkydome->TextureUpdate();
 }
 
@@ -31,10 +35,10 @@ void LightScene::Update()
 	worldTransform.Update();
 	worldTransformSmooth.Update();
 	skydome.Update();
-	ImGui::ShowDemoWindow();
+	ground.Update();
 	if (ImGui::CollapsingHeader("DirLight"))
 	{
-		for (size_t i = 0; i < 3; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			std::string str = "dirLight" + std::to_string(i);
 			ImGui::Checkbox(str.c_str(), dirLightActive + i);
@@ -46,13 +50,23 @@ void LightScene::Update()
 			lightGroup->SetDirLightColor(i, dirLightColor[i]);
 		}
 	}
-	//lightGroup->SetPointLightActive(0, true);
-	//ImGuiManager::SliderVector("lightPos", pointLightpos, -10, 10);
-	//ImGuiManager::ColorEditRGB("pointLight", pointLightColor);
-	//ImGuiManager::SliderVector("lightAtten", pointLightAtten, -10, 10);
-	//lightGroup->SetPointLightPos(0, pointLightpos);
-	//lightGroup->SetPointLightColor(0, pointLightColor);
-	//lightGroup->SetPointLightAtten(0, pointLightAtten);
+
+	if (ImGui::CollapsingHeader("PointLight"))
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			std::string str = "pointLight" + std::to_string(i);
+			ImGui::Checkbox(str.c_str(), pointLightActive + i);
+			lightGroup->SetPointLightActive(i, pointLightActive[i]);
+			if (!pointLightActive[i]) { continue; }
+			ImGuiManager::SliderVector("lightPos" + std::to_string(i), pointLightpos[i], -10, 10);
+			ImGuiManager::ColorEditRGB("pointLightColor" + std::to_string(i), pointLightColor[i]);
+			ImGuiManager::SliderVector("lightAtten" + std::to_string(i), pointLightAtten[i], -10, 10);
+			lightGroup->SetPointLightPos(i, pointLightpos[i]);
+			lightGroup->SetPointLightColor(i, pointLightColor[i]);
+			lightGroup->SetPointLightAtten(i, pointLightAtten[i]);
+		}
+	}
 }
 
 void LightScene::Draw()
@@ -61,6 +75,7 @@ void LightScene::Draw()
 	model->Draw(worldTransform);
 	modelSmooth->Draw(worldTransformSmooth);
 	modelSkydome->Draw(skydome);
+	modelGround->Draw(ground);
 	Model::PostDraw();
 }
 
