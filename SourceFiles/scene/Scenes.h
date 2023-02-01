@@ -21,18 +21,15 @@ public:
 class LightScene : public AbstractScenes
 {
 	WorldTransform worldTransform;
-	WorldTransform worldTransformCube;
+	WorldTransform worldTransformSmooth;
+	WorldTransform skydome;
 	std::unique_ptr<Model> model;
 	std::unique_ptr<Model> modelSmooth;
+	std::unique_ptr<Model> modelSkydome;
 
-	Vector3 lightDir[3] =
-	{
-		{0,0,1},{0,1,0},{0,0,1}
-	};
-	ColorRGB lightColor[3]
-	{
-		{1,0,0},{0,1,0},{0,0,1}
-	};
+	bool dirLightActive[3] = { true,true,true };
+	Vector3 dirLightDir[3] = { {1,0,0},{0,1,0},{0,0,1} };
+	ColorRGB dirLightColor[3] = { {1,0,0},{0,1,0},{0,0,1} };
 	Vector3 pointLightpos = { 0.5f,1.0f };
 	ColorRGB pointLightColor;
 	Vector3 pointLightAtten = { 0.3f,0.1f,0.1f };

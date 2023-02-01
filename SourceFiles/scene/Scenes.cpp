@@ -12,26 +12,39 @@ LightGroup* AbstractScenes::lightGroup;
 
 void LightScene::Initialize()
 {
-	model = Model::Create("sphere",true);
-	modelSmooth = Model::Create("sphere");
+	model = Model::Create("sphere");
+	modelSmooth = Model::Create("sphere", true);
+	modelSkydome = Model::Create("background", true);
 	worldTransform.Initialize();
-	worldTransformCube.Initialize();
-	worldTransformCube.translation.x = 3.0f;
+	worldTransformSmooth.Initialize();
+	worldTransformSmooth.translation.x = 3.0f;
+	skydome.Initialize();
+	skydome.scale *= 10.0f;
+	Sprite* skydomeSprite = modelSkydome->GetSprite();
+	skydomeSprite->SetColor({ 0,0,0,1 });
+	modelSkydome->TextureUpdate();
 }
 
 void LightScene::Update()
 {
 	AbstractScenes::Update();
 	worldTransform.Update();
-	worldTransformCube.Update();
-	ImGui::Text("---------------------");
-	for (size_t i = 0; i < 3; i++)
+	worldTransformSmooth.Update();
+	skydome.Update();
+	ImGui::ShowDemoWindow();
+	if (ImGui::CollapsingHeader("DirLight"))
 	{
-		//lightGroup->SetDirLightActive(i, false);
-		ImGuiManager::SliderVector("lightDir" + std::to_string(i), lightDir[i], -10, 10);
-		ImGuiManager::ColorEditRGB("light" + std::to_string(i), lightColor[i]);
-		lightGroup->SetDirLightDir(i, lightDir[i]);
-		lightGroup->SetDirLightColor(i, lightColor[i]);
+		for (size_t i = 0; i < 3; i++)
+		{
+			std::string str = "dirLight" + std::to_string(i);
+			ImGui::Checkbox(str.c_str(), dirLightActive + i);
+			lightGroup->SetDirLightActive(i, dirLightActive[i]);
+			if (!dirLightActive[i]) { continue; }
+			ImGuiManager::SliderVector("dirLightDir" + std::to_string(i), dirLightDir[i], -10, 10);
+			ImGuiManager::ColorEditRGB("dirLightColor" + std::to_string(i), dirLightColor[i]);
+			lightGroup->SetDirLightDir(i, dirLightDir[i]);
+			lightGroup->SetDirLightColor(i, dirLightColor[i]);
+		}
 	}
 	//lightGroup->SetPointLightActive(0, true);
 	//ImGuiManager::SliderVector("lightPos", pointLightpos, -10, 10);
@@ -46,7 +59,8 @@ void LightScene::Draw()
 {
 	Model::PreDraw();
 	model->Draw(worldTransform);
-	modelSmooth->Draw(worldTransformCube);
+	modelSmooth->Draw(worldTransformSmooth);
+	modelSkydome->Draw(skydome);
 	Model::PostDraw();
 }
 
@@ -62,16 +76,6 @@ void AbstractScenes::StaticInitialize()
 
 void AbstractScenes::Update()
 {
-	if (input->IsTrigger(DIK_1)) { sceneManager_->SetNextScene(Scene::Sprite); }
-	if (input->IsTrigger(DIK_2)) { sceneManager_->SetNextScene(Scene::Model); }
-	if (input->IsTrigger(DIK_3)) { sceneManager_->SetNextScene(Scene::Light); }
-	if (input->IsTrigger(DIK_4)) { sceneManager_->SetNextScene(Scene::Collider); }
-
-	ImGui::Text("1 Key : Sprite");
-	ImGui::Text("2 Key : Model");
-	ImGui::Text("3 Key : Light");
-	ImGui::Text("4 Key : Collider");
-	ImGui::Text("---------------------");
 	ImGui::Text("Q Key : UseDebugCamera");
 
 	if (input->IsTrigger(DIK_Q))

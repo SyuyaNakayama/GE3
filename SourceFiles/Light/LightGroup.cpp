@@ -78,6 +78,7 @@ void LightGroup::SetDirLightActive(int index, bool active)
 {
 	assert(0 <= index && index < DIR_LIGHT_NUM);
 	dirLights[index].SetActive(active);
+	dirty = true;
 }
 
 void LightGroup::SetDirLightDir(int index, const Vector3& lightDir)
