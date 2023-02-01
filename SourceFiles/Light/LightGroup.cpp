@@ -4,8 +4,9 @@
 #include "Functions.h"
 
 void LightGroup::TransferConstBuffer()
-{	
+{
 	constMap->ambientColor = ambientColor;
+	// 平行光源
 	for (int i = 0; i < DIR_LIGHT_NUM; i++)
 	{
 		// ライトが有効なら設定を転送	
@@ -14,6 +15,20 @@ void LightGroup::TransferConstBuffer()
 			constMap->dirLights[i].active = 1;
 			constMap->dirLights[i].lightv = -dirLights[i].GetLightDir();
 			constMap->dirLights[i].lightcolor = dirLights[i].GetLightColor();
+		}
+		// ライトが無効なら転送しない
+		else { constMap->dirLights[i].active = 0; }
+	}
+	// 点光源
+	for (int i = 0; i < POINT_LIGHT_NUM; i++)
+	{
+		// ライトが有効なら設定を転送	
+		if (pointLights[i].IsActive())
+		{
+			constMap->pointLights[i].active = 1;
+			constMap->pointLights[i].lightpos = pointLights[i].GetLightPos();
+			constMap->pointLights[i].lightcolor = pointLights[i].GetLightColor();
+			constMap->pointLights[i].lightAtten = pointLights[i].GetLightAtten();
 		}
 		// ライトが無効なら転送しない
 		else { constMap->dirLights[i].active = 0; }
@@ -76,5 +91,32 @@ void LightGroup::SetDirLightColor(int index, const ColorRGB& lightcolor)
 {
 	assert(0 <= index && index < DIR_LIGHT_NUM);
 	dirLights[index].SetLightColor(lightcolor);
+	dirty = true;
+}
+
+void LightGroup::SetPointLightActive(int index, bool active)
+{
+	assert(0 <= index && index < DIR_LIGHT_NUM);
+	pointLights[index].SetActive(active);
+}
+
+void LightGroup::SetPointLightPos(int index, const Vector3& lightpos)
+{
+	assert(0 <= index && index < DIR_LIGHT_NUM);
+	pointLights[index].SetLightPos(lightpos);
+	dirty = true;
+}
+
+void LightGroup::SetPointLightColor(int index, const ColorRGB& lightcolor)
+{
+	assert(0 <= index && index < DIR_LIGHT_NUM);
+	pointLights[index].SetLightColor(lightcolor);
+	dirty = true;
+}
+
+void LightGroup::SetPointLightAtten(int index, const Vector3& lightAtten)
+{
+	assert(0 <= index && index < DIR_LIGHT_NUM);
+	pointLights[index].SetLightAtten(lightAtten);
 	dirty = true;
 }

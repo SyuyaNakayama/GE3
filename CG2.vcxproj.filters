@@ -153,9 +153,6 @@
     <ClCompile Include="SourceFiles\base\Input.cpp">
       <Filter>ソース ファイル\base</Filter>
     </ClCompile>
-    <ClCompile Include="SourceFiles\Light\DirectionalLight.cpp">
-      <Filter>ソース ファイル\Light</Filter>
-    </ClCompile>
     <ClCompile Include="SourceFiles\Light\LightGroup.cpp">
       <Filter>ソース ファイル\Light</Filter>
     </ClCompile>
@@ -268,6 +265,9 @@
     </ClInclude>
     <ClInclude Include="SourceFiles\functions\Color.h">
       <Filter>ソース ファイル\functions</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\Light\PointLight.h">
+      <Filter>ソース ファイル\Light</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -152,7 +152,6 @@
     <ClCompile Include="SourceFiles\functions\ParticleManager.cpp" />
     <ClCompile Include="SourceFiles\functions\SharePtr.cpp" />
     <ClCompile Include="SourceFiles\functions\Timer.cpp" />
-    <ClCompile Include="SourceFiles\Light\DirectionalLight.cpp" />
     <ClCompile Include="SourceFiles\Light\LightGroup.cpp" />
     <ClCompile Include="SourceFiles\math\Matrix4.cpp" />
     <ClCompile Include="SourceFiles\math\Quaternion.cpp" />
@@ -188,6 +187,7 @@
     <ClInclude Include="SourceFiles\functions\Timer.h" />
     <ClInclude Include="SourceFiles\Light\DirectionalLight.h" />
     <ClInclude Include="SourceFiles\Light\LightGroup.h" />
+    <ClInclude Include="SourceFiles\Light\PointLight.h" />
     <ClInclude Include="SourceFiles\math\Matrix4.h" />
     <ClInclude Include="SourceFiles\math\Quaternion.h" />
     <ClInclude Include="SourceFiles\math\Vector.h" />

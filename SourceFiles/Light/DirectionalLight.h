@@ -1,6 +1,4 @@
 #pragma once
-#include <d3dx12.h>
-#include <wrl.h>
 #include "Vector.h"
 #include "Color.h"
 
@@ -17,11 +15,11 @@ public:
 		Vector3 lightv; // ライトへの方向を表すベクトル
 		float pad;
 		ColorRGB lightcolor; // ライトの色
-		UINT active;
+		unsigned int active;
 	};
 
-	void SetLightDir(const Vector3& lightdir);
-	void SetLightColor(const ColorRGB& lightcolor);
+	void SetLightDir(const Vector3& lightdir_) { lightdir = Normalize(lightdir_); }
+	void SetLightColor(const ColorRGB& lightcolor_) { lightcolor = lightcolor_; }
 	void SetActive(bool active_) { active = active_; }
 	Vector3 GetLightDir() { return lightdir; }
 	ColorRGB GetLightColor() { return lightcolor; }

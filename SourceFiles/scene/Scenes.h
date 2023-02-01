@@ -13,28 +13,9 @@ protected:
 	static DebugCamera debugCamera;
 	static LightGroup* lightGroup;
 public:
-	virtual void Initialize(){}
+	virtual void Initialize() {}
 	static void StaticInitialize();
 	void Update();
-};
-
-class SpriteScene : public AbstractScenes
-{
-	std::unique_ptr<Sprite> sprites[2];
-public:
-	void Initialize();
-	void Update();
-	void Draw();
-};
-
-class ModelScene : public AbstractScenes
-{
-	WorldTransform worldTransform;
-	std::unique_ptr<Model> model;
-public:
-	void Initialize();
-	void Update();
-	void Draw();
 };
 
 class LightScene : public AbstractScenes
@@ -43,7 +24,7 @@ class LightScene : public AbstractScenes
 	WorldTransform worldTransformCube;
 	std::unique_ptr<Model> model;
 	std::unique_ptr<Model> modelCube;
-	
+
 	Vector3 lightDir[3] =
 	{
 		{0,0,1},{0,1,0},{0,0,1}
@@ -52,15 +33,9 @@ class LightScene : public AbstractScenes
 	{
 		{1,0,0},{0,1,0},{0,0,1}
 	};
-public:
-	void Initialize();
-	void Update();
-	void Draw();
-};
-
-class ColliderScene : public AbstractScenes
-{
-	std::vector<std::unique_ptr<Objects>> objects;
+	Vector3 pointLightpos = { 0.5f,1.0f };
+	ColorRGB pointLightColor;
+	Vector3 pointLightAtten = { 0.3f,0.1f,0.1f };
 public:
 	void Initialize();
 	void Update();

@@ -15,16 +15,13 @@ BaseScene* SceneFactory::CreateScene(Scene scene)
     switch (scene)
     {
     case Scene::Sprite:
-        newScene = new SpriteScene;
         break;
     case Scene::Model:
-        newScene = new ModelScene;
         break;
     case Scene::Light:
         newScene = new LightScene;
         break;
     case Scene::Collider:
-        newScene = new ColliderScene;
         break;
     }
     

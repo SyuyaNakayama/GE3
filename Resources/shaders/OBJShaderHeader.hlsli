@@ -13,7 +13,7 @@ cbuffer cbuff1 : register(b1)
 	float m_alpha : packoffset(c2.w);	// アルファ
 }
 
-static const uint DIR_LIGHT_NUM = 3;
+static const uint DIRLIGHT_NUM = 3;
 
 struct DirLight
 {
@@ -22,10 +22,21 @@ struct DirLight
 	uint active;
 };
 
+static const uint POINTLIGHT_NUM = 3;
+
+struct PointLight
+{
+	float3 lightpos; // ライト座標
+	float3 lightcolor; // ライトの色(RGB)
+	float3 lightatten; // ライト距離減衰係数
+	uint active;
+};
+
 cbuffer cbuff2 : register(b2)
 {
 	float3 ambientColor;
-	DirLight dirLights[DIR_LIGHT_NUM];
+	DirLight dirLights[DIRLIGHT_NUM];
+	PointLight pointLights[POINTLIGHT_NUM];
 }
 
 // 頂点シェーダーからピクセルシェーダーへのやり取りに使用する構造体

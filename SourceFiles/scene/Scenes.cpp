@@ -10,63 +10,17 @@ ViewProjection AbstractScenes::viewProjection;
 DebugCamera AbstractScenes::debugCamera;
 LightGroup* AbstractScenes::lightGroup;
 
-void SpriteScene::Initialize()
-{
-	sprites[0] = Sprite::Create("flag1.png");
-	sprites[1] = Sprite::Create("flag2.png");
-	sprites[0]->SetSize({ 600, 400 });
-	sprites[1]->SetSize({ 600, 400 });
-	sprites[1]->SetPosition({ 640,0 });
-	sprites[0]->SetPosition({ 300,360 });
-	sprites[0]->SetAnchorPoint({ 0.5f,0.5f });
-}
-
-void SpriteScene::Update()
-{
-	AbstractScenes::Update();
-	float rot = sprites[0]->GetRotation();
-	rot += 0.025f;
-	sprites[0]->SetRotation(rot);
-	Vector2 pos = sprites[1]->GetPosition();
-	pos.y += 2;
-	sprites[1]->SetPosition(pos);
-	for (const std::unique_ptr<Sprite>& sprite : sprites) { sprite->Update(); }
-}
-
-void SpriteScene::Draw()
-{
-	SpriteCommon::PreDraw();
-	for (const std::unique_ptr<Sprite>& sprite : sprites) { sprite->Draw(); }
-	SpriteCommon::PostDraw();
-}
-
-void ModelScene::Initialize()
-{
-	model = Model::Create("sphere");
-	lightGroup->DefaultLightSetting();
-	worldTransform.Initialize();
-}
-
-void ModelScene::Update()
-{
-	AbstractScenes::Update();
-	worldTransform.Update();
-}
-
-void ModelScene::Draw()
-{
-	Model::PreDraw();
-	model->Draw(worldTransform);
-	Model::PostDraw();
-}
-
 void LightScene::Initialize()
 {
 	model = Model::Create("sphere", true);
-	modelCube = Model::Create("cube",true);
+	modelCube = Model::Create("cube", true);
 	worldTransform.Initialize();
 	worldTransformCube.Initialize();
-	worldTransformCube.translation.x = 3.0f;;
+	worldTransformCube.translation.x = 3.0f;
+	for (size_t i = 0; i < 3; i++)
+	{
+		lightGroup->SetDirLightActive(i, true);
+	}
 }
 
 void LightScene::Update()
@@ -77,11 +31,18 @@ void LightScene::Update()
 	ImGui::Text("---------------------");
 	for (size_t i = 0; i < 3; i++)
 	{
+		lightGroup->SetDirLightActive(i, true);
 		ImGuiManager::SliderVector("lightDir" + std::to_string(i), lightDir[i], -10, 10);
 		ImGuiManager::ColorEditRGB("light" + std::to_string(i), lightColor[i]);
 		lightGroup->SetDirLightDir(i, lightDir[i]);
 		lightGroup->SetDirLightColor(i, lightColor[i]);
 	}
+	//ImGuiManager::SliderVector("lightPos", pointLightpos, -10, 10);
+	//ImGuiManager::ColorEditRGB("pointLight", pointLightColor);
+	//ImGuiManager::SliderVector("lightAtten", pointLightAtten, -10, 10);
+	//lightGroup->SetPointLightPos(0, pointLightpos);
+	//lightGroup->SetPointLightColor(0, pointLightColor);
+	//lightGroup->SetPointLightAtten(0, pointLightAtten);
 }
 
 void LightScene::Draw()
@@ -89,38 +50,6 @@ void LightScene::Draw()
 	Model::PreDraw();
 	model->Draw(worldTransform);
 	modelCube->Draw(worldTransformCube);
-	Model::PostDraw();
-}
-
-void ColliderScene::Initialize()
-{
-	lightGroup->DefaultLightSetting();
-	std::unique_ptr<Objects> obj = std::make_unique<Sphere>();
-	obj->SetPosition({ 2 });
-	objects.push_back(move(obj));
-	obj = std::make_unique<Ray>();
-	obj->SetMoveSpeed({ 0.05f });
-	obj->SetPosition({ 0,2 });
-	objects.push_back(move(obj));
-	obj = std::make_unique<Triangle>();
-	obj->SetPosition({ -2 });
-	objects.push_back(move(obj));
-	for (std::unique_ptr<Objects>& object : objects) { object->Initialize(); }
-	viewProjection.eye = { 0,2.5f,-5.0f, };
-	viewProjection.target.y = 0;
-}
-
-void ColliderScene::Update()
-{
-	AbstractScenes::Update();
-	for (const std::unique_ptr<Objects>& object : objects) { object->Update(); }
-	CollisionManager::CheckAllCollisions();
-}
-
-void ColliderScene::Draw()
-{
-	Model::PreDraw();
-	for (const std::unique_ptr<Objects>& object : objects) { object->Draw(); }
 	Model::PostDraw();
 }
 
