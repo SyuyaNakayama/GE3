@@ -31,7 +31,7 @@ void LightGroup::TransferConstBuffer()
 			constMap->pointLights[i].lightAtten = pointLights[i].GetLightAtten();
 		}
 		// ƒ‰ƒCƒg‚ª–³Œø‚È‚ç“]‘—‚µ‚È‚¢
-		else { constMap->dirLights[i].active = 0; }
+		else { constMap->pointLights[i].active = 0; }
 	}
 }
 
