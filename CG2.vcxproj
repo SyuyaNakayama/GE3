@@ -184,9 +184,11 @@
     <ClInclude Include="SourceFiles\functions\ParticleManager.h" />
     <ClInclude Include="SourceFiles\functions\SharePtr.h" />
     <ClInclude Include="SourceFiles\functions\Timer.h" />
+    <ClInclude Include="SourceFiles\Light\CircleShadow.h" />
     <ClInclude Include="SourceFiles\Light\DirectionalLight.h" />
     <ClInclude Include="SourceFiles\Light\LightGroup.h" />
     <ClInclude Include="SourceFiles\Light\PointLight.h" />
+    <ClInclude Include="SourceFiles\Light\SpotLight.h" />
     <ClInclude Include="SourceFiles\math\Matrix4.h" />
     <ClInclude Include="SourceFiles\math\Quaternion.h" />
     <ClInclude Include="SourceFiles\math\Vector.h" />

@@ -1,10 +1,8 @@
 #include "Scenes.h"
 #include "SpriteCommon.h"
-#include "CollisionManager.h"
 #include "SceneManager.h"
 #include <imgui.h>
 #include "ImGuiManager.h"
-#include "DirectXCommon.h"
 
 ViewProjection AbstractScenes::viewProjection;
 DebugCamera AbstractScenes::debugCamera;
