@@ -23,10 +23,10 @@ public:
 
 	void SetLightPos(const Vector3& lightpos_) { lightpos = lightpos_; }
 	void SetLightColor(const ColorRGB& lightcolor_) { lightcolor = lightcolor_; }
-	void SetActive(bool active_) { active = active_; }
 	void SetLightAtten(const Vector3& lightAtten_) { lightAtten = lightAtten_; }
-	const Vector3& GetLightAtten() { return lightAtten; }
+	void SetActive(bool active_) { active = active_; }
 	const Vector3& GetLightPos() { return lightpos; }
 	const ColorRGB& GetLightColor() { return lightcolor; }
+	const Vector3& GetLightAtten() { return lightAtten; }
 	bool IsActive() { return active; }
 };

@@ -32,17 +32,17 @@ public:
 	void SetLightDir(const Vector3& lightdir_) { lightdir = Normalize(lightdir_); }
 	void SetLightPos(const Vector3& lightpos_) { lightpos = lightpos_; }
 	void SetLightColor(const ColorRGB& lightcolor_) { lightcolor = lightcolor_; }
-	void SetActive(bool active_) { active = active_; }
 	void SetLightAtten(const Vector3& lightAtten_) { lightAtten = lightAtten_; }
 	void SetLightFactorAngle(const Vector2& lightFactorAngle)
 	{
 		lightFactorAngleCos.x = std::cos(lightFactorAngle.x);
 		lightFactorAngleCos.y = std::cos(lightFactorAngle.y);
 	}
+	void SetActive(bool active_) { active = active_; }
 	const Vector3& GetLightDir() { return lightdir; }
-	const Vector3& GetLightAtten() { return lightAtten; }
 	const Vector3& GetLightPos() { return lightpos; }
 	const ColorRGB& GetLightColor() { return lightcolor; }
+	const Vector3& GetLightAtten() { return lightAtten; }
 	const Vector2& GetLightFactorAngleCos() { return lightFactorAngleCos; }
 	bool IsActive() { return active; }
 };

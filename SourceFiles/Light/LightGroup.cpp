@@ -1,6 +1,4 @@
 #include "LightGroup.h"
-#include <cassert>
-#include "DirectXCommon.h"
 #include "Functions.h"
 
 void LightGroup::TransferConstBuffer()
@@ -22,7 +20,6 @@ void LightGroup::TransferConstBuffer()
 	// 点光源
 	for (int i = 0; i < POINT_LIGHT_NUM; i++)
 	{
-		// ライトが有効なら設定を転送	
 		if (pointLights[i].IsActive())
 		{
 			constMap->pointLights[i].active = 1;
@@ -30,8 +27,35 @@ void LightGroup::TransferConstBuffer()
 			constMap->pointLights[i].lightcolor = pointLights[i].GetLightColor();
 			constMap->pointLights[i].lightAtten = pointLights[i].GetLightAtten();
 		}
-		// ライトが無効なら転送しない
 		else { constMap->pointLights[i].active = 0; }
+	}
+	// スポットライト
+	for (int i = 0; i < SPOT_LIGHT_NUM; i++)
+	{
+		if (spotLights[i].IsActive())
+		{
+			constMap->spotLights[i].active = 1;
+			constMap->spotLights[i].lightv = -spotLights[i].GetLightDir();
+			constMap->spotLights[i].lightpos = spotLights[i].GetLightPos();
+			constMap->spotLights[i].lightcolor = spotLights[i].GetLightColor();
+			constMap->spotLights[i].lightatten = spotLights[i].GetLightAtten();
+			constMap->spotLights[i].lightfactoranglecos = spotLights[i].GetLightFactorAngleCos();
+		}
+		else { constMap->spotLights[i].active = 0; }
+	}
+	// 丸影
+	for (int i = 0; i < CIRCLE_SHADOW_NUM; i++)
+	{
+		if (circleShadows[i].IsActive())
+		{
+			constMap->circleShadows[i].active = 1;
+			constMap->circleShadows[i].dir = -circleShadows[i].GetDir();
+			constMap->circleShadows[i].casterPos = circleShadows[i].GetCasterPos();
+			constMap->circleShadows[i].distanceCasterLight = circleShadows[i].GetDistanceCasterLight();
+			constMap->circleShadows[i].atten = circleShadows[i].GetAtten();
+			constMap->circleShadows[i].factorAngleCos = circleShadows[i].GetFactorAngleCos();
+		}
+		else { constMap->circleShadows[i].active = 0; }
 	}
 }
 
@@ -74,6 +98,7 @@ void LightGroup::DefaultLightSetting()
 	dirLights[2].SetLightDir({ -0.5f,0.1f,-0.2f });
 }
 
+#pragma region 平行光源Setter
 void LightGroup::SetDirLightActive(int index, bool active)
 {
 	assert(0 <= index && index < DIR_LIGHT_NUM);
@@ -94,31 +119,117 @@ void LightGroup::SetDirLightColor(int index, const ColorRGB& lightcolor)
 	dirLights[index].SetLightColor(lightcolor);
 	dirty = true;
 }
-
+#pragma endregion
+#pragma region 点光源Setter
 void LightGroup::SetPointLightActive(int index, bool active)
 {
-	assert(0 <= index && index < DIR_LIGHT_NUM);
+	assert(0 <= index && index < POINT_LIGHT_NUM);
 	pointLights[index].SetActive(active);
 	dirty = true;
 }
 
 void LightGroup::SetPointLightPos(int index, const Vector3& lightpos)
 {
-	assert(0 <= index && index < DIR_LIGHT_NUM);
+	assert(0 <= index && index < POINT_LIGHT_NUM);
 	pointLights[index].SetLightPos(lightpos);
 	dirty = true;
 }
 
 void LightGroup::SetPointLightColor(int index, const ColorRGB& lightcolor)
 {
-	assert(0 <= index && index < DIR_LIGHT_NUM);
+	assert(0 <= index && index < POINT_LIGHT_NUM);
 	pointLights[index].SetLightColor(lightcolor);
 	dirty = true;
 }
 
 void LightGroup::SetPointLightAtten(int index, const Vector3& lightAtten)
 {
-	assert(0 <= index && index < DIR_LIGHT_NUM);
+	assert(0 <= index && index < POINT_LIGHT_NUM);
 	pointLights[index].SetLightAtten(lightAtten);
 	dirty = true;
 }
+#pragma endregion
+#pragma region スポットライトSetter
+void LightGroup::SetSpotLightActive(int index, bool active)
+{
+	assert(0 <= index && index < SPOT_LIGHT_NUM);
+	spotLights[index].SetActive(active);
+}
+
+void LightGroup::SetSpotLightDir(int index, const Vector3& lightdir)
+{
+	assert(0 <= index && index < SPOT_LIGHT_NUM);
+	spotLights[index].SetLightDir(lightdir);
+	dirty = false;
+}
+
+void LightGroup::SetSpotLightPos(int index, const Vector3& lightpos)
+{
+	assert(0 <= index && index < SPOT_LIGHT_NUM);
+	spotLights[index].SetLightPos(lightpos);
+	dirty = false;
+}
+
+void LightGroup::SetSpotLightColor(int index, const ColorRGB& lightcolor)
+{
+	assert(0 <= index && index < SPOT_LIGHT_NUM);
+	spotLights[index].SetLightColor(lightcolor);
+	dirty = false;
+}
+
+void LightGroup::SetSpotLightAtten(int index, const Vector3& lightAtten)
+{
+	assert(0 <= index && index < SPOT_LIGHT_NUM);
+	spotLights[index].SetLightAtten(lightAtten);
+	dirty = false;
+}
+
+void LightGroup::SetSpotLightFactorAngle(int index, const Vector2& lightFactorAngle)
+{
+	assert(0 <= index && index < SPOT_LIGHT_NUM);
+	spotLights[index].SetLightFactorAngle(lightFactorAngle);
+	dirty = false;
+}
+#pragma endregion
+#pragma region 丸影Setter
+void LightGroup::SetCircleShadowActive(int index, bool active)
+{
+	assert(0 <= index && index < CIRCLE_SHADOW_NUM);
+	circleShadows[index].SetActive(active);
+}
+
+void LightGroup::SetCircleShadowCasterPos(int index, const Vector3& casterPos)
+{
+	assert(0 <= index && index < CIRCLE_SHADOW_NUM);
+	circleShadows[index].SetCasterPos(casterPos);
+	dirty = false;
+}
+
+void LightGroup::SetCircleShadowDir(int index, const Vector3& lightdir)
+{
+	assert(0 <= index && index < CIRCLE_SHADOW_NUM);
+	circleShadows[index].SetDir(lightdir);
+	dirty = false;
+}
+
+void LightGroup::SetCircleShadowDistanceCasterLight(int index, float distanceCasterLight)
+{
+	assert(0 <= index && index < CIRCLE_SHADOW_NUM);
+	circleShadows[index].SetDistanceCasterLight(distanceCasterLight);
+	dirty = false;
+}
+
+void LightGroup::SetCircleShadowAtten(int index, const Vector3& lightAtten)
+{
+	assert(0 <= index && index < CIRCLE_SHADOW_NUM);
+	circleShadows[index].SetAtten(lightAtten);
+	dirty = false;
+}
+
+void LightGroup::SetCircleShadowFactorAngle(int index, const Vector2& lightFactorAngle)
+{
+	assert(0 <= index && index < CIRCLE_SHADOW_NUM);
+	circleShadows[index].SetFactorAngle(lightFactorAngle);
+	dirty = false;
+}
+#pragma endregion
