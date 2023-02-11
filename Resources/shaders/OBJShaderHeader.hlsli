@@ -32,11 +32,37 @@ struct PointLight
 	uint active;
 };
 
+static const int SPOTLIGHT_NUM = 3;
+
+struct SpotLight
+{
+	float3 lightv; // ライトの光線方向の逆ベクトル
+	float3 lightpos; // ライト座標
+	float3 lightcolor; // ライトの色(RGB)
+	float3 lightatten; // ライト距離減衰係数
+	float2 lightfactoranglecos; // ライト減衰角度のcos
+	uint active;
+};
+
+static const int CIRCLESHADOW_NUM = 1;
+
+struct CircleShadow
+{
+	float3 dir; // 投影方向の逆ベクトル(単位ベクトル)
+	float3 casterPos; // キャスター座標
+	float distanceCasterLight; // キャスターとライトの距離
+	float3 atten; // 距離減衰係数
+	float2 factorAngleCos; // 減衰角度のcos
+	uint active;
+};
+
 cbuffer cbuff2 : register(b2)
 {
 	float3 ambientColor;
 	DirLight dirLights[DIRLIGHT_NUM];
 	PointLight pointLights[POINTLIGHT_NUM];
+	SpotLight spotLights[SPOTLIGHT_NUM];
+	CircleShadow circleShadows[CIRCLESHADOW_NUM];
 }
 
 // 頂点シェーダーからピクセルシェーダーへのやり取りに使用する構造体

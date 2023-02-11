@@ -9,9 +9,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="シェーダー ファイル\Sprite">
-      <UniqueIdentifier>{334c1d61-d821-4703-b572-92fc31f59c7f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\base">
       <UniqueIdentifier>{fa885c07-fe8d-4879-a7a7-e2bbf42afdc2}</UniqueIdentifier>
     </Filter>
@@ -33,13 +30,31 @@
     <Filter Include="ソース ファイル\functions">
       <UniqueIdentifier>{823e7a3e-f66c-4d55-a1f7-a5ed16915fdf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Light">
+    <Filter Include="ソース ファイル\audio">
+      <UniqueIdentifier>{1a47c7de-a104-490c-a030-9fc0100adf4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\collider">
+      <UniqueIdentifier>{805bdbf2-d804-43b6-b7e8-fe0bd2617915}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\3d\object">
+      <UniqueIdentifier>{c425de59-8479-456f-9548-a18c39f17171}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\3d\camera">
+      <UniqueIdentifier>{53dc29c8-ede2-4c61-8e65-628d2d6031e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダー ファイル\sprite">
+      <UniqueIdentifier>{334c1d61-d821-4703-b572-92fc31f59c7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\3d\light">
       <UniqueIdentifier>{769be226-a120-4709-9112-6eee57a00d43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\objects">
+      <UniqueIdentifier>{add36e36-d459-432f-a0ce-f0579e636034}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Sprite.hlsli">
-      <Filter>シェーダー ファイル\Sprite</Filter>
+      <Filter>シェーダー ファイル\sprite</Filter>
     </None>
     <None Include="Resources\shaders\OBJShaderHeader.hlsli">
       <Filter>シェーダー ファイル\object</Filter>
@@ -47,10 +62,10 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\SpritePS.hlsl">
-      <Filter>シェーダー ファイル\Sprite</Filter>
+      <Filter>シェーダー ファイル\sprite</Filter>
     </FxCompile>
     <FxCompile Include="Resources\shaders\SpriteVS.hlsl">
-      <Filter>シェーダー ファイル\Sprite</Filter>
+      <Filter>シェーダー ファイル\sprite</Filter>
     </FxCompile>
     <FxCompile Include="Resources\shaders\OBJPixelShader.hlsl">
       <Filter>シェーダー ファイル\object</Filter>
@@ -74,15 +89,6 @@
     </ClCompile>
     <ClCompile Include="SourceFiles\math\Matrix4.cpp">
       <Filter>ソース ファイル\math</Filter>
-    </ClCompile>
-    <ClCompile Include="SourceFiles\3d\Model.cpp">
-      <Filter>ソース ファイル\3d</Filter>
-    </ClCompile>
-    <ClCompile Include="SourceFiles\3d\WorldTransform.cpp">
-      <Filter>ソース ファイル\3d</Filter>
-    </ClCompile>
-    <ClCompile Include="SourceFiles\3d\ViewProjection.cpp">
-      <Filter>ソース ファイル\3d</Filter>
     </ClCompile>
     <ClCompile Include="SourceFiles\math\Vector.cpp">
       <Filter>ソース ファイル\math</Filter>
@@ -117,17 +123,11 @@
     <ClCompile Include="SourceFiles\base\PipelineManager.cpp">
       <Filter>ソース ファイル\base</Filter>
     </ClCompile>
-    <ClCompile Include="SourceFiles\3d\Mesh.cpp">
-      <Filter>ソース ファイル\3d</Filter>
-    </ClCompile>
-    <ClCompile Include="SourceFiles\3d\DebugCamera.cpp">
-      <Filter>ソース ファイル\3d</Filter>
-    </ClCompile>
     <ClCompile Include="SourceFiles\base\Input.cpp">
       <Filter>ソース ファイル\base</Filter>
     </ClCompile>
     <ClCompile Include="SourceFiles\Light\LightGroup.cpp">
-      <Filter>ソース ファイル\Light</Filter>
+      <Filter>ソース ファイル\3d\light</Filter>
     </ClCompile>
     <ClCompile Include="SourceFiles\scene\Scenes.cpp">
       <Filter>ソース ファイル\scene</Filter>
@@ -139,19 +139,34 @@
       <Filter>ソース ファイル\math</Filter>
     </ClCompile>
     <ClCompile Include="SourceFiles\base\Audio.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SourceFiles\functions\ParticleManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SourceFiles\functions\SharePtr.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\audio</Filter>
     </ClCompile>
     <ClCompile Include="SourceFiles\collider\Collider.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\collider</Filter>
     </ClCompile>
     <ClCompile Include="SourceFiles\collider\CollisionManager.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\collider</Filter>
+    </ClCompile>
+    <ClCompile Include="SourceFiles\3d\Mesh.cpp">
+      <Filter>ソース ファイル\3d\object</Filter>
+    </ClCompile>
+    <ClCompile Include="SourceFiles\3d\Model.cpp">
+      <Filter>ソース ファイル\3d\object</Filter>
+    </ClCompile>
+    <ClCompile Include="SourceFiles\3d\WorldTransform.cpp">
+      <Filter>ソース ファイル\3d\object</Filter>
+    </ClCompile>
+    <ClCompile Include="SourceFiles\functions\ParticleManager.cpp">
+      <Filter>ソース ファイル\3d\object</Filter>
+    </ClCompile>
+    <ClCompile Include="SourceFiles\3d\DebugCamera.cpp">
+      <Filter>ソース ファイル\3d\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="SourceFiles\3d\ViewProjection.cpp">
+      <Filter>ソース ファイル\3d\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="SourceFiles\objects\Skydome.cpp">
+      <Filter>ソース ファイル\objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -169,15 +184,6 @@
     </ClInclude>
     <ClInclude Include="SourceFiles\math\Matrix4.h">
       <Filter>ソース ファイル\math</Filter>
-    </ClInclude>
-    <ClInclude Include="SourceFiles\3d\Model.h">
-      <Filter>ソース ファイル\3d</Filter>
-    </ClInclude>
-    <ClInclude Include="SourceFiles\3d\WorldTransform.h">
-      <Filter>ソース ファイル\3d</Filter>
-    </ClInclude>
-    <ClInclude Include="SourceFiles\3d\ViewProjection.h">
-      <Filter>ソース ファイル\3d</Filter>
     </ClInclude>
     <ClInclude Include="SourceFiles\math\Vector.h">
       <Filter>ソース ファイル\math</Filter>
@@ -215,20 +221,14 @@
     <ClInclude Include="SourceFiles\base\PipelineManager.h">
       <Filter>ソース ファイル\base</Filter>
     </ClInclude>
-    <ClInclude Include="SourceFiles\3d\Mesh.h">
-      <Filter>ソース ファイル\3d</Filter>
-    </ClInclude>
-    <ClInclude Include="SourceFiles\3d\DebugCamera.h">
-      <Filter>ソース ファイル\3d</Filter>
-    </ClInclude>
     <ClInclude Include="SourceFiles\base\Input.h">
       <Filter>ソース ファイル\base</Filter>
     </ClInclude>
     <ClInclude Include="SourceFiles\Light\DirectionalLight.h">
-      <Filter>ソース ファイル\Light</Filter>
+      <Filter>ソース ファイル\3d\light</Filter>
     </ClInclude>
     <ClInclude Include="SourceFiles\Light\LightGroup.h">
-      <Filter>ソース ファイル\Light</Filter>
+      <Filter>ソース ファイル\3d\light</Filter>
     </ClInclude>
     <ClInclude Include="SourceFiles\scene\Scenes.h">
       <Filter>ソース ファイル\scene</Filter>
@@ -237,21 +237,46 @@
       <Filter>ソース ファイル\functions</Filter>
     </ClInclude>
     <ClInclude Include="SourceFiles\Light\PointLight.h">
-      <Filter>ソース ファイル\Light</Filter>
+      <Filter>ソース ファイル\3d\light</Filter>
     </ClInclude>
     <ClInclude Include="SourceFiles\math\Quaternion.h">
       <Filter>ソース ファイル\math</Filter>
     </ClInclude>
-    <ClInclude Include="SourceFiles\base\Audio.h" />
-    <ClInclude Include="SourceFiles\functions\ParticleManager.h" />
-    <ClInclude Include="SourceFiles\functions\SharePtr.h" />
-    <ClInclude Include="SourceFiles\collider\Collider.h" />
-    <ClInclude Include="SourceFiles\collider\CollisionManager.h" />
     <ClInclude Include="SourceFiles\Light\CircleShadow.h">
-      <Filter>ソース ファイル\Light</Filter>
+      <Filter>ソース ファイル\3d\light</Filter>
     </ClInclude>
     <ClInclude Include="SourceFiles\Light\SpotLight.h">
-      <Filter>ソース ファイル\Light</Filter>
+      <Filter>ソース ファイル\3d\light</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\base\Audio.h">
+      <Filter>ソース ファイル\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\collider\Collider.h">
+      <Filter>ソース ファイル\collider</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\collider\CollisionManager.h">
+      <Filter>ソース ファイル\collider</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\3d\Mesh.h">
+      <Filter>ソース ファイル\3d\object</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\3d\Model.h">
+      <Filter>ソース ファイル\3d\object</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\3d\WorldTransform.h">
+      <Filter>ソース ファイル\3d\object</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\functions\ParticleManager.h">
+      <Filter>ソース ファイル\3d\object</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\3d\DebugCamera.h">
+      <Filter>ソース ファイル\3d\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\3d\ViewProjection.h">
+      <Filter>ソース ファイル\3d\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFiles\objects\Skydome.h">
+      <Filter>ソース ファイル\objects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

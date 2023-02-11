@@ -1,15 +1,11 @@
 #pragma once
-#include <wrl.h>
-#include <d3d12.h>
 #include <string>
-#include "Sprite.h"
 #include "Quaternion.h"
-#include "WindowsAPI.h"
+#include "Color.h"
 
 class ImGuiManager final
 {
 private:
-	static ID3D12DescriptorHeap* srvHeap_;
 	ImGuiManager() = delete;
 	~ImGuiManager() = delete;
 
@@ -24,6 +20,10 @@ public:
 	static void PrintQuaternion(std::string str, const Quaternion& q);
 	static void SliderVector(std::string str, Vector2& vec, float minVal, float maxVal);
 	static void SliderVector(std::string str, Vector3& vec, float minVal, float maxVal);
-	static void ColorEditRGB(std::string str, ColorRGB& color);
-	static void ColorEditRGBA(std::string str, ColorRGBA& color);
+	static void DragVector(std::string str, Vector2& vec, float spd = 0.1f);
+	static void DragVector(std::string str, Vector3& vec, float spd = 0.1f);
+	static void InputVector(std::string str, Vector2& vec);
+	static void InputVector(std::string str, Vector3& vec);
+	static void ColorEdit(std::string str, ColorRGB& color);
+	static void ColorEdit(std::string str, ColorRGBA& color);
 };

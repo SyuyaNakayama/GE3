@@ -4,8 +4,6 @@
 #include "SpriteCommon.h"
 using namespace ImGui;
 
-ID3D12DescriptorHeap* ImGuiManager::srvHeap_;
-
 void ImGuiManager::Initialize()
 {
 	// インスタンスの取得
@@ -19,7 +17,7 @@ void ImGuiManager::Initialize()
 	ImGui_ImplWin32_Init(WindowsAPI::GetInstance()->GetHwnd());
 
 	SpriteCommon* spCommon = SpriteCommon::GetInstance();
-	srvHeap_ = spCommon->GetDescriptorHeap();
+	ID3D12DescriptorHeap* srvHeap_ = spCommon->GetDescriptorHeap();
 
 	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle = srvHeap_->GetCPUDescriptorHandleForHeapStart();
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap_->GetGPUDescriptorHandleForHeapStart();
@@ -52,7 +50,7 @@ void ImGuiManager::Draw()
 {
 	ID3D12GraphicsCommandList* cmdList = DirectXCommon::GetInstance()->GetCommandList();
 
-	ID3D12DescriptorHeap* ppHeaps[] = { srvHeap_ };
+	ID3D12DescriptorHeap* ppHeaps[] = { SpriteCommon::GetInstance()->GetDescriptorHeap() };
 	cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 	ImGui_ImplDX12_RenderDrawData(GetDrawData(), cmdList);
 }
@@ -96,7 +94,35 @@ void ImGuiManager::SliderVector(std::string str, Vector3& vec, float minVal, flo
 	vec = { num[0],num[1],num[2] };
 }
 
-void ImGuiManager::ColorEditRGB(std::string str, ColorRGB& color)
+void ImGuiManager::DragVector(std::string str, Vector2& vec, float spd)
+{
+	float num[2] = { vec.x,vec.y };
+	DragFloat2(str.c_str(), num, spd);
+	vec = { num[0],num[1] };
+}
+
+void ImGuiManager::DragVector(std::string str, Vector3& vec, float spd)
+{
+	float num[3] = { vec.x,vec.y,vec.z };
+	DragFloat3(str.c_str(), num, spd);
+	vec = { num[0],num[1],num[2] };
+}
+
+void ImGuiManager::InputVector(std::string str, Vector2& vec)
+{
+	float num[2] = { vec.x,vec.y };
+	InputFloat2(str.c_str(), num);
+	vec = { num[0],num[1] };
+}
+
+void ImGuiManager::InputVector(std::string str, Vector3& vec)
+{
+	float num[3] = { vec.x,vec.y,vec.z };
+	InputFloat3(str.c_str(), num);
+	vec = { num[0],num[1],num[2] };
+}
+
+void ImGuiManager::ColorEdit(std::string str, ColorRGB& color)
 {
 	float c[3] = { color.r,color.g,color.b };
 	str += "Color";
@@ -104,7 +130,7 @@ void ImGuiManager::ColorEditRGB(std::string str, ColorRGB& color)
 	color = { c[0],c[1],c[2] };
 }
 
-void ImGuiManager::ColorEditRGBA(std::string str, ColorRGBA& color)
+void ImGuiManager::ColorEdit(std::string str, ColorRGBA& color)
 {
 	float c[4] = { color.r,color.g,color.b,color.a };
 	str += "Color";

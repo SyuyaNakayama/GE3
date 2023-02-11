@@ -10,69 +10,41 @@ LightGroup* AbstractScenes::lightGroup;
 
 void LightScene::Initialize()
 {
-	model = Model::Create("sphere");
 	modelSmooth = Model::Create("sphere", true);
-	modelSkydome = Model::Create("background", true);
-	modelGround = Model::Create("cube", true);
-	worldTransform.Initialize();
-	worldTransform.translation.x = -1.5f;
+	modelGround = Model::Create("ground", true);
 	worldTransformSmooth.Initialize();
-	worldTransformSmooth.translation.x = 1.5f;
-	skydome.Initialize();
-	skydome.scale *= 10.0f;
+	skydome.Initialize(10.0f);
 	ground.Initialize();
 	ground.scale = { 10,1,5 };
 	ground.translation.y = -2;
-	Sprite* skydomeSprite = modelSkydome->GetSprite();
-	modelSkydome->TextureUpdate();
+	lightGroup->SetDirLightActive(1, false);
+	lightGroup->SetDirLightActive(2, false);
+	lightGroup->SetCircleShadowActive(0, true);
 }
 
 void LightScene::Update()
 {
+	ImGuiManager::DragVector("circleShadowDir", circleShadowDir);
+	ImGuiManager::DragVector("circleShadowAtten", circleShadowAtten);
+	ImGuiManager::DragVector("circleShadowFactorAngle", circleShadowFactorAngle);
+	ImGuiManager::DragVector("spherePos", worldTransformSmooth.translation);
+
+	lightGroup->SetCircleShadowDir(0, circleShadowDir);
+	lightGroup->SetCircleShadowCasterPos(0, worldTransformSmooth.translation);
+	lightGroup->SetCircleShadowAtten(0, circleShadowAtten);
+	lightGroup->SetCircleShadowFactorAngle(0, circleShadowFactorAngle);
+
 	AbstractScenes::Update();
-	worldTransform.Update();
 	worldTransformSmooth.Update();
 	skydome.Update();
 	ground.Update();
-	if (ImGui::CollapsingHeader("DirLight"))
-	{
-		for (int i = 0; i < 3; i++)
-		{
-			std::string str = "dirLight" + std::to_string(i);
-			ImGui::Checkbox(str.c_str(), dirLightActive + i);
-			lightGroup->SetDirLightActive(i, dirLightActive[i]);
-			if (!dirLightActive[i]) { continue; }
-			ImGuiManager::SliderVector("dirLightDir" + std::to_string(i), dirLightDir[i], -10, 10);
-			ImGuiManager::ColorEditRGB("dirLightColor" + std::to_string(i), dirLightColor[i]);
-			lightGroup->SetDirLightDir(i, dirLightDir[i]);
-			lightGroup->SetDirLightColor(i, dirLightColor[i]);
-		}
-	}
-
-	if (ImGui::CollapsingHeader("PointLight"))
-	{
-		for (int i = 0; i < 3; i++)
-		{
-			std::string str = "pointLight" + std::to_string(i);
-			ImGui::Checkbox(str.c_str(), pointLightActive + i);
-			lightGroup->SetPointLightActive(i, pointLightActive[i]);
-			if (!pointLightActive[i]) { continue; }
-			ImGuiManager::SliderVector("lightPos" + std::to_string(i), pointLightpos[i], -10, 10);
-			ImGuiManager::ColorEditRGB("pointLightColor" + std::to_string(i), pointLightColor[i]);
-			ImGuiManager::SliderVector("lightAtten" + std::to_string(i), pointLightAtten[i], -10, 10);
-			lightGroup->SetPointLightPos(i, pointLightpos[i]);
-			lightGroup->SetPointLightColor(i, pointLightColor[i]);
-			lightGroup->SetPointLightAtten(i, pointLightAtten[i]);
-		}
-	}
 }
 
 void LightScene::Draw()
 {
 	Model::PreDraw();
-	model->Draw(worldTransform);
 	modelSmooth->Draw(worldTransformSmooth);
-	modelSkydome->Draw(skydome);
+	//skydome.Draw();
 	modelGround->Draw(ground);
 	Model::PostDraw();
 }
@@ -99,7 +71,7 @@ void AbstractScenes::Update()
 	}
 	if (isDebugMode)
 	{
-		debugCamera.Update();
+		if (input->IsInput(DIK_A)) { debugCamera.Update(); }
 		ImGui::Text("DebugMode : On");
 	}
 	else

@@ -150,12 +150,12 @@
     <ClCompile Include="SourceFiles\functions\Color.cpp" />
     <ClCompile Include="SourceFiles\functions\Functions.cpp" />
     <ClCompile Include="SourceFiles\functions\ParticleManager.cpp" />
-    <ClCompile Include="SourceFiles\functions\SharePtr.cpp" />
     <ClCompile Include="SourceFiles\functions\Timer.cpp" />
     <ClCompile Include="SourceFiles\Light\LightGroup.cpp" />
     <ClCompile Include="SourceFiles\math\Matrix4.cpp" />
     <ClCompile Include="SourceFiles\math\Quaternion.cpp" />
     <ClCompile Include="SourceFiles\math\Vector.cpp" />
+    <ClCompile Include="SourceFiles\objects\Skydome.cpp" />
     <ClCompile Include="SourceFiles\scene\FadeManager.cpp" />
     <ClCompile Include="SourceFiles\collider\Collider.cpp" />
     <ClCompile Include="SourceFiles\collider\CollisionManager.cpp" />
@@ -182,7 +182,6 @@
     <ClInclude Include="SourceFiles\functions\Color.h" />
     <ClInclude Include="SourceFiles\functions\Functions.h" />
     <ClInclude Include="SourceFiles\functions\ParticleManager.h" />
-    <ClInclude Include="SourceFiles\functions\SharePtr.h" />
     <ClInclude Include="SourceFiles\functions\Timer.h" />
     <ClInclude Include="SourceFiles\Light\CircleShadow.h" />
     <ClInclude Include="SourceFiles\Light\DirectionalLight.h" />
@@ -192,6 +191,7 @@
     <ClInclude Include="SourceFiles\math\Matrix4.h" />
     <ClInclude Include="SourceFiles\math\Quaternion.h" />
     <ClInclude Include="SourceFiles\math\Vector.h" />
+    <ClInclude Include="SourceFiles\objects\Skydome.h" />
     <ClInclude Include="SourceFiles\scene\AbstractSceneFactory.h" />
     <ClInclude Include="SourceFiles\scene\BaseScene.h" />
     <ClInclude Include="SourceFiles\scene\FadeManager.h" />
